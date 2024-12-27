@@ -1,6 +1,5 @@
 package me.github.calaritooo;
 
-import java.sql.SQLOutput;
 import java.util.Scanner;
 
 // First, we create the class "account". This is a class because it has various moving and changing parts inside. //

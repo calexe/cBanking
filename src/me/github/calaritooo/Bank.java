@@ -28,6 +28,18 @@ public class Bank {
         return null;
     }
 
+    public Account findAccountByHolder(String accountHolder) {
+        for (Account account : accounts) {
+            if (account.getAccountHolder().equals(accountHolder)) {
+                return account;
+            } else {
+                System.out.println("Invalid entry! Account not found.");
+                return null;
+            }
+        }
+        return null;
+    }
+
     public String getName() {
         return name;
     }
