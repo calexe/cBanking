@@ -1,0 +1,110 @@
+# This is the configuration file for the cBanking economy and bank management plugin.
+# VAULT MUST BE INSTALLED FOR THIS PLUGIN TO FUNCTION.
+# Negative values in this config are not recommended and may lead to errors.
+# Ensure players have the proper permissions to adjust the default values below for their bank. (If they can not adjust interest, growth, maintenance, etc., they can't differentiate their bank from others!)
+# Current version: 1.0.0
+
+# For bug reports, suggestions, requests, and information, visit the link below!
+#
+# Made by @calaritooo
+
+# General plugin management settings.
+plugin-settings:
+  # Enable or disable logging for various data. Logs are created and kept in YAML files accessible in the cBanking 'logs' folder.
+  logging:
+    # Log all deposits and withdrawals made by players between their balance and accounts.
+    enable-log-transactions: false
+    # Log all approved loan requests.
+    enable-log-loan-requests: false
+  # Enable or disable notifications sent to online players.
+  notifications:
+    # Notify bank owners that a player has opened an account.
+    enable-notify-acc-opened: true
+    # Notify bank owners that a player has closed an account.
+    enable-notify-acc-closed: true
+    # Notify bank owners that they've received a loan request.
+    enable-notify-loan-request: true
+    # Notify players that their loan request has been approved or rejected.
+    enable-notify-loan-result: true
+
+# Modules/features to enable or disable. Ensure to give players proper permissions!
+modules:
+  # Enables players to create and manage their own banks.
+  enable-player-owned-banks: true
+  # Enable player bank accounts a growth rate, adjustable by the bank owner.
+  enable-acct-growth: true
+  # Enables players to request loans from banks, subject to approval by the bank owner.
+  enable-loans: true
+
+# General server economy settings and default values.
+economy-settings:
+  # Starting balance for new players.
+  starting-bal: 0.00
+  # Symbol/code your currency will use. ex. "$" or "USD"
+  currency-symbol: "$"
+  # Rate period length, how often (in hours) will loan interest rates and account growth rates be applied? (More than a week is not recommended!)
+  rate-period: 24
+
+# Bank management settings.
+bank-settings:
+  # Fee to create a bank.
+  new-bank-fee: 250
+  # Initial amount required to be deposited into bank assets to create a bank.
+  new-bank-assets: 500
+  # Minimum amount allowed in bank assets.
+  min-bank-assets: 100
+  # Will a player's bank be forcibly closed if the bank assets go below the specified value above in 'min-bank-assets'?
+  bankruptcy: false
+  # Should bank owners pay a flat fee ('flat') upon closing their bank or pay a fee-per-player ('player') that has an account with their bank? Setting the 'bank-closure-fee' to zero will disable the compensation fee.
+  bank-closure-fee-type: player
+  # Fee that bank owners pay to close their bank. If defined above as 'flat', the fee will be divided and distributed to all players with an account. If defined above as 'player', the fee will be multiplied per account and paid to all players.
+  bank-closure-fee: 20
+  # Should players pay a flat maintenance fee ('flat') or a percentage-based maintenance fee ('percentage') as often as defined above in 'rate-period'? (Recommended as 'flat', otherwise it may negate the 'acct-growth-rate')
+  maintenance-fee-type: flat
+  # Maintenance fee paid by players per account as often as defined above in 'rate-period'. With the proper permission, bank owners may adjust this.
+  maintenance-fee: 2
+  # Account growth rate (percentage) for newly created banks. With the proper permission, bank owners may adjust this.
+  acct-growth-rate: 2
+  # Minimum account balance to receive growth rate as defined below in 'min-acct-growth-rate'.
+  min-acct-bal-for-growth: 50
+  # Minimum account growth rate (percentage) that a bank owner may set.
+  min-acct-growth-rate: 0
+  # Maximum account growth rate (percentage) that a bank owner may set.
+  max-acct-growth-rate: 15
+  # Will transaction fee rates be flat or percentage-based? (select 'flat' or 'percentage')
+  transaction-fee-type: percentage
+  # Transaction fee rate paid by players when depositing from their balance into a bank account. With the proper permission, bank owners may adjust this. (flat or percentage, as defined in 'transaction-fee-type')
+  deposit-fee: 0
+  # Minimum deposit fee rate that a bank owner may set. (flat or percentage, as defined in 'transaction-fee-type')
+  min-deposit-rate: 0
+  # Maximum deposit fee rate that a bank owner may set. (flat or percentage, as defined in 'transaction-fee-type')
+  max-deposit-rate: 15
+  # Transaction fee rate paid by players when withdrawing from an account into their balance. With the proper permission, bank owners may adjust this. (flat or percentage, as defined in 'transaction-fee-type')
+  withdrawal-fee: 2
+  # Minimum withdrawal fee rate that a bank owner may set. (flat or percentage, as defined in 'transaction-fee-type')
+  min-withdrawal-rate: 0
+  # Maximum withdrawal fee rate that a bank owner may set. (flat or percentage, as defined in 'transaction-fee-type')
+  max-withdrawal-rate: 15
+
+# Loan settings and default values.
+loan-settings:
+  # Loan interest rate (percentage) for newly created banks. With the proper permission, bank owners may adjust this.
+  loan-interest-rate: 2
+  # Minimum account balance to request a loan from the bank to which the account belongs.
+  min-acct-bal-for-loan: 50
+  # Minimum loan interest rate (percentage) that a bank owner may set.
+  min-loan-interest-rate: 0
+  # Maximum loan interest rate (percentage) that a bank owner may set.
+  max-loan-interest-rate: 15
+  # Will the maximum amount per loan be equal to a bank's total assets? (if false, set the server's max loan amount below with 'max-loan-amount')
+  max-loan-by-assets: true
+  # Minimum amount a player may request and a bank may grant per loan. ('max-loan-by-assets' MUST be false!)
+  min-loan-amt: 250
+  # Maximum amount a player may request and a bank may grant per loan. ('max-loan-by-assets' MUST be false!)
+  max-loan-amt: 500
+  # Maximum amount of loan requests per player. This is NOT per bank!
+  max-loan-requests: 1
+  # Minimum loan period (in days) that a bank owner can apply to an approved loan request.
+  min-loan-period: 1
+  # Maximum loan period (in days) that a bank owner can apply to an approved loan request.
+  max-loan-period: 7
