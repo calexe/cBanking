@@ -9,7 +9,6 @@ public class cBanking extends JavaPlugin {
 
     private VaultHook vaultHook;
     private MessageHandler messageHandler;
-    private String currencySymbol;
 
     @Override
     public void onEnable() {
