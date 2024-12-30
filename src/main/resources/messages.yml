@@ -1,0 +1,16 @@
+# Modify plugin messages here. To enable or disable notification, see config.yml.
+
+# Placeholders:
+# {currency-symbol}
+# {balance}
+# {player}
+# {sender}
+# {recipient}
+# {amount}
+# {time}
+
+messages:
+  check-balance: "&eBalance: &6{currency-symbol}{balance}"
+  check-balance-others: "&6{player}'s &ebalance: &6{currency-symbol}{balance}"
+  error-invalid-player: "&cPlayer not found!"
+

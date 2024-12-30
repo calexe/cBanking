@@ -1,0 +1,137 @@
+name: cBanking
+main: me.github.calaritooo.cBanking
+version: 1.0.0
+api-version: '1.21'
+prefix: cBanking
+author: calaritooo
+loadbefore: [ Vault ]
+description: "A server-wide economy manager complete with player-owned and operated banks, loan management, and more!"
+
+# PERMISSIONS #
+permissions:
+  cbanking.balance:
+    description: "Allows players to check their total held balance."
+    default: not op
+    children:
+      cbanking.balance.others:
+        description: "Allows players to check the total held balance of others."
+        default: op
+  cbanking.pay:
+    description: "Allows players to pay others from their held balance."
+    default: not op
+  cbanking.accounts:
+    description: "Allows players to view a summary of their accounts."
+    default: op
+    children:
+      cbanking.accounts.others:
+        description: "Allows players to view a summary of another player's accounts."
+  cbanking.account:
+    description: "Allows players to check and manage their accounts."
+    default: op
+    children:
+      cbanking.account.deposit:
+        description: "Allows players to deposit from their balance into an account."
+        default: op
+      cbanking.account.withdraw:
+        description: "Allows players to withdraw from an account, adding the amount to their held balance."
+        default: op
+  cbanking.loans:
+    description: "Allows players to view a summary of their active loans."
+    default: op
+    children:
+      cbanking.loans.others:
+        description: "Allows players to view a summary of another player's active loans."
+        default: op
+  cbanking.loan:
+    description: "Allows players to check, manage, or request a loan."
+    default: op
+  cbanking.banks:
+    description: "Allows players to view a summary of all existing banks."
+    default: op
+  cbanking.bank:
+    description: "Allows players to check, manage, or open a bank."
+    default: op
+    children:
+      cbanking.bank.open:
+        description: "Allows players to open a new bank."
+        default: op
+      cbanking.bank.close:
+        description: "Allows players to close their bank."
+        default: op
+      cbanking.bank.accounts:
+        description: "Allows players to view all account balances and the players associated with them."
+        default: op
+      cbanking.bank.loans:
+        description: "Allows players to view all currently active loans."
+        default: op
+      cbanking.bank.manage:
+        description: "Allows players to manage their bank."
+        default: op
+        children:
+          cbanking.bank.manage.interest:
+            description: "Allows players to adjust their bank's loan interest rate."
+            default: op
+          cbanking.bank.manage.growth:
+            description: "Allows players to adjust their bank's account growth rate."
+            default: op
+          cbanking.bank.manage.assets:
+            description: "Allows players to manage their bank's assets."
+            default: op
+          cbanking.bank.manage.loans:
+            description: "Allows players to view and manage loan requests."
+            default: op
+          cbanking.bank.manage.maintenance:
+            description: "Allows players to adjust their bank's maintenance fees."
+  cbanking.admin:
+    description: "Allows players to manage other player accounts, banks, and the server's economy."
+    default: op
+
+# COMMANDS #
+commands:
+  cbanking:
+    description: "§7Main cBanking administrator command. Use this as a reference point for economy management."
+    usage: "§7/cbanking <version|info|admin>"
+    permission: cbanking.admin
+    permission-message: "§cYou do not have access to this command!"
+  balance:
+    description: "§7Use this to check your total held and account balances."
+    usage: "§7/balance <player>"
+    aliases: [ bal ]
+    permission: cbanking.balance
+    permission-message: "§cYou do not have access to this command!"
+  pay:
+    description: "§7Use this to pay another player from your held balance."
+    usage: "§7/pay <player> <amount>"
+    permission: cbanking.pay
+    permission-message: "§cYou do not have access to this command!"
+  accounts:
+    description: "§7Use this to view a summary of your accounts."
+    usage: "§7/accounts <player>"
+    permission: cbanking.accounts
+    permission-message: "§cYou do not have access to this command!"
+  account:
+    description: "§7Use this to check and manage your accounts."
+    usage: "§7/account <bank> <deposit|withdraw> <amount>"
+    aliases: [ acc ]
+    permission: cbanking.account
+    permission-message: "§cYou do not have access to this command!"
+  loans:
+    description: "§7Use this to view a summary of your active loans."
+    usage: "§7/loans <player>"
+    permission: cbanking.loans
+    permission-message: "§cYou do not have access to this command!"
+  loan:
+    description: "§7Use this to request a loan from a bank with which you actively have an account."
+    usage: "§7/loan <bank> <amount> <days>"
+    permission: cbanking.loan
+    permission-message: "§cYou do not have access to this command!"
+  banks:
+    description: "§7Use this to view a summary of all existing banks."
+    usage: "§7/banks"
+    permission: cbanking.banks
+    permission-message: "§cYou do not have access to this command!"
+  bank:
+    description: "§7Use this to check, manage, or open a bank."
+    usage: "§7/bank <open|close|accounts|loans|manage>"
+    permission: cbanking.bank
+    permission-message: "§cYou do not have access to this command!"
