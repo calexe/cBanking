@@ -18,7 +18,6 @@ public class ServerEconomy extends AbstractEconomy {
     private Map<String, Integer> balances = new HashMap<>();
 
     private ServerEconomy() {
-
     }
 
     @Override

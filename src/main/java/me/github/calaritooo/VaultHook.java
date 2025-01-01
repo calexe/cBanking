@@ -20,6 +20,7 @@ public final class VaultHook {
         if (rsp != null) {
             economy = rsp.getProvider();
         }
+
     }
 
     public static boolean hasEconomy() {
