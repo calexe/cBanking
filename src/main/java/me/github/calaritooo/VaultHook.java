@@ -5,6 +5,7 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public final class VaultHook {
 
@@ -71,13 +72,6 @@ public final class VaultHook {
 
         return economy.format(amount);
         //return amount + " " + (((int) amount) == 1 ? economy.currencyNameSingular() : economy.currencyNamePlural());
-    }
-
-
-    static {
-        if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
-            setupEconomy();
-        }
     }
 
     public Economy getEconomy() {
