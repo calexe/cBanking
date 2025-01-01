@@ -4,7 +4,7 @@ version: 1.0.0
 api-version: '1.21'
 prefix: cBanking
 author: calaritooo
-loadbefore: [ Vault ]
+softdepend: [ Vault ]
 description: "A server-wide economy manager complete with player-owned and operated banks, loan management, and more!"
 
 # PERMISSIONS #

@@ -1,17 +1,18 @@
 package me.github.calaritooo.commands;
 
 import me.github.calaritooo.cBanking;
-import org.bukkit.plugin.java.JavaPlugin;
+import java.util.Objects;
 
 public class CommandHandler {
 
-    private final JavaPlugin plugin;
+    private final cBanking plugin;
 
-    public CommandHandler(JavaPlugin plugin) {
+    public CommandHandler(cBanking plugin) {
         this.plugin = plugin;
     }
 
     public void registerCommands() {
-        plugin.getCommand("balance").setExecutor(new BalanceCommand((cBanking) plugin));
+        Objects.requireNonNull(plugin.getCommand("balance")).setExecutor(new BalanceCommand(plugin));
+        Objects.requireNonNull(plugin.getCommand("pay")).setExecutor(new PayCommand(plugin));
     }
 }

@@ -1,9 +1,10 @@
 package me.github.calaritooo.commands;
 
-import me.github.calaritooo.MessageHandler;
+import me.github.calaritooo.VaultHook;
 import me.github.calaritooo.cBanking;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,41 +16,49 @@ import java.util.Map;
 
 public class BalanceCommand implements CommandExecutor {
 
-    private final MessageHandler messageHandler;
     private final cBanking plugin;
 
     public BalanceCommand(cBanking plugin) {
         this.plugin = plugin;
-        this.messageHandler = plugin.getMessageHandler();
     }
 
+    private static final String PERMISSION = "cbanking.balance";
+
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("This command can only be used by players.");
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
+
+        Player player = (Player) sender;
+
+        if (!player.hasPermission(PERMISSION)) {
+            plugin.getMessageHandler().sendNoPermissionError(sender);
             return true;
         }
 
-        Player player = (Player) sender;
-        Player targetPlayer = player;
+        OfflinePlayer targetPlayer;
 
         if (args.length > 0) {
-            targetPlayer = Bukkit.getPlayer(args[0]);
-            if (targetPlayer == null) {
-                sender.sendMessage("Player not found!");
+            targetPlayer = Bukkit.getOfflinePlayer(args[0]);
+            if (!targetPlayer.hasPlayedBefore()) {
+                plugin.getMessageHandler().sendInvalidPlayerError(sender);
                 return true;
             }
+        } else {
+            targetPlayer = player;
         }
 
-        double balance = plugin.getVaultHook().getBalance(targetPlayer);
-        String currencySymbol = plugin.getConfig().getString("currency-symbol");
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
 
-        Map<String, String> placeholders = new HashMap<>();
-        placeholders.put("{currency-symbol}", currencySymbol);
-        placeholders.put("{balance}", String.format("%.2f", balance));
+            double balance = VaultHook.getBalance(targetPlayer);
+            String currencySymbol = plugin.getConfig().getString("currency-symbol");
 
-        Component message = messageHandler.getFormattedMessage("check-balance", placeholders);
-        player.sendMessage(message);
+            Map<String, String> placeholders = new HashMap<>();
+            placeholders.put("{currency-symbol}", currencySymbol);
+            placeholders.put("{balance}", String.format("%.2f", balance));
+
+            Component message = plugin.getMessageHandler().getFormattedMessage("check-balance", placeholders);
+
+            Bukkit.getScheduler().runTask(plugin, () -> player.sendMessage(message));
+        });
 
         return true;
     }

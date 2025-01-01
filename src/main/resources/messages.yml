@@ -10,7 +10,12 @@
 # {time}
 
 messages:
-  check-balance: "&eBalance: &6{currency-symbol}{balance}"
-  check-balance-others: "&6{player}'s &ebalance: &6{currency-symbol}{balance}"
+  check-balance: "&7Balance: &a{currency-symbol}{balance}"
+  check-balance-others: "&7{player}'s balance: &a{currency-symbol}{balance}"
+  payment-sent: "&a{currency-symbol}{amount} &7has been sent to &a{recipient}&7."
+  payment-received: "&7You have received &a{currency-symbol}{balance} &7from &a{sender}&7."
   error-invalid-player: "&cPlayer not found!"
-
+  error-invalid-amount: "&cAmount not valid!"
+  error-insufficient-funds: "&cThe specified amount exceeds your available balance!"
+  error-no-permission: "&cYou do not have access to this command!"
+  error-not-player: "&cNot a player!"
