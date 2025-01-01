@@ -14,13 +14,16 @@ public final class VaultHook {
     public VaultHook() {
     }
 
-    private static void setupEconomy() {
-        RegisteredServiceProvider<Economy> rsp = Bukkit.getServicesManager().getRegistration(Economy.class);
-
-        if (rsp != null) {
-            economy = rsp.getProvider();
+    public static boolean setupEconomy() {
+        if (plugin.getServer().getPluginManager().getPlugin("Vault") == null) {
+            return false;
         }
-
+        RegisteredServiceProvider<Economy> rsp = plugin.getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        economy = rsp.getProvider();
+        return true;
     }
 
     public static boolean hasEconomy() {

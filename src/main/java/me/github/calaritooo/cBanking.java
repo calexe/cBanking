@@ -36,7 +36,7 @@ public class cBanking extends JavaPlugin {
 
         // Check for and initialize Vault
         if (getServer().getPluginManager().getPlugin("Vault") != null) {
-            if (!VaultHook.hasEconomy()) {
+            if (!VaultHook.setupEconomy()) {
                 ServerEconomy.register();
             } else {
                 getLogger().severe("Vault is installed but no economy plugin was found!");
