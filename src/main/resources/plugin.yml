@@ -1,6 +1,6 @@
 name: cBanking
 main: me.github.calaritooo.cBanking
-version: 1.0.6
+version: 1.0.8
 api-version: '1.21'
 prefix: cBanking
 author: calaritooo
@@ -90,7 +90,7 @@ permissions:
 commands:
   cbanking:
     description: "§7Main cBanking administrator command. Use this as a reference point for economy management."
-    usage: "§7/cbanking <version|info|admin>"
+    usage: "§7/cbanking <version | info | admin>"
     permission: cbanking.admin
     permission-message: "§cYou do not have access to this command!"
   balance:
