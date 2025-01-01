@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="cBanking-1.0.0-SNAPSHOT:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/cBanking_1_0_0_SNAPSHOT_jar</output-path>
+  <artifact type="jar" build-on-make="true" name="cBanking-1.0.1-SNAPSHOT:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/cBanking_1_0_1_SNAPSHOT_jar</output-path>
     <root id="archive" name="cBanking.jar">
       <element id="module-output" name="cBanking" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/net/kyori/adventure-platform-api/4.1.1/adventure-platform-api-4.1.1.jar" path-in-jar="/" />

@@ -12,21 +12,26 @@ import java.io.IOException;
 public class PlayerDataManager {
 
     private final cBanking plugin;
-    private FileConfiguration playerDataConfig;
-    private File playerDataFile;
+    private FileConfiguration playerDataConfig = null;
+    private File playerDataFile = null;
 
     public PlayerDataManager(cBanking plugin) {
         this.plugin = plugin;
-        createPlayerDataFile();
+        saveDefaultPlayerData();
     }
 
-    private void createPlayerDataFile() {
-        playerDataFile = new File(plugin.getDataFolder(), "playerdata.yml");
-        if (!playerDataFile.exists()) {
-            playerDataFile.getParentFile().mkdirs();
-            plugin.saveResource("playerdata.yml", false);
+    public void reloadPlayerData() {
+        if (playerDataFile == null) {
+            playerDataFile = new File(plugin.getDataFolder(), "playerdata.yml");
         }
         playerDataConfig = YamlConfiguration.loadConfiguration(playerDataFile);
+    }
+
+    public FileConfiguration getPlayerData() {
+        if (playerDataConfig == null) {
+            reloadPlayerData();
+        }
+        return playerDataConfig;
     }
 
     public void setBalance(OfflinePlayer player, double balance) {
@@ -34,11 +39,24 @@ public class PlayerDataManager {
         savePlayerData();
     }
 
-    private void savePlayerData() {
+    public void savePlayerData() {
+        if (playerDataConfig == null || playerDataFile == null) {
+            return;
+        }
         try {
-            playerDataConfig.save(playerDataFile);
-        } catch (IOException e) {
-            e.printStackTrace();
+            getPlayerData().save(playerDataFile);
+        } catch (IOException ex) {
+            plugin.getLogger().severe("Could not save playerdata.yml!");
+        }
+    }
+
+    public void saveDefaultPlayerData() {
+        if (playerDataFile == null) {
+            playerDataFile = new File(plugin.getDataFolder(), "playerdata.yml");
+        }
+        if (!playerDataFile.exists()) {
+            playerDataFile.getParentFile().mkdirs();
+            plugin.saveResource("playerdata.yml", false);
         }
     }
 
