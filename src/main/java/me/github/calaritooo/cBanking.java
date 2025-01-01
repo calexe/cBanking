@@ -35,19 +35,8 @@ public class cBanking extends JavaPlugin {
         playerDataManager = new PlayerDataManager(this);
 
         // Check for and initialize Vault
-        if (getServer().getPluginManager().getPlugin("Vault") != null) {
-            if (!VaultHook.setupEconomy()) {
-                ServerEconomy.register();
-            } else {
-                getLogger().severe("Vault is installed but no economy plugin was found!");
-                getServer().getPluginManager().disablePlugin(this);
-                return;
-            }
-        } else {
-            getLogger().severe("Vault plugin not found! Disabling cBanking...");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
+        if (getServer().getPluginManager().getPlugin("Vault") != null)
+            ServerEconomy.register();
 
         // Register commands
         commandHandler = new CommandHandler(this);

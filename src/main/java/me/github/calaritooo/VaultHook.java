@@ -5,7 +5,6 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public final class VaultHook {
 
@@ -15,20 +14,15 @@ public final class VaultHook {
     public VaultHook() {
     }
 
-    public static boolean setupEconomy() {
-        if (plugin.getServer().getPluginManager().getPlugin("Vault") == null) {
-            return false;
-        }
-        RegisteredServiceProvider<Economy> rsp = plugin.getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp == null) {
-            return false;
-        }
-        economy = rsp.getProvider();
-        return true;
+    private static void setupEconomy() {
+        final RegisteredServiceProvider<Economy> rsp = Bukkit.getServicesManager().getRegistration(Economy.class);
+
+        if (rsp != null)
+            economy = rsp.getProvider();
     }
 
     public static boolean hasEconomy() {
-        return economy == null;
+        return economy != null;
     }
 
     public static double getBalance(OfflinePlayer target) {
@@ -76,5 +70,11 @@ public final class VaultHook {
 
     public Economy getEconomy() {
         return economy;
+    }
+
+    static {
+        if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
+            setupEconomy();
+        }
     }
 }
