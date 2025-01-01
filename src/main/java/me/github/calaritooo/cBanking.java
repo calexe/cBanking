@@ -68,7 +68,7 @@ public class cBanking extends JavaPlugin {
 
         if (getServer().getPluginManager().getPlugin("Vault") != null) {
             RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-            if (rsp != null && rsp.getProvider() != null) {
+            if (rsp != null && rsp.getProvider() != null && rsp.getPlugin().equals(this)) {
                 getServer().getServicesManager().unregister(rsp.getProvider());
             }
         }
