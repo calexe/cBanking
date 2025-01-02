@@ -38,17 +38,6 @@ public class cBanking extends JavaPlugin {
         saveDefaultConfig();
         FileConfiguration config = getConfig();
 
-        vaultHook = new VaultHook();
-
-        if (getServer().getPluginManager().getPlugin("Vault") != null) {
-            ServerEconomy serverEconomy = new ServerEconomy(this, balancesHandler);
-            serverEconomy.register();
-        } else {
-            getLogger().severe("Vault is not installed! Disabling cBanking.");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
-
         // Load messages.yml
         messageHandler = new MessageHandler(this);
 
@@ -58,6 +47,17 @@ public class cBanking extends JavaPlugin {
             getLogger().info("Balance handler initialized successfully.");
         } catch (Exception e) {
             getLogger().severe("Failed to initialize balance handler! Disabling cBanking.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
+        vaultHook = new VaultHook();
+
+        if (getServer().getPluginManager().getPlugin("Vault") != null) {
+            ServerEconomy serverEconomy = new ServerEconomy(this, balancesHandler);
+            serverEconomy.register();
+        } else {
+            getLogger().severe("Vault is not installed! Disabling cBanking.");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
