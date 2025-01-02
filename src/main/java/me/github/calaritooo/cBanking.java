@@ -8,12 +8,13 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.HandlerList;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 public class cBanking extends JavaPlugin {
 
-    private static final cBanking plugin = getInstance();
+    private static cBanking plugin;
     private MessageHandler messageHandler;
     private CommandHandler commandHandler;
     private EventHandler eventHandler;
@@ -24,21 +25,41 @@ public class cBanking extends JavaPlugin {
     public void onEnable() {
         getLogger().info("cBanking is initializing...");
 
+        if (plugin != null) {
+            getLogger().severe("Plugin instance already exists! Aborting initialization.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
+        plugin = this;
+
         // Creating and/or load config.yml
         saveDefaultConfig();
         FileConfiguration config = getConfig();
 
         vaultHook = new VaultHook();
 
-        if (getServer().getPluginManager().getPlugin("Vault") != null)
-            ServerEconomy.register();
+        if (getServer().getPluginManager().getPlugin("Vault") != null) {
+            ServerEconomy serverEconomy = new ServerEconomy(this);
+            serverEconomy.register();
+        } else {
+            getLogger().severe("Vault is not installed! Disabling cBanking.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
 
         // Load messages.yml
         messageHandler = new MessageHandler(this);
 
         // Initialize balances.yml
-        balancesHandler = new BalancesHandler(this);
-        getLogger().info("Balance handler initialized successfully.");
+        try {
+            balancesHandler = new BalancesHandler(this);
+            getLogger().info("Balance handler initialized successfully.");
+        } catch (Exception e) {
+            getLogger().severe("Failed to initialize balance handler! Disabling cBanking.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
 
         // Register commands
         commandHandler = new CommandHandler(this);
@@ -71,13 +92,24 @@ public class cBanking extends JavaPlugin {
                 balancesHandler.saveBalancesFile();
                 getLogger().info("Successfully saved balances.yml!");
             } catch (Exception e) {
-                getLogger().severe("Error while saving balances.yml!");
+                getLogger().severe("Failed to save balances.yml: " + e.getMessage());
+                e.printStackTrace();
             }
         }
 
-        if (vaultHook != null && vaultHook.getEconomy() != null) {
-            Bukkit.getServicesManager().unregister(vaultHook.getEconomy());
+        RegisteredServiceProvider<Economy> registration = Bukkit.getServicesManager().getRegistration(Economy.class);
+        if (registration != null) {
+            Economy registeredEconomy = registration.getProvider();
+            if (registeredEconomy instanceof ServerEconomy) {
+                Bukkit.getServicesManager().unregister(registeredEconomy);
+                plugin.getLogger().info("Successfully unregistered cBanking from Vault.");
+            } else {
+                plugin.getLogger().warning("Another Economy provider is registered. No action taken.");
+            }
+        } else {
+            plugin.getLogger().warning("No Economy provider found to unregister.");
         }
+
 
         Bukkit.getScheduler().cancelTasks(this);
 

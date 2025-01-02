@@ -14,13 +14,19 @@ import java.util.*;
 public class ServerEconomy implements Economy {
 
     private static ServerEconomy instance;
-    private final cBanking plugin = cBanking.getInstance();
-    BalancesHandler balancesHandler = plugin.getBalancesHandler();
-    private final String currencySymbol = plugin.getConfig().getString("economy-settings.currency-symbol");
-    private final Double startingBal = plugin.getConfig().getDouble("economy-settings.starting-bal");
+    private final cBanking plugin;
+    private final BalancesHandler balancesHandler;
+    private final String currencySymbol;
+    private final double startingBal;
 
-    public ServerEconomy() {
+    public ServerEconomy(cBanking plugin) {
+        this.plugin = plugin;
+
         instance = this;
+
+        this.balancesHandler = plugin.getBalancesHandler();
+        this.currencySymbol = plugin.getConfig().getString("economy-settings.currency-symbol");
+        this.startingBal = plugin.getConfig().getDouble("economy-settings.starting-bal");
     }
 
     public static ServerEconomy getInstance() {
@@ -296,7 +302,16 @@ public class ServerEconomy implements Economy {
         return createPlayerAccount(offlinePlayer);
     }
 
-    public static void register() {
-        Bukkit.getServicesManager().register(Economy.class, new ServerEconomy(), cBanking.getInstance(), ServicePriority.Highest);
+    public void register() {
+        if (Bukkit.getServicesManager().isProvidedFor(Economy.class)) {
+            plugin.getLogger().warning("An Economy provider is already registered. Overwriting it with ServerEconomy.");
+        }
+        try {
+            Bukkit.getServicesManager().register(Economy.class, this, plugin, ServicePriority.Highest);
+            plugin.getLogger().info("ServerEconomy registered successfully with Vault.");
+        } catch (Exception e) {
+            plugin.getLogger().severe("Failed to register ServerEconomy with Vault.");
+            e.printStackTrace();
+        }
     }
 }
