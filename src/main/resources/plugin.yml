@@ -1,6 +1,6 @@
 name: cBanking
 main: me.github.calaritooo.cBanking
-version: 1.1
+version: 1.1.2
 api-version: '1.21'
 prefix: cBanking
 author: calaritooo
@@ -85,13 +85,21 @@ permissions:
   cbanking.admin:
     description: "Allows players to manage other player accounts, banks, and the server's economy."
     default: op
+  cbanking.debug:
+    description: "Debug!"
+    default: op
 
 # COMMANDS #
 commands:
   cbanking:
     description: "§7Main cBanking administrator command. Use this as a reference point for economy management."
-    usage: "§7/cbanking <version | info | admin>"
+    usage: "§7/cbanking <version | info | admin | debug>"
     permission: cbanking.admin
+    permission-message: "§cYou do not have access to this command!"
+  debug:
+    description: "§7Debugs!"
+    usage: "§7/cbanking debug"
+    permission: cbanking.debug
     permission-message: "§cYou do not have access to this command!"
   balance:
     description: "§7Use this to check your total held and account balances."

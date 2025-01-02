@@ -1,6 +1,7 @@
 package me.github.calaritooo;
 
 import me.github.calaritooo.commands.BalanceCommand;
+import me.github.calaritooo.commands.DebugCommand;
 import me.github.calaritooo.commands.PayCommand;
 import me.github.calaritooo.listeners.EventHandler;
 import me.github.calaritooo.utils.BalancesHandler;
@@ -64,6 +65,7 @@ public class cBanking extends JavaPlugin {
         // Register commands
         this.getCommand("balance").setExecutor(new BalanceCommand(this));
         this.getCommand("pay").setExecutor(new PayCommand(this));
+        this.getCommand("cbanking").setExecutor(new DebugCommand(this));
 
         // Register the listeners
         eventHandler = new EventHandler(this);
