@@ -14,19 +14,28 @@ public class CommandHandler {
     }
 
     public void registerCommands() {
-        Objects.requireNonNull(plugin.getCommand("balance")).setExecutor(new BalanceCommand(plugin));
-        Objects.requireNonNull(plugin.getCommand("pay")).setExecutor(new PayCommand(plugin));
+        if (plugin.getCommand("balance") != null) {
+            plugin.getCommand("balance").setExecutor(new BalanceCommand(plugin));
+        } else {
+            plugin.getLogger().warning("Command 'balance' not found in plugin.yml!");
+        }
+
+        if (plugin.getCommand("pay") != null) {
+            plugin.getCommand("pay").setExecutor(new PayCommand(plugin));
+        } else {
+            plugin.getLogger().warning("Command 'pay' not found in plugin.yml!");
+        }
     }
 
     public void unregisterCommands() {
-        PluginCommand balanceCommand = plugin.getCommand("balance");
-        if (balanceCommand != null) {
-            balanceCommand.setExecutor(null);
-        }
+        unregisterCommand("balance");
+        unregisterCommand("pay");
+    }
 
-        PluginCommand payCommand = plugin.getCommand("pay");
-        if (payCommand != null) {
-            payCommand.setExecutor(null);
+    private void unregisterCommand(String commandName) {
+        PluginCommand command = plugin.getCommand(commandName);
+        if (command != null) {
+            command.setExecutor(null);
         }
     }
 }
