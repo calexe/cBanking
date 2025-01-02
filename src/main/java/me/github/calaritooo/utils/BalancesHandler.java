@@ -12,30 +12,40 @@ import java.util.UUID;
 
 public class BalancesHandler {
     private final File balancesFile;
-    private final FileConfiguration balancesConfig;
-    private final cBanking plugin = cBanking.getInstance();
-    private final Double startingBal = plugin.getConfig().getDouble("economy-settings.starting-bal");
+    private FileConfiguration balancesConfig;
+    private final cBanking plugin;
+    private final double startingBal;
 
-    public BalancesHandler(File dataFolder) {
+    public BalancesHandler(cBanking plugin) {
+        this.plugin = plugin;
+        this.startingBal = plugin.getConfig().getDouble("economy-settings.starting-bal", 0.0);
+
+        File dataFolder = plugin.getDataFolder();
         this.balancesFile = new File(dataFolder, "balances.yml");
+
         if (!balancesFile.exists()) {
             try {
-                dataFolder.mkdirs();
-                balancesFile.createNewFile();
+                dataFolder.mkdirs(); // Ensure data folder exists
+                balancesFile.createNewFile(); // Create balances.yml if it doesn't exist
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new RuntimeException("Could not create balances.yml!");
             }
         }
-        this.balancesConfig = YamlConfiguration.loadConfiguration(balancesFile);
+        loadBalancesConfig();
+    }
 
+    // Reloads the balances.yml configuration from disk
+    public void loadBalancesConfig() {
+        this.balancesConfig = YamlConfiguration.loadConfiguration(balancesFile);
     }
 
     // Get the balance of a player
     public double getBalance(UUID playerUUID) {
-        return balancesConfig.getDouble("balances." + playerUUID, startingBal);
+        return balancesConfig.getDouble("balances." + playerUUID + ".balance", startingBal);
     }
 
+    // Get the player's name stored in balances.yml
     public String getPlayerName(UUID playerUUID) {
         return balancesConfig.getString("balances." + playerUUID + ".name", "Unknown");
     }
@@ -44,7 +54,7 @@ public class BalancesHandler {
     public void setBalance(UUID playerUUID, String playerName, double amount) {
         balancesConfig.set("balances." + playerUUID + ".name", playerName);
         BigDecimal roundedBalance = new BigDecimal(amount).setScale(2, RoundingMode.HALF_UP);
-        balancesConfig.set(playerUUID.toString() + ".balance", roundedBalance.doubleValue());
+        balancesConfig.set("balances." + playerUUID + ".balance", roundedBalance.doubleValue());
         saveBalancesFile();
     }
 

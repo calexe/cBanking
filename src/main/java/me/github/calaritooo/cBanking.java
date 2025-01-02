@@ -28,17 +28,17 @@ public class cBanking extends JavaPlugin {
         saveDefaultConfig();
         FileConfiguration config = getConfig();
 
+        vaultHook = new VaultHook();
+
+        if (getServer().getPluginManager().getPlugin("Vault") != null)
+            ServerEconomy.register();
+
         // Load messages.yml
         messageHandler = new MessageHandler(this);
 
         // Initialize balances.yml
-        balancesHandler = new BalancesHandler(getDataFolder());
-
-        vaultHook = new VaultHook();
-
-        // Check for and initialize Vault
-        if (getServer().getPluginManager().getPlugin("Vault") != null)
-            ServerEconomy.register();
+        balancesHandler = new BalancesHandler(this);
+        getLogger().info("Balance handler initialized successfully.");
 
         // Register commands
         commandHandler = new CommandHandler(this);
@@ -57,10 +57,8 @@ public class cBanking extends JavaPlugin {
 
         saveConfig();
 
-        Bukkit.getScheduler().cancelTasks(this);
-
         if (eventHandler != null) {
-            HandlerList.unregisterAll(eventHandler);
+            HandlerList.unregisterAll(this);
         }
 
         // Unregister commands
@@ -68,11 +66,20 @@ public class cBanking extends JavaPlugin {
             commandHandler.unregisterCommands();
         }
 
-        balancesHandler.saveBalancesFile();
+        if (balancesHandler != null) {
+            try {
+                balancesHandler.saveBalancesFile();
+                getLogger().info("Successfully saved balances.yml!");
+            } catch (Exception e) {
+                getLogger().severe("Error while saving balances.yml!");
+            }
+        }
 
         if (vaultHook != null && vaultHook.getEconomy() != null) {
             Bukkit.getServicesManager().unregister(vaultHook.getEconomy());
         }
+
+        Bukkit.getScheduler().cancelTasks(this);
 
         getLogger().info("cBanking has been successfully disabled!");
     }
