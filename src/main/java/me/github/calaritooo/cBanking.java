@@ -62,8 +62,8 @@ public class cBanking extends JavaPlugin {
         }
 
         // Register commands
-        getCommand("balance").setExecutor(new BalanceCommand(plugin));
-        getCommand("pay").setExecutor(new PayCommand(plugin));
+        this.getCommand("balance").setExecutor(new BalanceCommand(this));
+        this.getCommand("pay").setExecutor(new PayCommand(this));
 
         // Register the listeners
         eventHandler = new EventHandler(this);
