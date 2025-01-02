@@ -41,7 +41,7 @@ public class cBanking extends JavaPlugin {
         vaultHook = new VaultHook();
 
         if (getServer().getPluginManager().getPlugin("Vault") != null) {
-            ServerEconomy serverEconomy = new ServerEconomy(this);
+            ServerEconomy serverEconomy = new ServerEconomy(this, balancesHandler);
             serverEconomy.register();
         } else {
             getLogger().severe("Vault is not installed! Disabling cBanking.");
@@ -54,7 +54,7 @@ public class cBanking extends JavaPlugin {
 
         // Initialize balances.yml
         try {
-            balancesHandler = new BalancesHandler(this);
+            this.balancesHandler = new BalancesHandler(this);
             getLogger().info("Balance handler initialized successfully.");
         } catch (Exception e) {
             getLogger().severe("Failed to initialize balance handler! Disabling cBanking.");
@@ -63,9 +63,9 @@ public class cBanking extends JavaPlugin {
         }
 
         // Register commands
-        this.getCommand("balance").setExecutor(new BalanceCommand(this));
-        this.getCommand("pay").setExecutor(new PayCommand(this));
-        this.getCommand("cbanking").setExecutor(new DebugCommand(this));
+        getCommand("balance").setExecutor(new BalanceCommand(this));
+        getCommand("pay").setExecutor(new PayCommand(this));
+        getCommand("cbanking").setExecutor(new DebugCommand(this));
 
         // Register the listeners
         eventHandler = new EventHandler(this);
@@ -87,6 +87,7 @@ public class cBanking extends JavaPlugin {
         // Unregister commands
         getCommand("balance").setExecutor(null);
         getCommand("pay").setExecutor(null);
+        getCommand("debug").setExecutor(null);
 
         if (balancesHandler != null) {
             try {

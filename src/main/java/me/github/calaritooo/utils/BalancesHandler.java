@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class BalancesHandler {
     private final File balancesFile;
@@ -27,8 +28,9 @@ public class BalancesHandler {
             try {
                 dataFolder.mkdirs(); // Ensure data folder exists
                 balancesFile.createNewFile(); // Create balances.yml if it doesn't exist
+                plugin.getLogger().info("balances.yml created successfully.");
             } catch (IOException e) {
-                e.printStackTrace();
+                plugin.getLogger().log(Level.SEVERE, "Could not create balances.yml!", e);
                 throw new RuntimeException("Could not create balances.yml!");
             }
         }
@@ -68,7 +70,7 @@ public class BalancesHandler {
         try {
             balancesConfig.save(balancesFile);
         } catch (IOException e) {
-            e.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Failed to save balances.yml!", e);
             throw new RuntimeException("Failed to save balances.yml!");
         }
     }

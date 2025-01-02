@@ -19,18 +19,31 @@ public class ServerEconomy implements Economy {
     private final String currencySymbol;
     private final double startingBal;
 
-    public ServerEconomy(cBanking plugin) {
+    public ServerEconomy(cBanking plugin, BalancesHandler balancesHandler) {
         this.plugin = plugin;
+        this.balancesHandler = balancesHandler;
 
         instance = this;
 
-        this.balancesHandler = plugin.getBalancesHandler();
         this.currencySymbol = plugin.getConfig().getString("economy-settings.currency-symbol");
         this.startingBal = plugin.getConfig().getDouble("economy-settings.starting-bal");
     }
 
     public static ServerEconomy getInstance() {
         return instance;
+    }
+
+    public void register() {
+        if (Bukkit.getServicesManager().isProvidedFor(Economy.class)) {
+            plugin.getLogger().warning("An Economy provider is already registered. Overwriting it with ServerEconomy.");
+        }
+        try {
+            Bukkit.getServicesManager().register(Economy.class, this, plugin, ServicePriority.Highest);
+            plugin.getLogger().info("ServerEconomy registered successfully with Vault.");
+        } catch (Exception e) {
+            plugin.getLogger().severe("Failed to register ServerEconomy with Vault.");
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -300,18 +313,5 @@ public class ServerEconomy implements Economy {
     @Override
     public boolean createPlayerAccount(OfflinePlayer offlinePlayer, String s) {
         return createPlayerAccount(offlinePlayer);
-    }
-
-    public void register() {
-        if (Bukkit.getServicesManager().isProvidedFor(Economy.class)) {
-            plugin.getLogger().warning("An Economy provider is already registered. Overwriting it with ServerEconomy.");
-        }
-        try {
-            Bukkit.getServicesManager().register(Economy.class, this, plugin, ServicePriority.Highest);
-            plugin.getLogger().info("ServerEconomy registered successfully with Vault.");
-        } catch (Exception e) {
-            plugin.getLogger().severe("Failed to register ServerEconomy with Vault.");
-            e.printStackTrace();
-        }
     }
 }
