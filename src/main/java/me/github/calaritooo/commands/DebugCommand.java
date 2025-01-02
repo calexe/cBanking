@@ -1,5 +1,6 @@
 package me.github.calaritooo.commands;
 
+import me.github.calaritooo.ServerEconomy;
 import me.github.calaritooo.cBanking;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -11,9 +12,11 @@ import org.jetbrains.annotations.NotNull;
 public class DebugCommand implements CommandExecutor {
 
     private final cBanking plugin;
+    private final ServerEconomy economy;
 
     public DebugCommand(cBanking plugin) {
         this.plugin = plugin;
+        this.economy = ServerEconomy.getInstance();
     }
 
     @Override
@@ -31,8 +34,8 @@ public class DebugCommand implements CommandExecutor {
             }
 
             // Example debug actions
-            player.sendMessage("§7[Debug] Your current balance: " + plugin.getEconomy().getBalance(player));
-            player.sendMessage("§7[Debug] Your current location: " + player.getLocation().toString());
+            player.sendMessage("§7[Debug] Your current balance: " + economy.getBalance(player));
+            player.sendMessage("§7[Debug] Your current location: " + player.getLocation());
             player.sendMessage("§7[Debug] Your current world: " + player.getWorld().getName());
         } else {
             // Console sender debug actions
