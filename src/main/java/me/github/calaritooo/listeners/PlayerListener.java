@@ -1,20 +1,23 @@
 package me.github.calaritooo.listeners;
 
-import me.github.calaritooo.VaultHook;
+import me.github.calaritooo.ServerEconomy;
 import me.github.calaritooo.cBanking;
-import org.bukkit.block.Vault;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import java.util.Objects;
+
 public class PlayerListener implements Listener {
 
     private final cBanking plugin;
+    private final ServerEconomy economy;
 
     public PlayerListener(cBanking plugin) {
         this.plugin = plugin;
+        this.economy = ServerEconomy.getInstance();
     }
 
     @EventHandler
@@ -22,7 +25,7 @@ public class PlayerListener implements Listener {
         if (!event.getPlayer().hasPlayedBefore()) {
             double startingBal = plugin.getConfig().getDouble("economy-settings.starting-bal");
             Player player = event.getPlayer();
-            VaultHook.deposit(player, startingBal);
+            economy.depositPlayer(player, startingBal);
         }
     }
 
@@ -30,20 +33,20 @@ public class PlayerListener implements Listener {
     public void onPlayerDie(PlayerDeathEvent event) {
 
         Player player = event.getPlayer();
-        double totalBal = VaultHook.getBalance(player);
+        double totalBal = economy.getBalance(player);
 
         if (plugin.getConfig().getBoolean("modules.enable-money-loss-death")) {
-            if (plugin.getConfig().getString("economy-settings.money-loss-death-type").equalsIgnoreCase("all")) {
-                VaultHook.withdraw(player, totalBal);
+            if (Objects.equals(plugin.getConfig().getString("economy-settings.money-loss-death-type"), "all")) {
+                economy.withdrawPlayer(player, totalBal);
             }
-            if (plugin.getConfig().getString("economy-settings.money-loss-death-type").equalsIgnoreCase("percentage")) {
+            if (Objects.equals(plugin.getConfig().getString("economy-settings.money-loss-death-type"), "percentage")) {
                 double percentageValue = plugin.getConfig().getDouble("economy-settings.money-loss-death-value");
                 double percentageLost = percentageValue/100;
-                VaultHook.withdraw(player, totalBal*percentageLost);
+                economy.withdrawPlayer(player, totalBal*percentageLost);
             }
-            if (plugin.getConfig().getString("economy-settings.money-loss-death-type").equalsIgnoreCase("flat")) {
+            if (Objects.equals(plugin.getConfig().getString("economy-settings.money-loss-death-type"), "flat")) {
                 double flatDeathFee = plugin.getConfig().getDouble("economy-settings.money-loss-death-value");
-                VaultHook.withdraw(player, flatDeathFee);
+                economy.withdrawPlayer(player, flatDeathFee);
             }
         }
     }

@@ -1,6 +1,6 @@
 package me.github.calaritooo.commands;
 
-import me.github.calaritooo.VaultHook;
+import me.github.calaritooo.ServerEconomy;
 import me.github.calaritooo.cBanking;
 import me.github.calaritooo.utils.TransactionLogger;
 import net.kyori.adventure.text.Component;
@@ -12,17 +12,18 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class PayCommand implements CommandExecutor {
 
     private final cBanking plugin;
+    private final ServerEconomy economy;
     private final TransactionLogger transactionLogger;
     private static final String PERMISSION = "cbanking.pay";
 
     public PayCommand(cBanking plugin) {
         this.plugin = plugin;
+        this.economy = ServerEconomy.getInstance();
         boolean loggingEnabled = plugin.getConfig().getBoolean("plugin-settings.logging.enable-log-transactions");
         this.transactionLogger = new TransactionLogger(plugin.getDataFolder(), loggingEnabled);
     }
@@ -38,7 +39,9 @@ public class PayCommand implements CommandExecutor {
         }
 
         if (args.length < 1) {
-            plugin.getMessageHandler().sendInvalidPlayerError(sender);
+            Map<String, String> placeholders0 = plugin.getMessageHandler().getFixedPlaceholders(0, 0, player.getName());
+            Component payUsageMessage = plugin.getMessageHandler().getFormattedMessage("pay-command-usage", placeholders0);
+            player.sendMessage(payUsageMessage);
             return true;
         }
 
@@ -58,35 +61,38 @@ public class PayCommand implements CommandExecutor {
             return true;
         }
 
+        if (args.length > 2) {
+            Map<String, String> placeholders = plugin.getMessageHandler().getFixedPlaceholders(0, 0, player.getName());
+            Component payUsageMessage = plugin.getMessageHandler().getFormattedMessage("pay-command-usage", placeholders);
+            player.sendMessage(payUsageMessage);
+            return true;
+        }
+
         double amt = Double.parseDouble(args[1]);
-        double playerBal = VaultHook.getBalance(player);
-        if (amt > playerBal) {
+        double bal = economy.getBalance(player);
+        if (amt > bal) {
             plugin.getMessageHandler().sendInsufficientFundsError(sender);
             return true;
         }
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             String transactionType = "payment";
-            String currencySymbol = plugin.getConfig().getString("currency-symbol");
 
-            Map<String, String> placeholders = new HashMap<>();
-            placeholders.put("{currency-symbol}", currencySymbol);
-            placeholders.put("{amount}", String.format("%.2f", amt));
+            Map<String, String> placeholders = plugin.getMessageHandler().getFixedPlaceholders(bal, amt, player.getName());
             placeholders.put("{recipient}", recipient.getName());
-            placeholders.put("{sender}", player.getName());
 
-            Component sentMessage = plugin.getMessageHandler().getFormattedMessage("payment-sent", placeholders);
+            Component paymentSentMessage = plugin.getMessageHandler().getFormattedMessage("payment-sent", placeholders);
 
             Bukkit.getScheduler().runTask(plugin, () -> {
-                VaultHook.withdraw(player, amt);
-                VaultHook.deposit(recipient, amt);
+                economy.withdrawPlayer(player, amt);
+                economy.depositPlayer(recipient, amt);
 
-                player.sendMessage(sentMessage);
+                player.sendMessage(paymentSentMessage);
                 if (recipient.isOnline()) {
                     Player onlineRecipient = recipient.getPlayer();
                     if (onlineRecipient != null) {
-                        Component receivedMessage = plugin.getMessageHandler().getFormattedMessage("payment-received", placeholders);
-                        onlineRecipient.sendMessage(receivedMessage);
+                        Component paymentReceivedMessage = plugin.getMessageHandler().getFormattedMessage("payment-received", placeholders);
+                        onlineRecipient.sendMessage(paymentReceivedMessage);
                     }
                 }
 
@@ -95,7 +101,6 @@ public class PayCommand implements CommandExecutor {
                 }
             });
         });
-
         return true;
     }
 }

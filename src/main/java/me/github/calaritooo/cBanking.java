@@ -2,13 +2,12 @@ package me.github.calaritooo;
 
 import me.github.calaritooo.commands.CommandHandler;
 import me.github.calaritooo.listeners.EventHandler;
+import me.github.calaritooo.utils.BalancesHandler;
 import me.github.calaritooo.utils.MessageHandler;
-import me.github.calaritooo.utils.PlayerDataManager;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.HandlerList;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,9 +15,10 @@ public class cBanking extends JavaPlugin {
 
     private static final cBanking plugin = getInstance();
     private MessageHandler messageHandler;
-    private PlayerDataManager playerDataManager;
     private CommandHandler commandHandler;
     private EventHandler eventHandler;
+    private BalancesHandler balancesHandler;
+    private VaultHook vaultHook;
 
     @Override
     public void onEnable() {
@@ -31,8 +31,10 @@ public class cBanking extends JavaPlugin {
         // Load messages.yml
         messageHandler = new MessageHandler(this);
 
-        // Initialize PlayerDataManager
-        playerDataManager = new PlayerDataManager(this);
+        // Initialize balances.yml
+        balancesHandler = new BalancesHandler(getDataFolder());
+
+        vaultHook = new VaultHook();
 
         // Check for and initialize Vault
         if (getServer().getPluginManager().getPlugin("Vault") != null)
@@ -66,11 +68,10 @@ public class cBanking extends JavaPlugin {
             commandHandler.unregisterCommands();
         }
 
-        if (getServer().getPluginManager().getPlugin("Vault") != null) {
-            RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-            if (rsp != null && rsp.getProvider() != null && rsp.getPlugin().equals(this)) {
-                getServer().getServicesManager().unregister(rsp.getProvider());
-            }
+        balancesHandler.saveBalancesFile();
+
+        if (vaultHook != null && vaultHook.getEconomy() != null) {
+            Bukkit.getServicesManager().unregister(vaultHook.getEconomy());
         }
 
         getLogger().info("cBanking has been successfully disabled!");
@@ -86,8 +87,12 @@ public class cBanking extends JavaPlugin {
         return messageHandler;
     }
 
-    public PlayerDataManager getPlayerDataManager() {
-        return playerDataManager;
+    public BalancesHandler getBalancesHandler() {
+        return balancesHandler;
+    }
+
+    public Economy getEconomy() {
+        return vaultHook.getEconomy();
     }
 
     public static cBanking getInstance() {

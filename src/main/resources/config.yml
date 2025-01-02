@@ -3,13 +3,17 @@
 # Negative values are not recommended! Values beyond the hundredths place (##.##) are not supported.
 # Ensure players have the proper permissions to adjust the default values below for their bank. (If they can not adjust interest, growth, maintenance, etc., they can't differentiate their bank from others!)
 # Current version: 1.0.0
-
+#
 # For bug reports, suggestions, requests, and information, visit the link below!
 #
 # Made by @calaritooo
+#
+#---------------------------------------------------------------------------------------------------------------------------------
 
 # General plugin management settings.
 plugin-settings:
+  # Prefix for all messages sent by the plugin. Format in messages.yml.
+  plugin-prefix: cBanking
   # Enable or disable logging for various data. Logs are created and kept in YAML files accessible in the cBanking 'logs' folder.
   logging:
     # Log all deposits and withdrawals made by players between their balance and accounts.
