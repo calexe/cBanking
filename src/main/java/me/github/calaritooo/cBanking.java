@@ -1,6 +1,7 @@
 package me.github.calaritooo;
 
-import me.github.calaritooo.commands.CommandHandler;
+import me.github.calaritooo.commands.BalanceCommand;
+import me.github.calaritooo.commands.PayCommand;
 import me.github.calaritooo.listeners.EventHandler;
 import me.github.calaritooo.utils.BalancesHandler;
 import me.github.calaritooo.utils.MessageHandler;
@@ -16,7 +17,6 @@ public class cBanking extends JavaPlugin {
 
     private static cBanking plugin;
     private MessageHandler messageHandler;
-    private CommandHandler commandHandler;
     private EventHandler eventHandler;
     private BalancesHandler balancesHandler;
     private VaultHook vaultHook;
@@ -62,8 +62,8 @@ public class cBanking extends JavaPlugin {
         }
 
         // Register commands
-        commandHandler = new CommandHandler(this);
-        commandHandler.registerCommands();
+        getCommand("balance").setExecutor(new BalanceCommand(plugin));
+        getCommand("pay").setExecutor(new PayCommand(plugin));
 
         // Register the listeners
         eventHandler = new EventHandler(this);
@@ -83,9 +83,8 @@ public class cBanking extends JavaPlugin {
         }
 
         // Unregister commands
-        if (commandHandler != null) {
-            commandHandler.unregisterCommands();
-        }
+        getCommand("balance").setExecutor(null);
+        getCommand("pay").setExecutor(null);
 
         if (balancesHandler != null) {
             try {
@@ -96,6 +95,8 @@ public class cBanking extends JavaPlugin {
                 e.printStackTrace();
             }
         }
+
+        Bukkit.getScheduler().cancelTasks(this);
 
         RegisteredServiceProvider<Economy> registration = Bukkit.getServicesManager().getRegistration(Economy.class);
         if (registration != null) {
@@ -109,9 +110,6 @@ public class cBanking extends JavaPlugin {
         } else {
             plugin.getLogger().warning("No Economy provider found to unregister.");
         }
-
-
-        Bukkit.getScheduler().cancelTasks(this);
 
         getLogger().info("cBanking has been successfully disabled!");
     }
