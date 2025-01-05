@@ -111,7 +111,7 @@ commands:
     permission-message: "§cYou do not have access to this command!"
   account:
     description: "§7Use this to check and manage your accounts."
-    usage: "§7/account <bank> <deposit | withdraw> <amount>"
+    usage: "§7/account <bankID> <deposit | withdraw> <amount>"
     aliases: [ acc ]
     permission: cbanking.account
     permission-message: "§cYou do not have access to this command!"
@@ -122,7 +122,7 @@ commands:
     permission-message: "§cYou do not have access to this command!"
   loan:
     description: "§7Use this to request a loan from a bank with which you actively have an account."
-    usage: "§7/loan <bank> <amount> <days>"
+    usage: "§7/loan <bankID> <amount> <days>"
     permission: cbanking.loan
     permission-message: "§cYou do not have access to this command!"
   banks:

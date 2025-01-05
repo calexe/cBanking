@@ -148,7 +148,7 @@ public class CBankingCommand implements CommandExecutor {
                                         if (notifyPlayer && player.isOnline()) {
                                             Player onlinePlayer = player.getPlayer();
                                             assert onlinePlayer != null;
-                                            onlinePlayer.sendMessage("§a" + currencySymbol + amt + "§7has been taken from your balance.");
+                                            onlinePlayer.sendMessage("§a" + currencySymbol + amt + "§7 has been taken from your balance.");
                                             return true;
                                         }
                                     } else {

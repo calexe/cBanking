@@ -38,7 +38,7 @@ public class ServerEconomy implements Economy {
         }
         try {
             Bukkit.getServicesManager().register(Economy.class, this, plugin, ServicePriority.Highest);
-            plugin.getLogger().info("ServerEconomy registered successfully with Vault.");
+            plugin.getLogger().info("cBanking registered successfully with Vault.");
         } catch (Exception e) {
             plugin.getLogger().severe("Failed to register ServerEconomy with Vault.");
             e.printStackTrace();

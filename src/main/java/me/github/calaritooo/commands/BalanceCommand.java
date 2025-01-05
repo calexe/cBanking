@@ -2,7 +2,6 @@ package me.github.calaritooo.commands;
 
 import me.github.calaritooo.accounts.AccountHandler;
 import me.github.calaritooo.cBanking;
-import me.github.calaritooo.data.PlayerDataHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -48,6 +47,7 @@ public class BalanceCommand implements CommandExecutor {
                         String targetName = targetPlayer.getName();
                         double targetBalance = accountHandler.getBalance(targetName);
                         player.sendMessage("§7" + targetName + "'s balance: §a" + currencySymbol + targetBalance);
+                        return true;
                     }
                     player.sendMessage("§cPlayer not found!");
                     return true;
