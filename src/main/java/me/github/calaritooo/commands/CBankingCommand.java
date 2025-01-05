@@ -1,6 +1,5 @@
 package me.github.calaritooo.commands;
 
-import me.github.calaritooo.ServerEconomy;
 import me.github.calaritooo.accounts.AccountHandler;
 import me.github.calaritooo.cBanking;
 import org.bukkit.Bukkit;

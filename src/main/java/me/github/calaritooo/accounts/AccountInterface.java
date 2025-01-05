@@ -1,7 +1,5 @@
 package me.github.calaritooo.accounts;
 
-import java.util.UUID;
-
 public interface AccountInterface {
 
     void createAccount(String playerName, String playerUUID, double initialBalance);
