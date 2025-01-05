@@ -12,14 +12,18 @@
 
 # General plugin management settings.
 plugin-settings:
-  # Prefix for all messages sent by the plugin. Format in messages.yml.
-  plugin-prefix: cBanking
+  # Prefix for all messages sent by the plugin.
+  plugin-prefix: §7[§ecBanking§7]
   # Enable or disable logging for various data. Logs are created and kept in YAML files accessible in the cBanking 'logs' folder.
   logging:
     # Log all deposits and withdrawals made by players between their balance and accounts.
     enable-log-transactions: false
     # Log all approved loan requests.
     enable-log-loan-requests: false
+  # Enable or disable specific messages sent to players.
+  notifications:
+    # Should players receive a message when administrators modify their balances, accounts, or loans?
+    enable-admin-messages: false
 
 # Modules/features to enable or disable. Ensure to give players proper permissions!
 modules:
@@ -43,7 +47,7 @@ economy-settings:
   # Plural name of your server's currency. Leave as "" if you do not wish to specify.
   currency-name-plural: "Dollars"
   # Rate period length, how often (in hours) will loan interest rates and account growth rates be applied? (More than a week is not recommended!)
-  rate-period: 24
+  rate-period: 48
   # If enabled 'enable-money-loss-death' above in 'modules', what type of loss will players experience on death? ('all' for entire balance, 'percentage' for percentage of balance, 'flat' for fixed amount)
   money-loss-death-type: percentage
   # If enabled 'enable-money-loss-death' above in 'modules' and 'money-loss-death-type' above is set to 'percentage' or 'flat', what is the value? (If above is 'percentage' and here is '1', players will lose 1% of their balance upon death.)
@@ -66,9 +70,9 @@ bank-settings:
   # Should players pay a flat maintenance fee ('flat') or a percentage-based maintenance fee ('percentage') as often as defined above in 'rate-period'? (Recommended as 'flat', otherwise it may negate the 'acct-growth-rate')
   maintenance-fee-type: flat
   # Maintenance fee paid by players per account as often as defined above in 'rate-period'. With the proper permission, bank owners may adjust this.
-  maintenance-fee: 2
+  default-maintenance-fee-rate: 2
   # Account growth rate (percentage) for newly created banks. With the proper permission, bank owners may adjust this.
-  acct-growth-rate: 2
+  default-acct-growth-rate: 2
   # Minimum account balance to receive growth rate as defined below in 'min-acct-growth-rate'.
   min-acct-bal-for-growth: 50
   # Minimum account growth rate (percentage) that a bank owner may set.
@@ -78,13 +82,13 @@ bank-settings:
   # Will transaction fee rates be flat or percentage-based? (select 'flat' or 'percentage')
   transaction-fee-type: percentage
   # Transaction fee rate paid by players when depositing from their balance into a bank account. With the proper permission, bank owners may adjust this. (flat or percentage, as defined in 'transaction-fee-type')
-  deposit-fee: 0
+  default-deposit-fee-rate: 0
   # Minimum deposit fee rate that a bank owner may set. (flat or percentage, as defined in 'transaction-fee-type')
   min-deposit-rate: 0
   # Maximum deposit fee rate that a bank owner may set. (flat or percentage, as defined in 'transaction-fee-type')
   max-deposit-rate: 15
   # Transaction fee rate paid by players when withdrawing from an account into their balance. With the proper permission, bank owners may adjust this. (flat or percentage, as defined in 'transaction-fee-type')
-  withdrawal-fee: 2
+  default-withdrawal-fee-rate: 2
   # Minimum withdrawal fee rate that a bank owner may set. (flat or percentage, as defined in 'transaction-fee-type')
   min-withdrawal-rate: 0
   # Maximum withdrawal fee rate that a bank owner may set. (flat or percentage, as defined in 'transaction-fee-type')
@@ -93,7 +97,7 @@ bank-settings:
 # Loan settings and default values. (Module 'enable-loans' MUST be enabled for these settings to take effect!)
 loan-settings:
   # Loan interest rate (percentage) for newly created banks. With the proper permission, bank owners may adjust this.
-  loan-interest-rate: 2
+  default-interest-rate: 2
   # Minimum account balance to request a loan from the bank to which the account belongs.
   min-acct-bal-for-loan: 50
   # Minimum loan interest rate (percentage) that a bank owner may set.
@@ -106,7 +110,7 @@ loan-settings:
   min-loan-amt: 250
   # Maximum amount a player may request and a bank may grant per loan. ('max-loan-by-assets' MUST be false!)
   max-loan-amt: 500
-  # Maximum amount of loan requests per player. This is NOT per bank!
+  # Maximum amount of loan requests per player. This is NOT per bank! (Recommended to be left at 1)
   max-loan-requests: 1
   # Minimum loan period (in hours) that a bank owner can apply to an approved loan request.
   min-loan-period: 1

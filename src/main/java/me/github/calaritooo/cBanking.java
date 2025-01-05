@@ -1,10 +1,9 @@
 package me.github.calaritooo;
 
-import me.github.calaritooo.commands.BalanceCommand;
-import me.github.calaritooo.commands.DebugCommand;
-import me.github.calaritooo.commands.PayCommand;
+import me.github.calaritooo.commands.CBankingCommand;
+import me.github.calaritooo.data.BankDataHandler;
+import me.github.calaritooo.data.PlayerDataHandler;
 import me.github.calaritooo.listeners.EventHandler;
-import me.github.calaritooo.utils.BalancesHandler;
 import me.github.calaritooo.utils.MessageHandler;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -19,8 +18,9 @@ public class cBanking extends JavaPlugin {
     private static cBanking plugin;
     private MessageHandler messageHandler;
     private EventHandler eventHandler;
-    private BalancesHandler balancesHandler;
     private VaultHook vaultHook;
+    private BankDataHandler bankDataHandler;
+    private PlayerDataHandler playerDataHandler;
 
     @Override
     public void onEnable() {
@@ -34,27 +34,22 @@ public class cBanking extends JavaPlugin {
 
         plugin = this;
 
-        // Creating and/or load config.yml
         saveDefaultConfig();
         FileConfiguration config = getConfig();
 
-        // Load messages.yml
         messageHandler = new MessageHandler(this);
 
-        // Initialize balances.yml
-        try {
-            this.balancesHandler = new BalancesHandler(this);
-            getLogger().info("Balance handler initialized successfully.");
-        } catch (Exception e) {
-            getLogger().severe("Failed to initialize balance handler! Disabling cBanking.");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
+        playerDataHandler = new PlayerDataHandler(this);
+        playerDataHandler.reloadPlayerDataConfig();
+        getLogger().info("Successfully loaded playerdata.yml!");
+
+        bankDataHandler = new BankDataHandler(this);
+        bankDataHandler.reloadBanksConfig();
+        getLogger().info("Successfully loaded banks.yml!");
 
         vaultHook = new VaultHook();
-
         if (getServer().getPluginManager().getPlugin("Vault") != null) {
-            ServerEconomy serverEconomy = new ServerEconomy(this, balancesHandler);
+            ServerEconomy serverEconomy = new ServerEconomy(this);
             serverEconomy.register();
         } else {
             getLogger().severe("Vault is not installed! Disabling cBanking.");
@@ -62,14 +57,10 @@ public class cBanking extends JavaPlugin {
             return;
         }
 
-        // Register commands
-        getCommand("balance").setExecutor(new BalanceCommand(this));
-        getCommand("pay").setExecutor(new PayCommand(this));
-        getCommand("cbanking").setExecutor(new DebugCommand(this));
-
-        // Register the listeners
         eventHandler = new EventHandler(this);
         eventHandler.registerEvents();
+
+        getCommand("cbanking").setExecutor(new CBankingCommand(this));
 
         getLogger().info("cBanking has been successfully enabled!");
     }
@@ -85,19 +76,8 @@ public class cBanking extends JavaPlugin {
         }
 
         // Unregister commands
-        getCommand("balance").setExecutor(null);
-        getCommand("pay").setExecutor(null);
-        getCommand("debug").setExecutor(null);
+        getCommand("cbanking").setExecutor(null);
 
-        if (balancesHandler != null) {
-            try {
-                balancesHandler.saveBalancesFile();
-                getLogger().info("Successfully saved balances.yml!");
-            } catch (Exception e) {
-                getLogger().severe("Failed to save balances.yml: " + e.getMessage());
-                e.printStackTrace();
-            }
-        }
 
         Bukkit.getScheduler().cancelTasks(this);
 
@@ -127,8 +107,12 @@ public class cBanking extends JavaPlugin {
         return messageHandler;
     }
 
-    public BalancesHandler getBalancesHandler() {
-        return balancesHandler;
+    public PlayerDataHandler getPlayerDataHandler() {
+        return playerDataHandler;
+    }
+
+    public BankDataHandler getBankDataHandler() {
+        return bankDataHandler;
     }
 
     public Economy getEconomy() {

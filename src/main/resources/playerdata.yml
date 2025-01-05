@@ -1,0 +1,5 @@
+# This is the player data file for the cBanking plugin.
+# Here player-specific data and accounts can be found. For bank-specific data see banks.yml and ctrl+f the bank's name, ID, or owner.
+# Avoid adjusting values in this file, use commands to modify/adjust balances.
+#
+#---------------------------------------------------------------------------------------------------------------------------------

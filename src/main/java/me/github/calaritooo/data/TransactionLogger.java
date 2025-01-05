@@ -1,4 +1,4 @@
-package me.github.calaritooo.utils;
+package me.github.calaritooo.data;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 

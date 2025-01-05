@@ -24,5 +24,3 @@ messages:
   error-insufficient-funds: "&cThe specified amount exceeds your available balance!"
   error-no-perm: "&cYou do not have access to this command!"
   error-not-player: "&cNot a player!"
-  balance-command-usage: "&e[&a{plugin-prefix}&e] &7Usage: /bal <player>"
-  pay-command-usage: "&e[&a{plugin-prefix}&e] &7Usage: /pay <player> <amount>"

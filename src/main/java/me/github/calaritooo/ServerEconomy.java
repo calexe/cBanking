@@ -1,6 +1,6 @@
 package me.github.calaritooo;
 
-import me.github.calaritooo.utils.BalancesHandler;
+import me.github.calaritooo.accounts.AccountHandler;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
@@ -15,15 +15,14 @@ public class ServerEconomy implements Economy {
 
     private static ServerEconomy instance;
     private final cBanking plugin;
-    private final BalancesHandler balancesHandler;
+    private final AccountHandler accountHandler;
     private final String currencySymbol;
     private final double startingBal;
 
-    public ServerEconomy(cBanking plugin, BalancesHandler balancesHandler) {
-        this.plugin = plugin;
-        this.balancesHandler = balancesHandler;
-
+    public ServerEconomy(cBanking plugin) {
         instance = this;
+        this.plugin = plugin;
+        this.accountHandler = new AccountHandler(plugin);
 
         this.currencySymbol = plugin.getConfig().getString("economy-settings.currency-symbol");
         this.startingBal = plugin.getConfig().getDouble("economy-settings.starting-bal");
@@ -53,7 +52,7 @@ public class ServerEconomy implements Economy {
 
     @Override
     public String getName() {
-        return "Central Economy";
+        return "cBanking";
     }
 
     @Override
@@ -89,7 +88,7 @@ public class ServerEconomy implements Economy {
 
     @Override
     public boolean hasAccount(OfflinePlayer offlinePlayer) {
-        return balancesHandler.hasBalance(offlinePlayer.getUniqueId());
+        return accountHandler.getBalance(offlinePlayer.getName()) > 0;
     }
 
     @Override
@@ -111,7 +110,7 @@ public class ServerEconomy implements Economy {
 
     @Override
     public double getBalance(OfflinePlayer offlinePlayer) {
-        double rawBalance = balancesHandler.getBalance(offlinePlayer.getUniqueId());
+        double rawBalance = accountHandler.getBalance(offlinePlayer.getName());
         BigDecimal roundedBalance = new BigDecimal(rawBalance).setScale(2, RoundingMode.HALF_UP);
         return roundedBalance.doubleValue();
     }
@@ -152,7 +151,7 @@ public class ServerEconomy implements Economy {
     @Override
     public EconomyResponse withdrawPlayer(String s, double v) {
         OfflinePlayer player = Bukkit.getOfflinePlayer(s);
-        return depositPlayer(player, v);
+        return withdrawPlayer(player, v);
     }
 
     @Override
@@ -161,10 +160,8 @@ public class ServerEconomy implements Economy {
             return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, null);
         }
 
-        UUID playerUUID = player.getUniqueId();
         String playerName = player.getName();
-
-        double currentBalance = balancesHandler.getBalance(playerUUID);
+        double currentBalance = accountHandler.getBalance(playerName);
 
         if (currentBalance < amount) {
             return new EconomyResponse(0, currentBalance, EconomyResponse.ResponseType.FAILURE, null);
@@ -173,11 +170,10 @@ public class ServerEconomy implements Economy {
         double newBalance = currentBalance - amount;
         BigDecimal roundedBalance = new BigDecimal(newBalance).setScale(2, RoundingMode.HALF_UP);
 
-        balancesHandler.setBalance(playerUUID, playerName, roundedBalance.doubleValue());
+        accountHandler.setBalance(playerName, roundedBalance.doubleValue());
 
         return new EconomyResponse(amount, newBalance, EconomyResponse.ResponseType.SUCCESS, null);
     }
-
 
     @Override
     public EconomyResponse withdrawPlayer(String s, String s1, double v) {
@@ -202,14 +198,12 @@ public class ServerEconomy implements Economy {
             return new EconomyResponse(0, getBalance(player), EconomyResponse.ResponseType.FAILURE, null);
         }
 
-        UUID playerUUID = player.getUniqueId();
         String playerName = player.getName();
-
-        double currentBalance = balancesHandler.getBalance(playerUUID);
+        double currentBalance = accountHandler.getBalance(playerName);
         double newBalance = currentBalance + amount;
         BigDecimal roundedBalance = new BigDecimal(newBalance).setScale(2, RoundingMode.HALF_UP);
 
-        balancesHandler.setBalance(playerUUID, playerName, roundedBalance.doubleValue());
+        accountHandler.setBalance(playerName, roundedBalance.doubleValue());
 
         return new EconomyResponse(amount, newBalance, EconomyResponse.ResponseType.SUCCESS, null);
     }
@@ -293,14 +287,14 @@ public class ServerEconomy implements Economy {
 
     @Override
     public boolean createPlayerAccount(OfflinePlayer player) {
-        UUID playerUUID = player.getUniqueId();
+        String playerUUID = player.getUniqueId().toString();
         String playerName = player.getName();
 
-        if (balancesHandler.hasBalance(playerUUID)) {
+        if (accountHandler.getBalance(playerName) > 0) {
             return false; // Account already exists
         }
 
-        balancesHandler.setBalance(playerUUID, playerName, startingBal);
+        accountHandler.createAccount(playerName, playerUUID, startingBal);
         return true;
     }
 
