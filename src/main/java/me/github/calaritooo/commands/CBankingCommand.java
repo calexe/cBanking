@@ -26,8 +26,8 @@ public class CBankingCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
 
-        final String pluginPrefix = plugin.getConfig().getString("plugin-settings.plugin-prefix");
-        final String pluginHeader = "§e-~-~-~-~-~-~-~- §acBanking §e-~-~-~-~-~-~-~-";
+        final String pluginPrefix = ("§e[§7acBanking§7e]");
+        final String pluginHeader = "§f------------------- §acBanking §f-------------------";
         final boolean notifyPlayer = plugin.getConfig().getBoolean("plugin-settings.notifications.enable-admin-messages");
         final String currencySymbol = plugin.getConfig().getString("economy-settings.currency-symbol");
 
@@ -44,7 +44,7 @@ public class CBankingCommand implements CommandExecutor {
             // Command usage ----------------------------------------------------------------------
 
             if (args.length == 0) {
-                sender.sendMessage("Usage: /cbanking <version | admin | debug>");
+                sender.sendMessage("§7Usage: /cbanking <version | admin | debug>");
                 return true;
             }
 
@@ -164,6 +164,10 @@ public class CBankingCommand implements CommandExecutor {
                             admin.sendMessage("§7Usage: /cbanking admin player <player> balance take <amount>");
                             return true;
                         }
+                        String playerName = player.getName();
+                        double playerBal = accountHandler.getBalance(playerName);
+                        admin.sendMessage("§7" + playerName + "'s balance: §a" + currencySymbol + playerBal);
+                        return true;
                     }
 
                     // /cbanking admin player account ----------------------------------------------------------------------------------------- PLAYER ACCOUNT MANAGEMENT
@@ -257,6 +261,10 @@ public class CBankingCommand implements CommandExecutor {
                                 admin.sendMessage("§7Usage: /cbanking admin player <player> account <bankID> take <amount>");
                                 return true;
                             }
+                            String playerName = player.getName();
+                            double accountBal = accountHandler.getBalance(playerName, bankID);
+                            admin.sendMessage("§7" + playerName + "'s account balance with [§a" + bankID + "§7]: §a" + currencySymbol + accountBal);
+                            return true;
                         }
                     }
                 }

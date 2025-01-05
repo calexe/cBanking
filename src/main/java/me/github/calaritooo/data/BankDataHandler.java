@@ -82,6 +82,7 @@ public class BankDataHandler {
         getBanksConfig().set("banks." + bankID + ".assets", bank.getAssets());
         getBanksConfig().set("banks." + bankID + ".interestRate", bank.getInterestRate());
         getBanksConfig().set("banks." + bankID + ".accountGrowthRate", bank.getAccountGrowthRate());
+        getBanksConfig().set("banks." + bankID + ".accountOpeningFee", bank.getAccountOpeningFee());
         getBanksConfig().set("banks." + bankID + ".maintenanceFeeRate", bank.getMaintenanceFeeRate());
         getBanksConfig().set("banks." + bankID + ".depositFeeRate", bank.getDepositFeeRate());
         getBanksConfig().set("banks." + bankID + ".withdrawalFeeRate", bank.getWithdrawalFeeRate());
@@ -94,6 +95,7 @@ public class BankDataHandler {
         double assets = getBanksConfig().getDouble("banks." + bankID + ".assets");
         double interestRate = getBanksConfig().getDouble("banks." + bankID + ".interestRate");
         double accountGrowthRate = getBanksConfig().getDouble("banks." + bankID + ".accountGrowthRate");
+        double accountOpeningFee = getBanksConfig().getDouble("banks." + bankID + ".accountOpeningFee");
         double maintenanceFeeRate = getBanksConfig().getDouble("banks." + bankID + ".maintenanceFeeRate");
         double depositFeeRate = getBanksConfig().getDouble("banks." + bankID + ".depositFeeRate");
         double withdrawalFeeRate = getBanksConfig().getDouble("banks." + bankID + ".withdrawalFeeRate");
@@ -102,6 +104,7 @@ public class BankDataHandler {
         bank.setAssets(assets);
         bank.setInterestRate(interestRate);
         bank.setAccountGrowthRate(accountGrowthRate);
+        bank.setAccountOpeningFee(accountOpeningFee);
         bank.setMaintenanceFeeRate(maintenanceFeeRate);
         bank.setDepositFeeRate(depositFeeRate);
         bank.setWithdrawalFeeRate(withdrawalFeeRate);

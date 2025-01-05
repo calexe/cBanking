@@ -14,6 +14,7 @@ public class BankHandler implements BankInterface {
     private double assets;
     private double interestRate;
     private double accountGrowthRate;
+    private double accountOpeningFee;
     private double maintenanceFeeRate;
     private double depositFeeRate;
     private double withdrawalFeeRate;
@@ -32,6 +33,7 @@ public class BankHandler implements BankInterface {
         this.assets = plugin.getConfig().getDouble("bank-settings.new-bank-assets");
         this.interestRate = plugin.getConfig().getDouble("loan-settings.default-interest-rate");
         this.accountGrowthRate = plugin.getConfig().getDouble("bank-settings.default-acct-growth-rate");
+        this.accountOpeningFee = plugin.getConfig().getDouble("bank-settings.default-acct-opening-fee");
         this.maintenanceFeeRate = plugin.getConfig().getDouble("bank-settings.default-maintenance-fee");
         this.depositFeeRate = plugin.getConfig().getDouble("bank-settings.default-deposit-fee-rate");
         this.withdrawalFeeRate = plugin.getConfig().getDouble("bank-settings.default-withdrawal-fee-rate");
@@ -119,6 +121,21 @@ public class BankHandler implements BankInterface {
     }
 
     @Override
+    public double getAccountOpeningFee(String bankID) {
+        BankHandler bank = bankDataHandler.loadBankData(bankID);
+        return bank != null ? bank.getAccountOpeningFee(bankID) : 0;
+    }
+
+    @Override
+    public void setAccountOpeningFee(String bankID, double fee) {
+        BankHandler bank = bankDataHandler.loadBankData(bankID);
+        if (bank != null) {
+            bank.setAccountOpeningFee(fee);
+            bankDataHandler.saveBankData(bankID, bank);
+        }
+    }
+
+    @Override
     public double getMaintenanceFeeRate(String bankID) {
         BankHandler bank = bankDataHandler.loadBankData(bankID);
         return bank != null ? bank.getMaintenanceFeeRate() : 0;
@@ -197,6 +214,14 @@ public class BankHandler implements BankInterface {
 
     public void setAccountGrowthRate(double accountGrowthRate) {
         this.accountGrowthRate = accountGrowthRate;
+    }
+
+    public double getAccountOpeningFee() {
+        return accountOpeningFee;
+    }
+
+    public void setAccountOpeningFee(double accountOpeningFee) {
+        this.accountOpeningFee = accountOpeningFee;
     }
 
     public double getMaintenanceFeeRate() {

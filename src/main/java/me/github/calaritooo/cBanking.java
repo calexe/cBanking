@@ -1,5 +1,6 @@
 package me.github.calaritooo;
 
+import me.github.calaritooo.commands.BalanceCommand;
 import me.github.calaritooo.commands.CBankingCommand;
 import me.github.calaritooo.data.BankDataHandler;
 import me.github.calaritooo.data.PlayerDataHandler;
@@ -61,6 +62,7 @@ public class cBanking extends JavaPlugin {
         eventHandler.registerEvents();
 
         getCommand("cbanking").setExecutor(new CBankingCommand(this));
+        getCommand("balance").setExecutor(new BalanceCommand(this));
 
         getLogger().info("cBanking has been successfully enabled!");
     }

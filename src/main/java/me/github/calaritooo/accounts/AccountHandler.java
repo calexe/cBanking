@@ -14,6 +14,7 @@ public class AccountHandler implements AccountInterface {
     public AccountHandler(cBanking plugin) {
         this.plugin = plugin;
         this.playerDataHandler = new PlayerDataHandler(plugin);
+
     }
 
     @Override
@@ -30,7 +31,7 @@ public class AccountHandler implements AccountInterface {
         double playerBalance = getBalance(playerName);
         if (playerID != null) {
             long creationTime = System.currentTimeMillis();
-            playerDataHandler.savePlayerData(playerName, playerID, playerBalance, bankID, creationTime, 0.0);
+            playerDataHandler.savePlayerNewBankData(playerName, playerID, playerBalance, bankID, creationTime, initialBalance);
         }
     }
 

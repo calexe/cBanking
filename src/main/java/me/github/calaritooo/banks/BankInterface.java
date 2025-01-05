@@ -14,6 +14,8 @@ public interface BankInterface {
     void setInterestRate(String bankID, double rate);
     double getAccountGrowthRate(String bankID);
     void setAccountGrowthRate(String bankID, double rate);
+    double getAccountOpeningFee(String bankID);
+    void setAccountOpeningFee(String bankID, double fee);
     double getMaintenanceFeeRate(String bankID);
     void setMaintenanceFeeRate(String bankID, double rate);
     double getDepositFeeRate(String bankID);

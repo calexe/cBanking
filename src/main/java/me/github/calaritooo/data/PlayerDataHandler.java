@@ -52,20 +52,25 @@ public class PlayerDataHandler {
         }
     }
 
-    public void savePlayerData(String playerName, String playerUUID, double balance) {
-        getPlayerDataConfig().set("players." + playerUUID + ".playerName", playerName);
-        getPlayerDataConfig().set("players." + playerUUID + ".UUID", playerUUID);
-        getPlayerDataConfig().set("players." + playerUUID + ".balance", balance);
-        getPlayerDataConfig().set("players." + playerUUID + ".accounts", new YamlConfiguration());
+    public void savePlayerBankData(String playerName, String playerID, double balance, String bankID, double accountBalance) {
+        getPlayerDataConfig().set("players." + playerID + ".playerName", playerName);
+        getPlayerDataConfig().set("players." + playerID + ".balance", balance);
+        getPlayerDataConfig().set("players." + playerID + ".accounts" + bankID + ".balance", accountBalance);
         savePlayerDataConfig();
     }
 
-    public void savePlayerData(String playerName, String playerUUID, double balance, String bankID, long creationTime, double accountBalance) {
-        getPlayerDataConfig().set("players." + playerUUID + ".playerName", playerName);
-        getPlayerDataConfig().set("players." + playerUUID + ".UUID", playerUUID);
-        getPlayerDataConfig().set("players." + playerUUID + ".balance", balance);
-        getPlayerDataConfig().set("players." + playerUUID + ".accounts." + bankID + ".creationTime", creationTime);
-        getPlayerDataConfig().set("players." + playerUUID + ".accounts." + bankID + ".balance", accountBalance);
+    public void savePlayerData(String playerName, String playerID, double balance) {
+        getPlayerDataConfig().set("players." + playerID + ".playerName", playerName);
+        getPlayerDataConfig().set("players." + playerID + ".balance", balance);
+        getPlayerDataConfig().set("players." + playerID + ".accounts", new YamlConfiguration());
+        savePlayerDataConfig();
+    }
+
+    public void savePlayerNewBankData(String playerName, String playerID, double balance, String bankID, long creationTime, double accountBalance) {
+        getPlayerDataConfig().set("players." + playerID + ".playerName", playerName);
+        getPlayerDataConfig().set("players." + playerID + ".balance", balance);
+        getPlayerDataConfig().set("players." + playerID + ".accounts." + bankID + ".creationTime", creationTime);
+        getPlayerDataConfig().set("players." + playerID + ".accounts." + bankID + ".balance", accountBalance);
         savePlayerDataConfig();
     }
 

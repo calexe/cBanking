@@ -2,7 +2,7 @@
 # VAULT MUST BE INSTALLED FOR THIS PLUGIN TO FUNCTION.
 # Negative values are not recommended! Values beyond the hundredths place (##.##) are not supported.
 # Ensure players have the proper permissions to adjust the default values below for their bank. (If they can not adjust interest, growth, maintenance, etc., they can't differentiate their bank from others!)
-# Current version: 1.0.0
+# Current version: 2.0.2
 #
 # For bug reports, suggestions, requests, and information, visit the link below!
 #
@@ -12,8 +12,6 @@
 
 # General plugin management settings.
 plugin-settings:
-  # Prefix for all messages sent by the plugin.
-  plugin-prefix: §7[§ecBanking§7]
   # Enable or disable logging for various data. Logs are created and kept in YAML files accessible in the cBanking 'logs' folder.
   logging:
     # Log all deposits and withdrawals made by players between their balance and accounts.
@@ -23,7 +21,7 @@ plugin-settings:
   # Enable or disable specific messages sent to players.
   notifications:
     # Should players receive a message when administrators modify their balances, accounts, or loans?
-    enable-admin-messages: false
+    enable-admin-messages: true
 
 # Modules/features to enable or disable. Ensure to give players proper permissions!
 modules:
@@ -67,6 +65,12 @@ bank-settings:
   bank-closure-fee-type: player
   # Fee that bank owners pay to close their bank. If defined above as 'flat', the fee will be divided and distributed to all players with an account. If defined above as 'player', the fee will be multiplied per account and paid to all players.
   bank-closure-fee: 20
+  # Amount paid by player to open a bank account. With the proper permission, bank owners may adjust this.
+  default-acct-opening-fee: 10
+  # Minimum amount bank owners may set their bank's account opening fee to.
+  min-acct-opening-fee: 0
+  # Maximum amount bank owners may set their bank's account opening fee to.
+  max-acct-opening-fee: 50
   # Should players pay a flat maintenance fee ('flat') or a percentage-based maintenance fee ('percentage') as often as defined above in 'rate-period'? (Recommended as 'flat', otherwise it may negate the 'acct-growth-rate')
   maintenance-fee-type: flat
   # Maintenance fee paid by players per account as often as defined above in 'rate-period'. With the proper permission, bank owners may adjust this.
