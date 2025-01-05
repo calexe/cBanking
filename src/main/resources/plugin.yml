@@ -11,14 +11,14 @@ description: ${project.description}
 permissions:
   cbanking.balance:
     description: "Allows players to check their total held balance."
-    default: not op
+    default: true
     children:
       cbanking.balance.others:
         description: "Allows players to check the total held balance of others."
         default: op
   cbanking.pay:
     description: "Allows players to pay others from their held balance."
-    default: not op
+    default: true
   cbanking.accounts:
     description: "Allows players to view a summary of their accounts."
     default: op
