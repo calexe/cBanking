@@ -29,7 +29,7 @@ public class CBankingCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
 
-        final String pluginPrefix = ("§e[§acBanking§e]" );
+        final String pluginPrefix = ("§e[§acBanking§e] ");
         final String pluginHeader = "§f------------------- " + pluginPrefix + " §f-------------------";
         final boolean notifyPlayer = plugin.getConfig().getBoolean("plugin-settings.notifications.enable-admin-messages");
         final String currencySymbol = plugin.getConfig().getString("economy-settings.currency-symbol");
