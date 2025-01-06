@@ -5,8 +5,9 @@ public interface BankInterface {
     // BANK ID IS MAIN FORM OF BANK RECOGNITION
     void createBank(String bankID, String bankName, String ownerName);
     void deleteBank(String bankID);
-    String getBankID(String bankName);
-    String getBankName(String bankID);
+    boolean bankExists(String bankID);
+    String getBankIDByName(String bankName);
+    String getBankNameByID(String bankID);
     String getBankOwnerByID(String bankID);
     double getAssets(String bankID);
     void setAssets(String bankID, double amount);

@@ -66,7 +66,7 @@ public class PlayerDataHandler {
         savePlayerDataConfig();
     }
 
-    public void savePlayerNewBankData(String playerName, String playerID, double balance, String bankID, long creationTime, double accountBalance) {
+    public void savePlayerNewBankAccountData(String playerName, String playerID, double balance, String bankID, long creationTime, double accountBalance) {
         getPlayerDataConfig().set("players." + playerID + ".playerName", playerName);
         getPlayerDataConfig().set("players." + playerID + ".balance", balance);
         getPlayerDataConfig().set("players." + playerID + ".accounts." + bankID + ".creationTime", creationTime);

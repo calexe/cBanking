@@ -34,7 +34,7 @@ public class AccountHandler implements AccountInterface {
         double playerBalance = getBalance(playerName);
         if (playerID != null) {
             long creationTime = System.currentTimeMillis();
-            playerDataHandler.savePlayerNewBankData(playerName, playerID, playerBalance, bankID, creationTime, initialBalance);
+            playerDataHandler.savePlayerNewBankAccountData(playerName, playerID, playerBalance, bankID, creationTime, initialBalance);
         }
     }
 
