@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class BalanceCommand implements CommandExecutor {
+
     private final cBanking plugin;
     private final AccountHandler accountHandler;
 

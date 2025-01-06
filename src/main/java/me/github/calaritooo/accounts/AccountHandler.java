@@ -1,6 +1,7 @@
 package me.github.calaritooo.accounts;
 
 import me.github.calaritooo.cBanking;
+import me.github.calaritooo.data.BankDataHandler;
 import me.github.calaritooo.data.PlayerDataHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -10,10 +11,12 @@ import java.util.UUID;
 public class AccountHandler implements AccountInterface {
     private final cBanking plugin;
     private final PlayerDataHandler playerDataHandler;
+    private final BankDataHandler bankDataHandler;
 
     public AccountHandler(cBanking plugin) {
         this.plugin = plugin;
         this.playerDataHandler = new PlayerDataHandler(plugin);
+        this.bankDataHandler = new BankDataHandler(plugin);
 
     }
 
@@ -84,6 +87,7 @@ public class AccountHandler implements AccountInterface {
     public double getBalance(String playerName) {
         UUID playerUUID = getPlayerUUID(playerName);
         String playerID = playerUUID.toString();
+        playerDataHandler.reloadPlayerDataConfig();
         return playerDataHandler.getPlayerDataConfig().getDouble("players." + playerID + ".balance");
     }
 
@@ -91,6 +95,7 @@ public class AccountHandler implements AccountInterface {
     public double getBalance(String playerName, String bankID) {
         UUID playerUUID = getPlayerUUID(playerName);
         String playerID = playerUUID.toString();
+        bankDataHandler.reloadBanksConfig();
         return playerDataHandler.getPlayerDataConfig().getDouble("players." + playerID + ".accounts." + bankID + ".balance");
     }
 
