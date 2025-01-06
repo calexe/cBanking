@@ -707,6 +707,11 @@ public class CBankingCommand implements CommandExecutor {
                         sender.sendMessage("§7Usage: /... bank <bankID> depositfee reset <amount>");
                         return true;
                     }
+                    if (args.length >= 4 && args[3].equalsIgnoreCase("close")) {
+                        sender.sendMessage("§7[&a" + bankID + "]§7has been §cpermanently closed §7as well as relative player accounts.");
+                        bankHandler.deleteBank(bankID);
+                        return true;
+                    }
                 }
 
                 // /cbanking admin bank DIRECTORY
@@ -718,6 +723,7 @@ public class CBankingCommand implements CommandExecutor {
                 sender.sendMessage("§7/... bank <bankID> maintenance <reset/set> <amount> ");
                 sender.sendMessage("§7/... bank <bankID> withdrawalfee <reset/set> <amount> ");
                 sender.sendMessage("§7/... bank <bankID> depositfee <reset/set> <amount> ");
+                sender.sendMessage("§7/... bank <bankID> close");
                 return true;
             }
 
