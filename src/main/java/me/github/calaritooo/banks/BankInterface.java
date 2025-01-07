@@ -7,6 +7,7 @@ public interface BankInterface {
     void deleteBank(String bankID);
     boolean bankExists(String bankID);
     String getBankIDByName(String bankName);
+    String getBankIDByOwner(String bankOwner);
     String getBankNameByID(String bankID);
     String getBankOwnerByID(String bankID);
     double getAssets(String bankID);

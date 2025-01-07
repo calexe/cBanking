@@ -5,6 +5,7 @@ import me.github.calaritooo.cBanking;
 import me.github.calaritooo.data.BankDataHandler;
 
 import java.util.Map;
+import java.util.Set;
 
 public class BankHandler implements BankInterface {
     private final cBanking plugin;
@@ -39,6 +40,10 @@ public class BankHandler implements BankInterface {
         return bankDataHandler.getBanksConfig().getString("banks. " + bankID) != null;
     }
 
+    public Set<String> getBankIDs() {
+        return bankDataHandler.getBanksConfig().getConfigurationSection("banks").getKeys(false);
+    }
+
     @Override
     public String getBankIDByName(String bankName) {
         return bankDataHandler.getBanksConfig().getConfigurationSection("banks").getKeys(false).stream()
@@ -46,6 +51,9 @@ public class BankHandler implements BankInterface {
                 .findFirst()
                 .orElse(null);
     }
+
+    @Override
+    public String getBankIDByOwner(String bankOwner) {}
 
     @Override
     public String getBankNameByID(String bankID) {

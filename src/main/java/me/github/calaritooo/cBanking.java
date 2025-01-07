@@ -1,7 +1,6 @@
 package me.github.calaritooo;
 
-import me.github.calaritooo.commands.BalanceCommand;
-import me.github.calaritooo.commands.CBankingCommand;
+import me.github.calaritooo.commands.*;
 import me.github.calaritooo.data.BankDataHandler;
 import me.github.calaritooo.data.PlayerDataHandler;
 import me.github.calaritooo.listeners.EventHandler;
@@ -63,6 +62,10 @@ public class cBanking extends JavaPlugin {
 
         getCommand("cbanking").setExecutor(new CBankingCommand(this));
         getCommand("balance").setExecutor(new BalanceCommand(this));
+        getCommand("pay").setExecutor(new PayCommand(this));
+        getCommand("accounts").setExecutor(new AccountsCommand(this));
+        getCommand("banks").setExecutor(new BanksCommand(this));
+        getCommand("bank").setExecutor(new BankCommand(this));
 
         getLogger().info("cBanking has been successfully enabled!");
     }
@@ -77,9 +80,12 @@ public class cBanking extends JavaPlugin {
             HandlerList.unregisterAll(this);
         }
 
-        // Unregister commands
         getCommand("cbanking").setExecutor(null);
-
+        getCommand("balance").setExecutor(null);
+        getCommand("pay").setExecutor(null);
+        getCommand("accounts").setExecutor(null);
+        getCommand("banks").setExecutor(null);
+        getCommand("bank").setExecutor(null);
 
         Bukkit.getScheduler().cancelTasks(this);
 

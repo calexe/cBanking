@@ -62,7 +62,7 @@ permissions:
         description: "Allows players to view all account balances and the players associated with them."
         default: op
       cbanking.bank.loans:
-        description: "Allows players to view all currently active loans."
+        description: "Allows players to view and manage loan requests."
         default: op
       cbanking.bank.manage:
         description: "Allows players to manage their bank."
@@ -75,10 +75,19 @@ permissions:
             description: "Allows players to adjust their bank's account growth rate."
             default: op
           cbanking.bank.manage.assets:
-            description: "Allows players to manage their bank's assets."
+            description: "Allows players to adjust their bank's assets."
             default: op
-          cbanking.bank.manage.loans:
-            description: "Allows players to view and manage loan requests."
+          cbanking.bank.manage.accountgrowth:
+            description: "Allows players to adjust their bank's account growth rates."
+            default: op
+          cbanking.bank.manage.accountopeningfee:
+            description: "Allows players to adjust their bank's account opening fees."
+            default: op
+          cbanking.bank.manage.withdrawalfee:
+            description: "Allows players to adjust their bank's withdrawal fees."
+            default: op
+          cbanking.bank.manage.depositfee:
+            description: "Allows players to adjust their bank's deposit fees."
             default: op
           cbanking.bank.manage.maintenance:
             description: "Allows players to adjust their bank's maintenance fees."
