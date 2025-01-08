@@ -127,7 +127,7 @@ public class BankCommand implements CommandExecutor {
                 switch (setting) {
                     case "name":
                         if (!player.hasPermission("cbanking.bank.manage.name")) {
-                            player.sendMessage("§cYou do not have access to change the bank name!");
+                            player.sendMessage("§cYou do not have access to this command!");
                             return true;
                         }
                         if (value == null) {
@@ -138,22 +138,9 @@ public class BankCommand implements CommandExecutor {
                         }
                         break;
 
-                    case "id":
-                        if (!player.hasPermission("cbanking.bank.manage.id")) {
-                            player.sendMessage("§cYou do not have access to change the bank ID!");
-                            return true;
-                        }
-                        if (value == null) {
-                            player.sendMessage("§7Current bank ID: §a" + manageBankID);
-                        } else {
-                            bankHandler.setBankID(manageBankID, value);
-                            player.sendMessage("§7Bank ID has been updated to §a" + value + "§7.");
-                        }
-                        break;
-
                     case "owner":
                         if (!player.hasPermission("cbanking.bank.manage.owner")) {
-                            player.sendMessage("§cYou do not have access to change the bank owner!");
+                            player.sendMessage("§cYou do not have access to this command!");
                             return true;
                         }
                         if (value == null) {
@@ -166,7 +153,7 @@ public class BankCommand implements CommandExecutor {
 
                     case "rate":
                         if (!player.hasPermission("cbanking.bank.manage.rate")) {
-                            player.sendMessage("§cYou do not have access to change the bank rate!");
+                            player.sendMessage("§cYou do not have access to this command!");
                             return true;
                         }
                         if (value == null) {
@@ -179,7 +166,7 @@ public class BankCommand implements CommandExecutor {
 
                     case "assets":
                         if (!player.hasPermission("cbanking.bank.manage.assets")) {
-                            player.sendMessage("§cYou do not have access to manage the bank assets!");
+                            player.sendMessage("§cYou do not have access to this command!");
                             return true;
                         }
                         if (value == null) {
@@ -287,7 +274,6 @@ public class BankCommand implements CommandExecutor {
                 player.sendMessage("§7Usage: /bank <open/close/accounts/loans/manage>");
                 break;
         }
-
         return true;
     }
 }

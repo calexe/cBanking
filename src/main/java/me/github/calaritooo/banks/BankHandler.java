@@ -47,13 +47,18 @@ public class BankHandler implements BankInterface {
     @Override
     public String getBankIDByName(String bankName) {
         return bankDataHandler.getBanksConfig().getConfigurationSection("banks").getKeys(false).stream()
-                .filter(id -> bankDataHandler.getBanksConfig().getString("banks." + id + ".bankName").equals(bankName))
+                .filter(id -> bankDataHandler.getBanksConfig().getString("banks." + id + ".bankName").equalsIgnoreCase(bankName))
                 .findFirst()
                 .orElse(null);
     }
 
     @Override
-    public String getBankIDByOwner(String bankOwner) {}
+    public String getBankIDByOwner(String bankOwner) {
+        return bankDataHandler.getBanksConfig().getConfigurationSection("banks").getKeys(false).stream()
+                .filter(id -> bankDataHandler.getBanksConfig().getString("banks." + id + ".ownerName").equalsIgnoreCase(bankOwner))
+                .findFirst()
+                .orElse(null);
+    }
 
     @Override
     public String getBankNameByID(String bankID) {
@@ -63,6 +68,18 @@ public class BankHandler implements BankInterface {
     @Override
     public String getBankOwnerByID(String bankID) {
         return bankDataHandler.getBanksConfig().getString("banks." + bankID + ".ownerName");
+    }
+
+    @Override
+    public void setBankName(String bankID, String newBankName) {
+        bankDataHandler.getBanksConfig().set("banks." + bankID + ".bankNamne", newBankName);
+        bankDataHandler.saveBanksConfig();
+    }
+
+    @Override
+    public void setBankOwner(String bankID, String newOwner) {
+        bankDataHandler.getBanksConfig().set("banks." + bankID + ".ownerName", newOwner);
+        bankDataHandler.saveBanksConfig();
     }
 
     @Override

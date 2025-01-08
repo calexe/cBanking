@@ -10,6 +10,8 @@ public interface BankInterface {
     String getBankIDByOwner(String bankOwner);
     String getBankNameByID(String bankID);
     String getBankOwnerByID(String bankID);
+    void setBankName(String bankID, String newBankName);
+    void setBankOwner(String bankID, String newOwner);
     double getAssets(String bankID);
     void setAssets(String bankID, double amount);
     double getInterestRate(String bankID);
