@@ -1,5 +1,6 @@
 package me.github.calaritooo.commands;
 
+import me.github.calaritooo.accounts.AccountHandler;
 import me.github.calaritooo.banks.BankHandler;
 import me.github.calaritooo.cBanking;
 import me.github.calaritooo.data.PlayerDataHandler;
@@ -16,11 +17,13 @@ public class BankCommand implements CommandExecutor {
     private final cBanking plugin;
     private final BankHandler bankHandler;
     private final PlayerDataHandler playerDataHandler;
+    private final AccountHandler accountHandler;
 
     public BankCommand(cBanking plugin) {
         this.plugin = plugin;
         this.bankHandler = new BankHandler(plugin);
         this.playerDataHandler = new PlayerDataHandler(plugin);
+        this.accountHandler = new AccountHandler(plugin);
     }
 
     @Override
@@ -178,23 +181,29 @@ public class BankCommand implements CommandExecutor {
                                 String action = args[2].toLowerCase();
                                 switch (action) {
                                     case "add":
-                                        bankHandler.setAssets(manageBankID, currentAssets + amount);
-                                        player.sendMessage("§7Added §a" + amount + "§7 to bank assets. New assets balance: §a" + currencySymbol + (currentAssets + amount) + "§7.");
-                                        break;
+                                        if (accountHandler.hasFunds(player.getName(), amount)) {
+                                            accountHandler.withdraw(player.getName(), amount);
+                                            bankHandler.setAssets(manageBankID, currentAssets + amount);
+                                            player.sendMessage("§7Added §a" + amount + "§7 to bank assets. New assets balance: §a" + currencySymbol + (currentAssets + amount) + "§7.");
+                                            break;
+                                        } else {
+                                            player.sendMessage("§cInsufficient funds!");
+                                            break;
+                                        }
                                     case "remove":
-                                        bankHandler.setAssets(manageBankID, currentAssets - amount);
-                                        player.sendMessage("§7Removed §a" + amount + "§7 from bank assets. New assets balance: §a" + currencySymbol + (currentAssets - amount) + "§7.");
-                                        break;
-                                    case "set":
-                                        bankHandler.setAssets(manageBankID, amount);
-                                        player.sendMessage("��7Bank assets set to §a" + currencySymbol + amount + "§7.");
+                                        if (currentAssets >= amount) {
+                                            bankHandler.setAssets(manageBankID, currentAssets - amount);
+                                            player.sendMessage("§7Removed §a" + amount + "§7 from bank assets. New assets balance: §a" + currencySymbol + (currentAssets - amount) + "§7.");
+                                            break;
+                                        }
+                                        player.sendMessage("§cInsufficient assets!");
                                         break;
                                     default:
-                                        player.sendMessage("§cInvalid action. Use add, remove, or set.");
+                                        player.sendMessage("§7Usage: /bank manage assets <add/remove> <amount>");
                                         break;
                                 }
                             } else {
-                                player.sendMessage("§7Usage: /bank manage assets <add/remove/set> <amount>");
+                                player.sendMessage("§7Usage: /bank manage assets <add/remove> <amount>");
                             }
                         }
                         break;
