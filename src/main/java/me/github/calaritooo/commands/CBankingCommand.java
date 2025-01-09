@@ -37,14 +37,6 @@ public class CBankingCommand implements CommandExecutor {
 
         if (sender.hasPermission(permAdmin)) {
 
-            // Permission check ----------------------------------------------------------------------
-            if (!sender.hasPermission(permAdmin)) {
-                plugin.getMessageHandler().sendNoPermissionError(sender);
-                return true;
-            }
-
-            // Command usage ----------------------------------------------------------------------
-
             if (args.length == 0) {
                 sender.sendMessage(pluginHeader);
                 sender.sendMessage("§7/balance <player>");
@@ -62,7 +54,7 @@ public class CBankingCommand implements CommandExecutor {
             // Checking arg 0 ----------------------------------------------------------------------
 
             if (args.length == 1 && args[0].equalsIgnoreCase("version")) {
-                String version = plugin.getDescription().getVersion();
+                String version = plugin.getPluginMeta().getVersion();
                 sender.sendMessage(pluginPrefix + "§7Running version: §a" + version);
                 return true;
             }
@@ -306,6 +298,7 @@ public class CBankingCommand implements CommandExecutor {
                                         double amt = amtBigDecimal.doubleValue();
                                         bankHandler.setAssets(bankID, amt);
                                         String ownerByID = bankHandler.getBankOwnerByID(bankID);
+                                        sender.sendMessage("§7The assets balance of §a[" + bankID + "]§7 has been set to §a" + currencySymbol + amt + "§7.");
                                         OfflinePlayer bankOwner = Bukkit.getOfflinePlayer(ownerByID);
                                         if (notifyPlayer && bankOwner.isOnline()) {
                                             Player onlinePlayer = bankOwner.getPlayer();
@@ -398,6 +391,7 @@ public class CBankingCommand implements CommandExecutor {
                                         double amt = amtBigDecimal.doubleValue();
                                         bankHandler.setInterestRate(bankID, amt);
                                         String ownerByID = bankHandler.getBankOwnerByID(bankID);
+                                        sender.sendMessage("§7The interest rate of §a[" + bankID + "]§7 has been set to §a" + amt + "%§7.");
                                         OfflinePlayer bankOwner = Bukkit.getOfflinePlayer(ownerByID);
                                         if (notifyPlayer && bankOwner.isOnline()) {
                                             Player onlinePlayer = bankOwner.getPlayer();
@@ -422,6 +416,7 @@ public class CBankingCommand implements CommandExecutor {
                             double defaultInterestRate = plugin.getConfig().getDouble("loan-settings.default-interest-rate");
                             bankHandler.setInterestRate(bankID, defaultInterestRate);
                             String ownerByID = bankHandler.getBankOwnerByID(bankID);
+                            sender.sendMessage("§7The interest rate of §a[" + bankID + "]§7 has been set to §a" + defaultInterestRate + "%§7.");
                             OfflinePlayer bankOwner = Bukkit.getOfflinePlayer(ownerByID);
                             if (notifyPlayer && bankOwner.isOnline()) {
                                 Player onlinePlayer = bankOwner.getPlayer();
@@ -443,6 +438,7 @@ public class CBankingCommand implements CommandExecutor {
                                         double amt = amtBigDecimal.doubleValue();
                                         bankHandler.setAccountGrowthRate(bankID, amt);
                                         String ownerByID = bankHandler.getBankOwnerByID(bankID);
+                                        sender.sendMessage("§7The account growth rate of §a[" + bankID + "]§7 has been set to §a" + amt + "%§7.");
                                         OfflinePlayer bankOwner = Bukkit.getOfflinePlayer(ownerByID);
                                         if (notifyPlayer && bankOwner.isOnline()) {
                                             Player onlinePlayer = bankOwner.getPlayer();
@@ -467,6 +463,7 @@ public class CBankingCommand implements CommandExecutor {
                             double defaultGrowthRate = plugin.getConfig().getDouble("bank-settings.default-acct-growth-rate");
                             bankHandler.setAccountGrowthRate(bankID, defaultGrowthRate);
                             String ownerByID = bankHandler.getBankOwnerByID(bankID);
+                            sender.sendMessage("§7The account growth rate of §a[" + bankID + "]§7 has been set to §a" + defaultGrowthRate + "%§7.");
                             OfflinePlayer bankOwner = Bukkit.getOfflinePlayer(ownerByID);
                             if (notifyPlayer && bankOwner.isOnline()) {
                                 Player onlinePlayer = bankOwner.getPlayer();
@@ -488,6 +485,7 @@ public class CBankingCommand implements CommandExecutor {
                                         double amt = amtBigDecimal.doubleValue();
                                         bankHandler.setAccountOpeningFee(bankID, amt);
                                         String ownerByID = bankHandler.getBankOwnerByID(bankID);
+                                        sender.sendMessage("§7The account opening fee of §a[" + bankID + "]§7 has been set to §a" + amt + "§7.");
                                         OfflinePlayer bankOwner = Bukkit.getOfflinePlayer(ownerByID);
                                         if (notifyPlayer && bankOwner.isOnline()) {
                                             Player onlinePlayer = bankOwner.getPlayer();
@@ -512,6 +510,7 @@ public class CBankingCommand implements CommandExecutor {
                             double defaultOpeningFee = plugin.getConfig().getDouble("bank-settings.default-acct-opening-fee");
                             bankHandler.setAccountOpeningFee(bankID, defaultOpeningFee);
                             String ownerByID = bankHandler.getBankOwnerByID(bankID);
+                            sender.sendMessage("§7The account opening fee of §a[" + bankID + "]§7 has been set to §a" + defaultOpeningFee + "§7.");
                             OfflinePlayer bankOwner = Bukkit.getOfflinePlayer(ownerByID);
                             if (notifyPlayer && bankOwner.isOnline()) {
                                 Player onlinePlayer = bankOwner.getPlayer();
@@ -534,25 +533,35 @@ public class CBankingCommand implements CommandExecutor {
                                         bankHandler.setMaintenanceFeeRate(bankID, amt);
                                         String ownerByID = bankHandler.getBankOwnerByID(bankID);
                                         OfflinePlayer bankOwner = Bukkit.getOfflinePlayer(ownerByID);
-                                        if (notifyPlayer && bankOwner.isOnline()) {
-                                            Player onlinePlayer = bankOwner.getPlayer();
-                                            assert onlinePlayer != null;
-                                            if (plugin.getConfig().getString("bank-settings.maintenance-fee-type").equalsIgnoreCase("flat")) {
+                                        if (plugin.getConfig().getString("bank-settings.maintenance-fee-type").equalsIgnoreCase("flat")) {
+                                            sender.sendMessage("§7The maintenance fee rate of §a[" + bankID + "]§7 has been set to §a" + currencySymbol + amt + "§7.");
+                                            if (notifyPlayer && bankOwner.isOnline()) {
+                                                Player onlinePlayer = bankOwner.getPlayer();
+                                                assert onlinePlayer != null;
                                                 onlinePlayer.sendMessage("§7The maintenance fee rate of §a[" + bankID + "]§7 has been set to §a" + currencySymbol + amt + "§7.");
-                                                return true;
-                                            } else if (plugin.getConfig().getString("bank-settings.maintenance-fee-type").equalsIgnoreCase("percentage")) {
-                                                onlinePlayer.sendMessage("§7The maintenance fee rate of §a[" + bankID + "]§7 has been set to §a" + amt + "%§7.");
-                                                return true;
-                                            } else {
-                                                onlinePlayer.sendMessage("§7The maintenance fee rate of §a[" + bankID + "]§7 has been set to §a" + amt + "§7.");
-                                                return true;
                                             }
+                                            return true;
+                                        } else if (plugin.getConfig().getString("bank-settings.maintenance-fee-type").equalsIgnoreCase("percentage")) {
+                                            sender.sendMessage("§7The maintenance fee rate of §a[" + bankID + "]§7 has been set to §a" + amt + "%§7.");
+                                            if (notifyPlayer && bankOwner.isOnline()) {
+                                                Player onlinePlayer = bankOwner.getPlayer();
+                                                assert onlinePlayer != null;
+                                                onlinePlayer.sendMessage("§7The maintenance fee rate of §a[" + bankID + "]§7 has been set to §a" + amt + "%§7.");
+                                            }
+                                            return true;
+                                        } else {
+                                            sender.sendMessage("§7The maintenance fee rate of §a[" + bankID + "]§7 has been set to §a" + amt + "§7.");
+                                            if (notifyPlayer && bankOwner.isOnline()) {
+                                                Player onlinePlayer = bankOwner.getPlayer();
+                                                assert onlinePlayer != null;
+                                                onlinePlayer.sendMessage("§7The maintenance fee rate of §a[" + bankID + "]§7 has been set to §a" + amt + "§7.");
+                                            }
+                                            return true;
                                         }
                                     } else {
                                         sender.sendMessage("§cInvalid amount.");
                                         return true;
                                     }
-                                    return true;
                                 } catch (NumberFormatException e) {
                                     sender.sendMessage("§cInvalid amount.");
                                     return true;
@@ -566,18 +575,26 @@ public class CBankingCommand implements CommandExecutor {
                             bankHandler.setMaintenanceFeeRate(bankID, defaultMaintenanceFee);
                             String ownerByID = bankHandler.getBankOwnerByID(bankID);
                             OfflinePlayer bankOwner = Bukkit.getOfflinePlayer(ownerByID);
-                            if (notifyPlayer && bankOwner.isOnline()) {
-                                Player onlinePlayer = bankOwner.getPlayer();
-                                assert onlinePlayer != null;
-                                if (plugin.getConfig().getString("bank-settings.maintenance-fee-type").equalsIgnoreCase("flat")) {
+                            if (plugin.getConfig().getString("bank-settings.maintenance-fee-type").equalsIgnoreCase("flat")) {
+                                sender.sendMessage("§7The maintenance fee rate of §a[" + bankID + "]§7 has been set to §a" + currencySymbol + defaultMaintenanceFee + "§7.");
+                                if (notifyPlayer && bankOwner.isOnline()) {
+                                    Player onlinePlayer = bankOwner.getPlayer();
+                                    assert onlinePlayer != null;
                                     onlinePlayer.sendMessage("§7The maintenance fee rate of §a[" + bankID + "]§7 has been set to §a" + currencySymbol + defaultMaintenanceFee + "§7.");
-                                    return true;
-                                } else if (plugin.getConfig().getString("bank-settings.maintenance-fee-type").equalsIgnoreCase("percentage")) {
+                                }
+                            } else if (plugin.getConfig().getString("bank-settings.maintenance-fee-type").equalsIgnoreCase("percentage")) {
+                                sender.sendMessage("§7The maintenance fee rate of §a[" + bankID + "]§7 has been set to §a" + defaultMaintenanceFee + "%§7.");
+                                if (notifyPlayer && bankOwner.isOnline()) {
+                                    Player onlinePlayer = bankOwner.getPlayer();
+                                    assert onlinePlayer != null;
                                     onlinePlayer.sendMessage("§7The maintenance fee rate of §a[" + bankID + "]§7 has been set to §a" + defaultMaintenanceFee + "%§7.");
-                                    return true;
-                                } else {
+                                }
+                            } else {
+                                sender.sendMessage("§7The maintenance fee rate of §a[" + bankID + "]§7 has been set to §a" + defaultMaintenanceFee + "§7.");
+                                if (notifyPlayer && bankOwner.isOnline()) {
+                                    Player onlinePlayer = bankOwner.getPlayer();
+                                    assert onlinePlayer != null;
                                     onlinePlayer.sendMessage("§7The maintenance fee rate of §a[" + bankID + "]§7 has been set to §a" + defaultMaintenanceFee + "§7.");
-                                    return true;
                                 }
                             }
                             return true;
@@ -595,25 +612,33 @@ public class CBankingCommand implements CommandExecutor {
                                         bankHandler.setWithdrawalFeeRate(bankID, amt);
                                         String ownerByID = bankHandler.getBankOwnerByID(bankID);
                                         OfflinePlayer bankOwner = Bukkit.getOfflinePlayer(ownerByID);
-                                        if (notifyPlayer && bankOwner.isOnline()) {
-                                            Player onlinePlayer = bankOwner.getPlayer();
-                                            assert onlinePlayer != null;
-                                            if (plugin.getConfig().getString("bank-settings.transaction-fee-type").equalsIgnoreCase("flat")) {
+                                        if (plugin.getConfig().getString("bank-settings.transaction-fee-type").equalsIgnoreCase("flat")) {
+                                            sender.sendMessage("§7The withdrawal fee rate of §a[" + bankID + "]§7 has been set to §a" + currencySymbol + amt + "§7.");
+                                            if (notifyPlayer && bankOwner.isOnline()) {
+                                                Player onlinePlayer = bankOwner.getPlayer();
+                                                assert onlinePlayer != null;
                                                 onlinePlayer.sendMessage("§7The withdrawal fee rate of §a[" + bankID + "]§7 has been set to §a" + currencySymbol + amt + "§7.");
-                                                return true;
-                                            } else if (plugin.getConfig().getString("bank-settings.transaction-fee-type").equalsIgnoreCase("percentage")) {
+                                            }
+                                        } else if (plugin.getConfig().getString("bank-settings.transaction-fee-type").equalsIgnoreCase("percentage")) {
+                                            sender.sendMessage("§7The withdrawal fee rate of §a[" + bankID + "]§7 has been set to §a" + amt + "%§7.");
+                                            if (notifyPlayer && bankOwner.isOnline()) {
+                                                Player onlinePlayer = bankOwner.getPlayer();
+                                                assert onlinePlayer != null;
                                                 onlinePlayer.sendMessage("§7The withdrawal fee rate of §a[" + bankID + "]§7 has been set to §a" + amt + "%§7.");
-                                                return true;
-                                            } else {
+                                            }
+                                        } else {
+                                            sender.sendMessage("§7The withdrawal fee rate of §a[" + bankID + "]§7 has been set to §a" + amt + "§7.");
+                                            if (notifyPlayer && bankOwner.isOnline()) {
+                                                Player onlinePlayer = bankOwner.getPlayer();
+                                                assert onlinePlayer != null;
                                                 onlinePlayer.sendMessage("§7The withdrawal fee rate of §a[" + bankID + "]§7 has been set to §a" + amt + "§7.");
-                                                return true;
                                             }
                                         }
+                                        return true;
                                     } else {
                                         sender.sendMessage("§cInvalid amount.");
                                         return true;
                                     }
-                                    return true;
                                 } catch (NumberFormatException e) {
                                     sender.sendMessage("§cInvalid amount.");
                                     return true;
@@ -627,18 +652,26 @@ public class CBankingCommand implements CommandExecutor {
                             bankHandler.setWithdrawalFeeRate(bankID, defaultWithdrawalFee);
                             String ownerByID = bankHandler.getBankOwnerByID(bankID);
                             OfflinePlayer bankOwner = Bukkit.getOfflinePlayer(ownerByID);
-                            if (notifyPlayer && bankOwner.isOnline()) {
-                                Player onlinePlayer = bankOwner.getPlayer();
-                                assert onlinePlayer != null;
-                                if (plugin.getConfig().getString("bank-settings.transaction-fee-type").equalsIgnoreCase("flat")) {
-                                    onlinePlayer.sendMessage("§7The maintenance fee rate of §a[" + bankID + "]§7 has been set to §a" + currencySymbol + defaultWithdrawalFee + "§7.");
-                                    return true;
-                                } else if (plugin.getConfig().getString("bank-settings.transaction-fee-type").equalsIgnoreCase("percentage")) {
+                            if (plugin.getConfig().getString("bank-settings.transaction-fee-type").equalsIgnoreCase("flat")) {
+                                sender.sendMessage("§7The withdrawal fee rate of §a[" + bankID + "]§7 has been set to §a" + currencySymbol + defaultWithdrawalFee + "§7.");
+                                if (notifyPlayer && bankOwner.isOnline()) {
+                                    Player onlinePlayer = bankOwner.getPlayer();
+                                    assert onlinePlayer != null;
+                                    onlinePlayer.sendMessage("§7The withdrawal fee rate of §a[" + bankID + "]§7 has been set to §a" + currencySymbol + defaultWithdrawalFee + "§7.");
+                                }
+                            } else if (plugin.getConfig().getString("bank-settings.transaction-fee-type").equalsIgnoreCase("percentage")) {
+                                sender.sendMessage("§7The withdrawal fee rate of §a[" + bankID + "]§7 has been set to §a" + defaultWithdrawalFee + "%§7.");
+                                if (notifyPlayer && bankOwner.isOnline()) {
+                                    Player onlinePlayer = bankOwner.getPlayer();
+                                    assert onlinePlayer != null;
                                     onlinePlayer.sendMessage("§7The withdrawal fee rate of §a[" + bankID + "]§7 has been set to §a" + defaultWithdrawalFee + "%§7.");
-                                    return true;
-                                } else {
+                                }
+                            } else {
+                                sender.sendMessage("§7The withdrawal fee rate of §a[" + bankID + "]§7 has been set to §a" + defaultWithdrawalFee + "§7.");
+                                if (notifyPlayer && bankOwner.isOnline()) {
+                                    Player onlinePlayer = bankOwner.getPlayer();
+                                    assert onlinePlayer != null;
                                     onlinePlayer.sendMessage("§7The withdrawal fee rate of §a[" + bankID + "]§7 has been set to §a" + defaultWithdrawalFee + "§7.");
-                                    return true;
                                 }
                             }
                             return true;
@@ -646,6 +679,7 @@ public class CBankingCommand implements CommandExecutor {
                         sender.sendMessage("§7Usage: /... bank <bankID> withdrawalfee reset <amount>");
                         return true;
                     }
+
                     if (args.length >= 4 && args[3].equalsIgnoreCase("depositfee")) {
                         if (args.length >= 5 && args[4].equalsIgnoreCase("set")) {
                             if (args.length == 6) {
@@ -656,25 +690,33 @@ public class CBankingCommand implements CommandExecutor {
                                         bankHandler.setDepositFeeRate(bankID, amt);
                                         String ownerByID = bankHandler.getBankOwnerByID(bankID);
                                         OfflinePlayer bankOwner = Bukkit.getOfflinePlayer(ownerByID);
-                                        if (notifyPlayer && bankOwner.isOnline()) {
-                                            Player onlinePlayer = bankOwner.getPlayer();
-                                            assert onlinePlayer != null;
-                                            if (plugin.getConfig().getString("bank-setting.transaction-fee-type").equalsIgnoreCase("flat")) {
+                                        if (plugin.getConfig().getString("bank-settings.transaction-fee-type").equalsIgnoreCase("flat")) {
+                                            sender.sendMessage("§7The deposit fee rate of §a[" + bankID + "]§7 has been set to §a" + currencySymbol + amt + "§7.");
+                                            if (notifyPlayer && bankOwner.isOnline()) {
+                                                Player onlinePlayer = bankOwner.getPlayer();
+                                                assert onlinePlayer != null;
                                                 onlinePlayer.sendMessage("§7The deposit fee rate of §a[" + bankID + "]§7 has been set to §a" + currencySymbol + amt + "§7.");
-                                                return true;
-                                            } else if (plugin.getConfig().getString("bank-setting.transaction-fee-type").equalsIgnoreCase("percentage")) {
+                                            }
+                                        } else if (plugin.getConfig().getString("bank-settings.transaction-fee-type").equalsIgnoreCase("percentage")) {
+                                            sender.sendMessage("§7The deposit fee rate of §a[" + bankID + "]§7 has been set to §a" + amt + "%§7.");
+                                            if (notifyPlayer && bankOwner.isOnline()) {
+                                                Player onlinePlayer = bankOwner.getPlayer();
+                                                assert onlinePlayer != null;
                                                 onlinePlayer.sendMessage("§7The deposit fee rate of §a[" + bankID + "]§7 has been set to §a" + amt + "%§7.");
-                                                return true;
-                                            } else {
+                                            }
+                                        } else {
+                                            sender.sendMessage("§7The deposit fee rate of §a[" + bankID + "]§7 has been set to §a" + amt + "§7.");
+                                            if (notifyPlayer && bankOwner.isOnline()) {
+                                                Player onlinePlayer = bankOwner.getPlayer();
+                                                assert onlinePlayer != null;
                                                 onlinePlayer.sendMessage("§7The deposit fee rate of §a[" + bankID + "]§7 has been set to §a" + amt + "§7.");
-                                                return true;
                                             }
                                         }
+                                        return true;
                                     } else {
                                         sender.sendMessage("§cInvalid amount.");
                                         return true;
                                     }
-                                    return true;
                                 } catch (NumberFormatException e) {
                                     sender.sendMessage("§cInvalid amount.");
                                     return true;
@@ -688,18 +730,26 @@ public class CBankingCommand implements CommandExecutor {
                             bankHandler.setDepositFeeRate(bankID, defaultDepositFee);
                             String ownerByID = bankHandler.getBankOwnerByID(bankID);
                             OfflinePlayer bankOwner = Bukkit.getOfflinePlayer(ownerByID);
-                            if (notifyPlayer && bankOwner.isOnline()) {
-                                Player onlinePlayer = bankOwner.getPlayer();
-                                assert onlinePlayer != null;
-                                if (plugin.getConfig().getString("bank-setting.transaction-fee-type").equalsIgnoreCase("flat")) {
-                                    onlinePlayer.sendMessage("§7The maintenance fee rate of §a[" + bankID + "]§7 has been set to §a" + currencySymbol + defaultDepositFee + "§7.");
-                                    return true;
-                                } else if (plugin.getConfig().getString("bank-setting.transaction-fee-type").equalsIgnoreCase("percentage")) {
+                            if (plugin.getConfig().getString("bank-settings.transaction-fee-type").equalsIgnoreCase("flat")) {
+                                sender.sendMessage("§7The deposit fee rate of §a[" + bankID + "]§7 has been set to §a" + currencySymbol + defaultDepositFee + "§7.");
+                                if (notifyPlayer && bankOwner.isOnline()) {
+                                    Player onlinePlayer = bankOwner.getPlayer();
+                                    assert onlinePlayer != null;
+                                    onlinePlayer.sendMessage("§7The deposit fee rate of §a[" + bankID + "]§7 has been set to §a" + currencySymbol + defaultDepositFee + "§7.");
+                                }
+                            } else if (plugin.getConfig().getString("bank-settings.transaction-fee-type").equalsIgnoreCase("percentage")) {
+                                sender.sendMessage("§7The deposit fee rate of §a[" + bankID + "]§7 has been set to §a" + defaultDepositFee + "%§7.");
+                                if (notifyPlayer && bankOwner.isOnline()) {
+                                    Player onlinePlayer = bankOwner.getPlayer();
+                                    assert onlinePlayer != null;
                                     onlinePlayer.sendMessage("§7The deposit fee rate of §a[" + bankID + "]§7 has been set to §a" + defaultDepositFee + "%§7.");
-                                    return true;
-                                } else {
+                                }
+                            } else {
+                                sender.sendMessage("§7The deposit fee rate of §a[" + bankID + "]§7 has been set to §a" + defaultDepositFee + "§7.");
+                                if (notifyPlayer && bankOwner.isOnline()) {
+                                    Player onlinePlayer = bankOwner.getPlayer();
+                                    assert onlinePlayer != null;
                                     onlinePlayer.sendMessage("§7The deposit fee rate of §a[" + bankID + "]§7 has been set to §a" + defaultDepositFee + "§7.");
-                                    return true;
                                 }
                             }
                             return true;
@@ -709,29 +759,25 @@ public class CBankingCommand implements CommandExecutor {
                     }
                     if (args.length >= 4 && args[3].equalsIgnoreCase("close")) {
                         sender.sendMessage("§7[&a" + bankID + "]§7has been §cpermanently closed §7as well as relative player accounts.");
-                        bankHandler.deleteBank(bankID);
+                        bankHandler.deleteBankAndTransferBalances(bankID);
                         return true;
                     }
                 }
-
-                // /cbanking admin bank DIRECTORY
-                sender.sendMessage(pluginHeader);
-                sender.sendMessage("§7/... bank <bankID> assets <set/give/take> <amount>");
-                sender.sendMessage("§7/... bank <bankID> interest <reset/set> <amount>");
-                sender.sendMessage("§7/... bank <bankID> growth <reset/set> <amount> ");
-                sender.sendMessage("§7/... bank <bankID> newaccountfee <reset/set> <amount> ");
-                sender.sendMessage("§7/... bank <bankID> maintenance <reset/set> <amount> ");
-                sender.sendMessage("§7/... bank <bankID> withdrawalfee <reset/set> <amount> ");
-                sender.sendMessage("§7/... bank <bankID> depositfee <reset/set> <amount> ");
-                sender.sendMessage("§7/... bank <bankID> close");
-                return true;
             }
 
-            sender.sendMessage("§7Usage: /cbanking <admin/version/debug>");
-            return true;
+            // /cbanking admin bank DIRECTORY
+            sender.sendMessage(pluginHeader);
+            sender.sendMessage("§7/... bank <bankID> assets <set/give/take> <amount>");
+            sender.sendMessage("§7/... bank <bankID> interest <reset/set> <amount>");
+            sender.sendMessage("§7/... bank <bankID> growth <reset/set> <amount> ");
+            sender.sendMessage("§7/... bank <bankID> newaccountfee <reset/set> <amount> ");
+            sender.sendMessage("§7/... bank <bankID> maintenance <reset/set> <amount> ");
+            sender.sendMessage("§7/... bank <bankID> withdrawalfee <reset/set> <amount> ");
+            sender.sendMessage("§7/... bank <bankID> depositfee <reset/set> <amount> ");
+            sender.sendMessage("§7/... bank <bankID> close");
 
         } else {
-            sender.sendMessage("Usage: /cbanking <admin/version/debug>");
+            plugin.getMessageHandler().sendNoPermissionError(sender);
         }
         return true;
     }

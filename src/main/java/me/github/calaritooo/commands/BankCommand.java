@@ -33,6 +33,14 @@ public class BankCommand implements CommandExecutor {
             return true;
         }
 
+        boolean banksEnabled = plugin.getConfig().getBoolean("modules.enable-banks");
+        boolean loansEnabled = plugin.getConfig().getBoolean("modules.enable-loans");
+
+        if (!banksEnabled) {
+            player.sendMessage("§cBanks are not enabled on this server!");
+            return true;
+        }
+
         if (args.length < 1) {
             player.sendMessage("§7Usage: /bank <open/close/accounts/loans/manage>");
             return true;
@@ -59,8 +67,7 @@ public class BankCommand implements CommandExecutor {
                 String newBankID = args[2];
                 bankHandler.createBank(newBankID, newBankName, player.getName());
                 player.sendMessage("§7Bank §a" + newBankName + "§7 with ID §a" + newBankID + "§7 has been opened.");
-                break;
-
+                return true;
             case "close":
                 if (!player.hasPermission("cbanking.bank.close")) {
                     player.sendMessage("§cYou do not have access to this command!");
@@ -71,9 +78,9 @@ public class BankCommand implements CommandExecutor {
                     player.sendMessage("§cYou do not own a bank to close.");
                     return true;
                 }
-                bankHandler.deleteBank(closeBankID);
-                player.sendMessage("§7Your bank has been closed.");
-                break;
+                bankHandler.deleteBankAndTransferBalances(closeBankID);
+                player.sendMessage("§7Your bank has been closed and all player account balances have been returned.");
+                return true;
 
             case "accounts":
                 if (!player.hasPermission("cbanking.bank.accounts")) {
@@ -92,14 +99,20 @@ public class BankCommand implements CommandExecutor {
                             double balance = playerDataHandler.getPlayerDataConfig().getDouble(balancePath);
                             String playerName = Bukkit.getOfflinePlayer(UUID.fromString(playerUUID)).getName();
                             player.sendMessage("§aPlayer: " + playerName + "§7, Balance: §a" + currencySymbol + balance);
+                            return true;
                         }
+                        player.sendMessage("§cAccount balance not found!");
+                        return true;
                     }
                 }
-                break;
-
+                return true;
             case "loans":
                 if (!player.hasPermission("cbanking.bank.loans")) {
                     player.sendMessage("§cYou do not have access to this command!");
+                    return true;
+                }
+                if (!loansEnabled) {
+                    player.sendMessage("§cLoans are not enabled on this server!");
                     return true;
                 }
                 String loansBankID = bankHandler.getBankIDByName(player.getName());
@@ -107,8 +120,9 @@ public class BankCommand implements CommandExecutor {
                     player.sendMessage("§cYou do not own a bank.");
                     return true;
                 }
+
                 player.sendMessage("§7Loan management is not implemented yet.");
-                break;
+                return true;
 
             case "manage":
                 if (!player.hasPermission("cbanking.bank.manage")) {
@@ -139,8 +153,7 @@ public class BankCommand implements CommandExecutor {
                             bankHandler.setBankName(manageBankID, value);
                             player.sendMessage("§7Bank name has been updated to §a" + value + "§7.");
                         }
-                        break;
-
+                        return true;
                     case "owner":
                         if (!player.hasPermission("cbanking.bank.manage.owner")) {
                             player.sendMessage("§cYou do not have access to this command!");
@@ -152,20 +165,30 @@ public class BankCommand implements CommandExecutor {
                             bankHandler.setBankOwner(manageBankID, value);
                             player.sendMessage("§7Bank owner has been updated to §a" + value + "§7.");
                         }
-                        break;
+                        return true;
 
-                    case "rate":
-                        if (!player.hasPermission("cbanking.bank.manage.rate")) {
+                    case "interest":
+                        if (!player.hasPermission("cbanking.bank.manage.interest")) {
                             player.sendMessage("§cYou do not have access to this command!");
+                            return true;
+                        }
+                        if (!loansEnabled) {
+                            player.sendMessage("§cLoans are not enabled on this server!");
                             return true;
                         }
                         if (value == null) {
                             player.sendMessage("§7Current interest rate: §a" + bankHandler.getInterestRate(manageBankID));
                         } else {
-                            bankHandler.setInterestRate(manageBankID, Double.parseDouble(value));
-                            player.sendMessage("§7Interest rate has been updated to §a" + value + "§7%.");
+                            double amount = Double.parseDouble(value);
+                            double minInterestRate = plugin.getConfig().getDouble("loan-settings.min-loan-interest-rate");
+                            double maxInterestRate = plugin.getConfig().getDouble("loan-settings.max-loan-interest-rate");
+                            if (amount >= minInterestRate && amount <= maxInterestRate) {
+                                player.sendMessage("§7Interest rate has been set to §a" + amount + "%§7.");
+                                return true;
+                            }
+                            player.sendMessage("§cInvalid rate! §7Allowed range: §c" + minInterestRate + "% &7- §c" + maxInterestRate + "%&7.");
                         }
-                        break;
+                        return true;
 
                     case "assets":
                         if (!player.hasPermission("cbanking.bank.manage.assets")) {
@@ -174,6 +197,7 @@ public class BankCommand implements CommandExecutor {
                         }
                         if (value == null) {
                             player.sendMessage("§7Current assets: §a" + bankHandler.getAssets(manageBankID));
+                            return true;
                         } else {
                             double currentAssets = bankHandler.getAssets(manageBankID);
                             double amount = Double.parseDouble(value);
@@ -185,28 +209,27 @@ public class BankCommand implements CommandExecutor {
                                             accountHandler.withdraw(player.getName(), amount);
                                             bankHandler.setAssets(manageBankID, currentAssets + amount);
                                             player.sendMessage("§7Added §a" + amount + "§7 to bank assets. New assets balance: §a" + currencySymbol + (currentAssets + amount) + "§7.");
-                                            break;
                                         } else {
                                             player.sendMessage("§cInsufficient funds!");
-                                            break;
                                         }
+                                        return true;
                                     case "remove":
                                         if (currentAssets >= amount) {
                                             bankHandler.setAssets(manageBankID, currentAssets - amount);
                                             player.sendMessage("§7Removed §a" + amount + "§7 from bank assets. New assets balance: §a" + currencySymbol + (currentAssets - amount) + "§7.");
-                                            break;
+                                            return true;
                                         }
                                         player.sendMessage("§cInsufficient assets!");
-                                        break;
+                                        return true;
                                     default:
                                         player.sendMessage("§7Usage: /bank manage assets <add/remove> <amount>");
-                                        break;
+                                        return true;
                                 }
                             } else {
                                 player.sendMessage("§7Usage: /bank manage assets <add/remove> <amount>");
+                                return true;
                             }
                         }
-                        break;
 
                     case "maintenance":
                         if (!player.hasPermission("cbanking.bank.manage.maintenance")) {
@@ -215,11 +238,22 @@ public class BankCommand implements CommandExecutor {
                         }
                         if (value == null) {
                             player.sendMessage("§7Current maintenance fee rate: §a" + bankHandler.getMaintenanceFeeRate(manageBankID));
+                            return true;
                         } else {
-                            bankHandler.setMaintenanceFeeRate(manageBankID, Double.parseDouble(value));
-                            player.sendMessage("§7Maintenance fee rate has been updated to §a" + value + "§7.");
+                            if (plugin.getConfig().getString("bank-settings.maintenance-fee-type").equalsIgnoreCase("percentage")) {
+                                bankHandler.setMaintenanceFeeRate(manageBankID, Double.parseDouble(value));
+                                player.sendMessage("§7Maintenance fee has been set to §a" + value + "%§7.");
+                                return true;
+                            } else if (plugin.getConfig().getString("bank-settings.maintenance-fee-type").equalsIgnoreCase("flat")) {
+                                bankHandler.setMaintenanceFeeRate(manageBankID, Double.parseDouble(value));
+                                player.sendMessage("§7Maintenance fee has been set to §a" + currencySymbol + value + "§7.");
+                                return true;
+                            } else {
+                                bankHandler.setMaintenanceFeeRate(manageBankID, Double.parseDouble(value));
+                                player.sendMessage("§7Maintenance fee has been set to §a" + value + "§7.");
+                                return true;
+                            }
                         }
-                        break;
 
                     case "openingfee":
                         if (!player.hasPermission("cbanking.bank.manage.accountopeningfee")) {
@@ -230,9 +264,9 @@ public class BankCommand implements CommandExecutor {
                             player.sendMessage("§7Current account opening fee: §a" + bankHandler.getAccountOpeningFee(manageBankID));
                         } else {
                             bankHandler.setAccountOpeningFee(manageBankID, Double.parseDouble(value));
-                            player.sendMessage("§7Account opening fee has been updated to §a" + value + "§7.");
+                            player.sendMessage("§7Account opening fee has been set to §a" + value + "§7.");
                         }
-                        break;
+                        return true;
 
                     case "growth":
                         if (!player.hasPermission("cbanking.bank.manage.accountgrowth")) {
@@ -243,9 +277,9 @@ public class BankCommand implements CommandExecutor {
                             player.sendMessage("§7Current account growth rate: §a" + bankHandler.getAccountGrowthRate(manageBankID));
                         } else {
                             bankHandler.setAccountGrowthRate(manageBankID, Double.parseDouble(value));
-                            player.sendMessage("§7Account growth rate has been updated to §a" + value + "§7%.");
+                            player.sendMessage("§7Account growth rate has been set to §a" + value + "§7%.");
                         }
-                        break;
+                        return true;
 
                     case "deposit":
                         if (!player.hasPermission("cbanking.bank.manage.depositfee")) {
@@ -254,11 +288,22 @@ public class BankCommand implements CommandExecutor {
                         }
                         if (value == null) {
                             player.sendMessage("§7Current deposit fee: §a" + bankHandler.getDepositFeeRate(manageBankID));
+                            return true;
                         } else {
-                            bankHandler.setDepositFeeRate(manageBankID, Double.parseDouble(value));
-                            player.sendMessage("§7Deposit fee has been updated to §a" + value + "§7.");
+                            if (plugin.getConfig().getString("bank-settings.transaction-fee-type").equalsIgnoreCase("percentage")) {
+                                bankHandler.setDepositFeeRate(manageBankID, Double.parseDouble(value));
+                                player.sendMessage("§7Deposit fee has been set to §a" + value + "%§7.");
+                                return true;
+                            } else if (plugin.getConfig().getString("bank-settings.transaction-fee-type").equalsIgnoreCase("flat")) {
+                                bankHandler.setDepositFeeRate(manageBankID, Double.parseDouble(value));
+                                player.sendMessage("§7Deposit fee has been set to §a" + currencySymbol + value + "§7.");
+                                return true;
+                            } else {
+                                bankHandler.setDepositFeeRate(manageBankID, Double.parseDouble(value));
+                                player.sendMessage("§7Deposit fee has been set to §a" + value + "§7.");
+                                return true;
+                            }
                         }
-                        break;
 
                     case "withdrawal":
                         if (!player.hasPermission("cbanking.bank.manage.withdrawalfee")) {
@@ -267,22 +312,31 @@ public class BankCommand implements CommandExecutor {
                         }
                         if (value == null) {
                             player.sendMessage("§7Current withdrawal fee: §a" + bankHandler.getWithdrawalFeeRate(manageBankID));
+                            return true;
                         } else {
-                            bankHandler.setWithdrawalFeeRate(manageBankID, Double.parseDouble(value));
-                            player.sendMessage("§7Withdrawal fee has been updated to §a" + value + "§7.");
+                            if (plugin.getConfig().getString("bank-settings.transaction-fee-type").equalsIgnoreCase("percentage")) {
+                                bankHandler.setWithdrawalFeeRate(manageBankID, Double.parseDouble(value));
+                                player.sendMessage("§7Withdrawal fee has been set to §a" + value + "%§7.");
+                                return true;
+                            } else if (plugin.getConfig().getString("bank-settings.transaction-fee-type").equalsIgnoreCase("flat")) {
+                                bankHandler.setWithdrawalFeeRate(manageBankID, Double.parseDouble(value));
+                                player.sendMessage("§7Withdrawal fee has been set to §a" + currencySymbol + value + "§7.");
+                                return true;
+                            } else {
+                                bankHandler.setWithdrawalFeeRate(manageBankID, Double.parseDouble(value));
+                                player.sendMessage("§7Withdrawal fee has been set to §a" + value + "§7.");
+                                return true;
+                            }
                         }
-                        break;
 
                     default:
                         player.sendMessage("§cInvalid setting.");
                         return true;
                 }
-                break;
 
             default:
                 player.sendMessage("§7Usage: /bank <open/close/accounts/loans/manage>");
-                break;
+                return true;
         }
-        return true;
     }
 }

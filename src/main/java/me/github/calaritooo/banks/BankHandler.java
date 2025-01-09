@@ -36,6 +36,11 @@ public class BankHandler implements BankInterface {
     }
 
     @Override
+    public void deleteBankAndTransferBalances(String bankID) {
+        bankDataHandler.deleteBankAndTransferBalances(bankID);
+    }
+
+    @Override
     public boolean bankExists(String bankID) {
         return bankDataHandler.getBanksConfig().getString("banks. " + bankID) != null;
     }

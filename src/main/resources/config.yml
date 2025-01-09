@@ -26,12 +26,10 @@ plugin-settings:
 # Modules/features to enable or disable. Ensure to give players proper permissions!
 modules:
   # Enables players to create and manage their own banks.
-  enable-player-owned-banks: true
-  # Enable player bank accounts a growth rate, adjustable by the bank owner.
-  enable-acct-growth: true
+  enable-banks: true
   # Enables players to request loans from banks, subject to approval by the bank owner.
   enable-loans: true
-  # Enable player money loss upon death.
+  # Enables player money loss upon death.
   enable-money-loss-death: true
 
 # General server economy settings and default values.

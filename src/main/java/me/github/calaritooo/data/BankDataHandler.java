@@ -1,5 +1,6 @@
 package me.github.calaritooo.data;
 
+import me.github.calaritooo.accounts.AccountHandler;
 import me.github.calaritooo.cBanking;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -12,9 +13,13 @@ public class BankDataHandler {
     private final cBanking plugin;
     private FileConfiguration banksConfig = null;
     private File banksConfigFile = null;
+    private final PlayerDataHandler playerDataHandler;
+    private final AccountHandler accountHandler;
 
     public BankDataHandler(cBanking plugin) {
         this.plugin = plugin;
+        this.playerDataHandler = new PlayerDataHandler(plugin);
+        this.accountHandler = new AccountHandler(plugin);
         saveDefaultBanksConfig();
     }
 
@@ -56,17 +61,34 @@ public class BankDataHandler {
         getBanksConfig().set("banks." + bankID + ".bankName", bankName);
         getBanksConfig().set("banks." + bankID + ".ownerName", ownerName);
         getBanksConfig().set("banks." + bankID + ".assets", assets);
-        getBanksConfig().set("banks." + bankID + ".interestRate", interestRate);
         getBanksConfig().set("banks." + bankID + ".accountGrowthRate", accountGrowthRate);
         getBanksConfig().set("banks." + bankID + ".accountOpeningFee", accountOpeningFee);
         getBanksConfig().set("banks." + bankID + ".maintenanceFeeRate", maintenanceFeeRate);
         getBanksConfig().set("banks." + bankID + ".depositFeeRate", depositFeeRate);
         getBanksConfig().set("banks." + bankID + ".withdrawalFeeRate", withdrawalFeeRate);
+        if (plugin.getConfig().getBoolean("modules.enable-loans")) {
+            getBanksConfig().set("banks." + bankID + ".interestRate", interestRate);
+        }
         saveBanksConfig();
     }
 
     public void deleteBankData(String bankID) {
         getBanksConfig().set("banks." + bankID, null);
         saveBanksConfig();
+    }
+
+    public void deleteBankAndTransferBalances(String bankID) {
+        for (String playerID : playerDataHandler.getPlayerDataConfig().getConfigurationSection("players").getKeys(false)) {
+            if (playerDataHandler.getPlayerDataConfig().contains("players." + playerID + ".accounts." + bankID)) {
+                double bankBalance = playerDataHandler.getPlayerDataConfig().getDouble("players." + playerID + ".accounts." + bankID + ".balance");
+                if (bankBalance > 0) {
+                    accountHandler.deposit(playerID, bankBalance);
+                    accountHandler.withdraw(playerID, bankID, bankBalance);
+                    playerDataHandler.getPlayerDataConfig().set("players." + playerID + ".accounts." + bankID, null);
+                }
+            }
+        }
+        playerDataHandler.savePlayerDataConfig();
+        deleteBankData(bankID);
     }
 }
