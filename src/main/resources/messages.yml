@@ -1,0 +1,26 @@
+# This is the plugin messages configuration file for the cBanking plugin.
+# Modify plugin messages here. To enable or disable notifications, see config.yml.
+# Use placeholders appropriately, otherwise errors may be returned. (ex. "Balance: {recipient}" <- ERROR, what was the goal?)
+#
+#---------------------------------------------------------------------------------------------------------------------------------
+
+# Placeholders:
+# {currency-name}
+# {currency-name-plural}
+# {currency-symbol}
+# {bal}
+# {player}
+# {recipient}
+# {amt}
+# {time}
+
+messages:
+  check-bal: "&7Balance: &a{currency-symbol}{bal}"
+  check-bal-others: "&7{player}'s balance: &a{currency-symbol}{balance}"
+  payment-sent: "&a{currency-symbol}{amt} &7has been sent to &a{recipient}&7."
+  payment-received: "&7You have received &a{currency-symbol}{bal} &7from &a{player}&7."
+  error-invalid-player: "&cPlayer not found!"
+  error-invalid-amt: "&cAmount not valid!"
+  error-insufficient-funds: "&cThe specified amount exceeds your available balance!"
+  error-no-perm: "&cYou do not have access to this command!"
+  error-not-player: "&cNot a player!"
