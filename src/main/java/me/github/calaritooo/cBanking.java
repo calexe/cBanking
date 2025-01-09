@@ -63,6 +63,7 @@ public class cBanking extends JavaPlugin {
         getCommand("cbanking").setExecutor(new CBankingCommand(this));
         getCommand("balance").setExecutor(new BalanceCommand(this));
         getCommand("pay").setExecutor(new PayCommand(this));
+        getCommand("account").setExecutor(new AccountCommand(this));
         getCommand("accounts").setExecutor(new AccountsCommand(this));
         getCommand("banks").setExecutor(new BanksCommand(this));
         getCommand("bank").setExecutor(new BankCommand(this));
@@ -83,6 +84,7 @@ public class cBanking extends JavaPlugin {
         getCommand("cbanking").setExecutor(null);
         getCommand("balance").setExecutor(null);
         getCommand("pay").setExecutor(null);
+        getCommand("account").setExecutor(null);
         getCommand("accounts").setExecutor(null);
         getCommand("banks").setExecutor(null);
         getCommand("bank").setExecutor(null);

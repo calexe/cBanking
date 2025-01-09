@@ -46,6 +46,8 @@ public class AccountCommand implements CommandExecutor {
             player.sendMessage("§cBank not found!");
             return true;
         }
+        
+        String currencySymbol = plugin.getConfig().getString("economy-settings.currency-symbol");
 
         switch (action) {
             case "open":
@@ -55,12 +57,12 @@ public class AccountCommand implements CommandExecutor {
                 }
                 double accountOpeningFee = bankDataHandler.getBanksConfig().getDouble("banks." + bankID + ".accountopeningfee");
                 if (!accountHandler.hasFunds(player.getName(), accountOpeningFee)) {
-                    player.sendMessage("§cYou do not have enough funds to open an account. Required: §a" + accountOpeningFee);
+                    player.sendMessage("§cYou do not have enough funds to open an account. Required: §a" + currencySymbol + accountOpeningFee);
                     return true;
                 }
                 accountHandler.withdraw(player.getName(), accountOpeningFee);
                 accountHandler.createAccount(player.getName(), bankID, 0.0);
-                player.sendMessage("§7Account created with bank §a" + bankID + "§7. Opening fee: §a" + accountOpeningFee);
+                player.sendMessage("§7Account created with bank §e[§a" + bankID + "§e]§7. Opening fee: §a" + currencySymbol + accountOpeningFee);
                 return true;
 
             case "close":
@@ -69,7 +71,7 @@ public class AccountCommand implements CommandExecutor {
                     return true;
                 }
                 accountHandler.deleteAccount(player.getName(), bankID);
-                player.sendMessage("§7Account with bank §a" + bankID + "§7 has been closed.");
+                player.sendMessage("§7Account with bank §e[§a" + bankID + "§e]§7 has been closed.");
                 return true;
 
             case "deposit":
@@ -92,13 +94,13 @@ public class AccountCommand implements CommandExecutor {
                     double totalAmount = amount.doubleValue() + transactionFee;
 
                     if (!accountHandler.hasFunds(player.getName(), totalAmount)) {
-                        player.sendMessage("§cYou do not have enough funds. Required: §a" + totalAmount);
+                        player.sendMessage("§cYou do not have enough funds. Required: §a" + currencySymbol + totalAmount);
                         return true;
                     }
 
                     accountHandler.withdraw(player.getName(), totalAmount);
                     accountHandler.deposit(player.getName(), bankID, amount.doubleValue());
-                    player.sendMessage("§7Deposited §a" + amount + "§7 into your account with bank §a" + bankID + "§7. Transaction fee: §a" + transactionFee);
+                    player.sendMessage("§7Deposited §a" + currencySymbol + amount + "§7 into your account with bank §e[§a" + bankID + "§e]§7. Transaction fee: §a" + currencySymbol + transactionFee);
                 } catch (NumberFormatException e) {
                     player.sendMessage("§cInvalid amount.");
                 }
@@ -124,13 +126,13 @@ public class AccountCommand implements CommandExecutor {
                     double totalAmount = amount.doubleValue() + transactionFee;
 
                     if (!accountHandler.hasFunds(player.getName(), bankID, totalAmount)) {
-                        player.sendMessage("§cYou do not have enough funds in your bank account. Required: §a" + totalAmount);
+                        player.sendMessage("§cYou do not have enough funds in your account. Required: §a" + currencySymbol + totalAmount);
                         return true;
                     }
 
                     accountHandler.withdraw(player.getName(), bankID, totalAmount);
                     accountHandler.deposit(player.getName(), amount.doubleValue());
-                    player.sendMessage("§7Withdrew §a" + amount + "§7 from your account with bank §a" + bankID + "§7. Transaction fee: §a" + transactionFee);
+                    player.sendMessage("§7Withdrew §a" + currencySymbol + amount + "§7 from your account with bank §e[§a" + bankID + "§e]§7. Transaction fee: §a" + currencySymbol + transactionFee);
                 } catch (NumberFormatException e) {
                     player.sendMessage("§cInvalid amount.");
                 }
