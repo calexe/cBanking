@@ -45,29 +45,25 @@ public class BankCommand implements CommandExecutor {
         }
 
         String ownersBankID = bankHandler.getBankIDByName(player.getName());
-        if (args.length < 1 && ownersBankID == null) {
-            sender.sendMessage(pluginHeader);
-            sender.sendMessage("§7/bank open <name> <bankID>");
-        }
-
-        if (args.length < 1 && ownersBankID != null) {
-            sender.sendMessage(pluginHeader);
-            sender.sendMessage("§7/bank accounts");
-            sender.sendMessage("§7/bank loans <approve/reject>");
-            sender.sendMessage("§7/bank manage <name/owner> <new name/new owner>");
-            sender.sendMessage("§7/bank manage assets <deposit/withdraw> <amount>");
-            sender.sendMessage("§7/bank manage <interest_rate/growth_rate> <set/reset> <amount>");
-            sender.sendMessage("§7/bank manage <maintenance_fee/new_account_fee> <set/reset> <amount>");
-            sender.sendMessage("§7/bank manage <deposit_fee/withdrawal_fee> <set/reset> <amount>");
-            sender.sendMessage("§7/bank close");
+        if (args.length < 1) {
+            if (ownersBankID == null) {
+                sender.sendMessage(pluginHeader);
+                sender.sendMessage("§7/bank open <name> <bankID>");
+            } else {
+                sender.sendMessage(pluginHeader);
+                sender.sendMessage("§7/bank accounts");
+                sender.sendMessage("§7/bank loans <approve/reject>");
+                sender.sendMessage("§7/bank manage <name/owner> <new name/new owner>");
+                sender.sendMessage("§7/bank manage assets <deposit/withdraw> <amount>");
+                sender.sendMessage("§7/bank manage <interest_rate/growth_rate> <set/reset> <amount>");
+                sender.sendMessage("§7/bank manage <maintenance_fee/new_account_fee> <set/reset> <amount>");
+                sender.sendMessage("§7/bank manage <deposit_fee/withdrawal_fee> <set/reset> <amount>");
+                sender.sendMessage("§7/bank close");
+            }
             return true;
         }
 
         String subCommand = args[0].toLowerCase();
-        if (subCommand == null) {
-            return true;
-        }
-
         String currencySymbol = plugin.getConfig().getString("economy-settings.currency-symbol");
 
         switch (subCommand) {

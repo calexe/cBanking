@@ -47,7 +47,7 @@ public class BankHandler implements BankInterface {
     }
 
     public Set<String> getBankIDs() {
-        ConfigurationSection banksSection = plugin.getConfig().getConfigurationSection("banks");
+        ConfigurationSection banksSection = bankDataHandler.getBanksConfig().getConfigurationSection("banks");
         if (banksSection == null) {
             return Collections.emptySet();
         }
@@ -56,7 +56,7 @@ public class BankHandler implements BankInterface {
 
     @Override
     public String getBankIDByName(String name) {
-        ConfigurationSection banksSection = plugin.getConfig().getConfigurationSection("banks");
+        ConfigurationSection banksSection = bankDataHandler.getBanksConfig().getConfigurationSection("banks");
         if (banksSection == null) {
             return null;
         }
