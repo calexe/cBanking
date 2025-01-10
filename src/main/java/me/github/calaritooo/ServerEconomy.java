@@ -22,7 +22,7 @@ public class ServerEconomy implements Economy {
     public ServerEconomy(cBanking plugin) {
         instance = this;
         this.plugin = plugin;
-        this.accountHandler = new AccountHandler(plugin);
+        this.accountHandler = plugin.getAccountHandler();
 
         this.currencySymbol = plugin.getConfig().getString("economy-settings.currency-symbol");
         this.startingBal = plugin.getConfig().getDouble("economy-settings.starting-bal");
