@@ -1,5 +1,7 @@
 package me.github.calaritooo;
 
+import me.github.calaritooo.accounts.AccountHandler;
+import me.github.calaritooo.banks.BankHandler;
 import me.github.calaritooo.commands.*;
 import me.github.calaritooo.data.BankDataHandler;
 import me.github.calaritooo.data.PlayerDataHandler;
@@ -16,9 +18,11 @@ import org.jetbrains.annotations.NotNull;
 public class cBanking extends JavaPlugin {
 
     private static cBanking plugin;
-    private MessageHandler messageHandler;
-    private EventHandler eventHandler;
     private VaultHook vaultHook;
+    private MessageHandler messageHandler;
+    private AccountHandler accountHandler;
+    private BankHandler bankHandler;
+    private EventHandler eventHandler;
     private BankDataHandler bankDataHandler;
     private PlayerDataHandler playerDataHandler;
 
@@ -35,9 +39,11 @@ public class cBanking extends JavaPlugin {
         plugin = this;
 
         saveDefaultConfig();
-        FileConfiguration config = getConfig();
 
         messageHandler = new MessageHandler(this);
+
+        accountHandler = new AccountHandler(this);
+        bankHandler = new BankHandler(this);
 
         playerDataHandler = new PlayerDataHandler(this);
         playerDataHandler.reloadPlayerDataConfig();
@@ -112,23 +118,24 @@ public class cBanking extends JavaPlugin {
     public @NotNull FileConfiguration getConfig() {
         return super.getConfig();
     }
-
     public MessageHandler getMessageHandler() {
         return messageHandler;
     }
-
+    public AccountHandler getAccountHandler() {
+        return accountHandler;
+    }
+    public BankHandler getBankHandler() {
+        return bankHandler;
+    }
     public PlayerDataHandler getPlayerDataHandler() {
         return playerDataHandler;
     }
-
     public BankDataHandler getBankDataHandler() {
         return bankDataHandler;
     }
-
     public Economy getEconomy() {
         return vaultHook.getEconomy();
     }
-
     public static cBanking getInstance() {
         return plugin;
     }

@@ -7,7 +7,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 public final class VaultHook {
 
     private static Economy economy = null;
-    private static final cBanking plugin = cBanking.getInstance();
+    private final cBanking plugin = cBanking.getInstance();
 
     public VaultHook() {
     }

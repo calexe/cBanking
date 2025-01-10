@@ -12,14 +12,15 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Set;
 
 public class BanksCommand implements CommandExecutor {
+
     private final cBanking plugin;
     private final BankHandler bankHandler;
     private final PlayerDataHandler playerDataHandler;
 
     public BanksCommand(cBanking plugin) {
         this.plugin = plugin;
-        this.bankHandler = new BankHandler(plugin);
-        this.playerDataHandler = new PlayerDataHandler(plugin);
+        this.bankHandler = plugin.getBankHandler();
+        this.playerDataHandler = plugin.getPlayerDataHandler();
     }
 
     @Override

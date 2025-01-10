@@ -17,7 +17,7 @@ public class PlayerListener implements Listener {
 
     public PlayerListener(cBanking plugin) {
         this.plugin = plugin;
-        this.accountHandler = new AccountHandler(plugin);
+        this.accountHandler = plugin.getAccountHandler();
     }
 
     @EventHandler

@@ -6,9 +6,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-
 public class PlayerDataHandler {
+
     private final cBanking plugin;
     private FileConfiguration playerDataConfig = null;
     private File playerDataConfigFile = null;
@@ -39,7 +38,7 @@ public class PlayerDataHandler {
         try {
             getPlayerDataConfig().save(playerDataConfigFile);
         } catch (IOException ex) {
-            plugin.getLogger().log(Level.SEVERE, "Could not save config to " + playerDataConfigFile, ex);
+            plugin.getLogger().severe("Could not save config to " + playerDataConfigFile);
         }
     }
 

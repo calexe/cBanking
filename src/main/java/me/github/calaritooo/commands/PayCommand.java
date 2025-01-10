@@ -14,12 +14,13 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class PayCommand implements CommandExecutor {
+
     private final cBanking plugin;
     private final AccountHandler accountHandler;
 
     public PayCommand(cBanking plugin) {
         this.plugin = plugin;
-        this.accountHandler = new AccountHandler(plugin);
+        this.accountHandler = plugin.getAccountHandler();
     }
 
     @Override

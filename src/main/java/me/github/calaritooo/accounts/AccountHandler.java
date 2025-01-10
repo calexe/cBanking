@@ -9,15 +9,15 @@ import org.bukkit.OfflinePlayer;
 import java.util.UUID;
 
 public class AccountHandler implements AccountInterface {
+
     private final cBanking plugin;
     private final PlayerDataHandler playerDataHandler;
     private final BankDataHandler bankDataHandler;
 
     public AccountHandler(cBanking plugin) {
         this.plugin = plugin;
-        this.playerDataHandler = new PlayerDataHandler(plugin);
-        this.bankDataHandler = new BankDataHandler(plugin);
-
+        this.playerDataHandler = plugin.getPlayerDataHandler();
+        this.bankDataHandler = plugin.getBankDataHandler();
     }
 
     @Override

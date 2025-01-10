@@ -16,15 +16,15 @@ import java.math.RoundingMode;
 public class AccountCommand implements CommandExecutor {
 
     private final cBanking plugin;
-    private final AccountHandler accountHandler;
     private final BankHandler bankHandler;
+    private final AccountHandler accountHandler;
     private final BankDataHandler bankDataHandler;
 
     public AccountCommand(cBanking plugin) {
         this.plugin = plugin;
-        this.bankDataHandler = new BankDataHandler(plugin);
-        this.accountHandler = new AccountHandler(plugin);
-        this.bankHandler = new BankHandler(plugin);
+        this.bankHandler = plugin.getBankHandler();
+        this.accountHandler = plugin.getAccountHandler();
+        this.bankDataHandler = plugin.getBankDataHandler();
     }
 
     @Override

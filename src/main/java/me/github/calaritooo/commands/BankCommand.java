@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.UUID;
 
 public class BankCommand implements CommandExecutor {
+
     private final cBanking plugin;
     private final BankHandler bankHandler;
     private final PlayerDataHandler playerDataHandler;
@@ -21,9 +22,9 @@ public class BankCommand implements CommandExecutor {
 
     public BankCommand(cBanking plugin) {
         this.plugin = plugin;
-        this.bankHandler = new BankHandler(plugin);
-        this.playerDataHandler = new PlayerDataHandler(plugin);
-        this.accountHandler = new AccountHandler(plugin);
+        this.bankHandler = plugin.getBankHandler();
+        this.playerDataHandler = plugin.getPlayerDataHandler();
+        this.accountHandler = plugin.getAccountHandler();
     }
 
     @Override

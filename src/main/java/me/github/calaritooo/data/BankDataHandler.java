@@ -10,16 +10,18 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 public class BankDataHandler {
+
     private final cBanking plugin;
     private FileConfiguration banksConfig = null;
     private File banksConfigFile = null;
     private final PlayerDataHandler playerDataHandler;
     private final AccountHandler accountHandler;
 
+
     public BankDataHandler(cBanking plugin) {
         this.plugin = plugin;
-        this.playerDataHandler = new PlayerDataHandler(plugin);
-        this.accountHandler = new AccountHandler(plugin);
+        this.playerDataHandler = plugin.getPlayerDataHandler();
+        this.accountHandler = plugin.getAccountHandler();
         saveDefaultBanksConfig();
     }
 

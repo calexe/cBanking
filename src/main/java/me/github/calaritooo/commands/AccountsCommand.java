@@ -18,7 +18,7 @@ public class AccountsCommand implements CommandExecutor {
 
     public AccountsCommand(cBanking plugin) {
         this.plugin = plugin;
-        this.playerDataHandler = new PlayerDataHandler(plugin);
+        this.playerDataHandler = plugin.getPlayerDataHandler();
     }
 
     @Override

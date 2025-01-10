@@ -17,7 +17,8 @@ public class BalanceCommand implements CommandExecutor {
 
     public BalanceCommand(cBanking plugin) {
         this.plugin = plugin;
-        this.accountHandler = new AccountHandler(plugin);
+        this.accountHandler = plugin.getAccountHandler();
+
     }
 
     @Override

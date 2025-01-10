@@ -1,20 +1,16 @@
 package me.github.calaritooo.banks;
 
-import me.github.calaritooo.accounts.AccountHandler;
 import me.github.calaritooo.cBanking;
 import me.github.calaritooo.data.BankDataHandler;
 
-import java.util.Map;
 import java.util.Set;
 
 public class BankHandler implements BankInterface {
     private final cBanking plugin;
     private final BankDataHandler bankDataHandler;
-    private final AccountHandler accountHandler;
 
     public BankHandler(cBanking plugin) {
         this.plugin = plugin;
-        this.accountHandler = new AccountHandler(plugin);
         this.bankDataHandler = new BankDataHandler(plugin);
     }
 
