@@ -20,7 +20,6 @@ public class BalanceCommand implements CommandExecutor {
         this.accountHandler = plugin.getAccountHandler();
 
     }
-
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
 
@@ -68,9 +67,10 @@ public class BalanceCommand implements CommandExecutor {
                 String targetName = targetPlayer.getName();
                 double targetBalance = accountHandler.getBalance(targetName);
                 sender.sendMessage("§7" + targetName + "'s balance: §a" + currencySymbol + targetBalance);
+            } else {
+                sender.sendMessage("§cPlayer not found!");
+                return true;
             }
-            sender.sendMessage("§cPlayer not found!");
-            return true;
         }
         sender.sendMessage("§7Usage: /balance <player>");
         return true;

@@ -272,7 +272,6 @@ public class CBankingCommand implements CommandExecutor {
                         }
                     }
                 }
-
                 // /cbanking admin player DIRECTORY
                 sender.sendMessage(pluginHeader);
                 sender.sendMessage("§7/... player <player> balance <set/give/take> <amount>");
@@ -764,18 +763,21 @@ public class CBankingCommand implements CommandExecutor {
                         return true;
                     }
                 }
+                // /cbanking admin bank DIRECTORY
+                sender.sendMessage(pluginHeader);
+                sender.sendMessage("§7/... bank <bankID> assets <set/give/take> <amount>");
+                sender.sendMessage("§7/... bank <bankID> interest <reset/set> <amount>");
+                sender.sendMessage("§7/... bank <bankID> growth <reset/set> <amount> ");
+                sender.sendMessage("§7/... bank <bankID> newaccountfee <reset/set> <amount> ");
+                sender.sendMessage("§7/... bank <bankID> maintenance <reset/set> <amount> ");
+                sender.sendMessage("§7/... bank <bankID> withdrawalfee <reset/set> <amount> ");
+                sender.sendMessage("§7/... bank <bankID> depositfee <reset/set> <amount> ");
+                sender.sendMessage("§7/... bank <bankID> close");
             }
-
-            // /cbanking admin bank DIRECTORY
             sender.sendMessage(pluginHeader);
-            sender.sendMessage("§7/... bank <bankID> assets <set/give/take> <amount>");
-            sender.sendMessage("§7/... bank <bankID> interest <reset/set> <amount>");
-            sender.sendMessage("§7/... bank <bankID> growth <reset/set> <amount> ");
-            sender.sendMessage("§7/... bank <bankID> newaccountfee <reset/set> <amount> ");
-            sender.sendMessage("§7/... bank <bankID> maintenance <reset/set> <amount> ");
-            sender.sendMessage("§7/... bank <bankID> withdrawalfee <reset/set> <amount> ");
-            sender.sendMessage("§7/... bank <bankID> depositfee <reset/set> <amount> ");
-            sender.sendMessage("§7/... bank <bankID> close");
+            sender.sendMessage("§7/cbanking admin player <player>");
+            sender.sendMessage("§7/cbanking admin bank <bankID>");
+
 
         } else {
             plugin.getMessageHandler().sendNoPermissionError(sender);

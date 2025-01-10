@@ -13,23 +13,17 @@ import java.util.*;
 
 public class ServerEconomy implements Economy {
 
-    private static ServerEconomy instance;
     private final cBanking plugin;
     private final AccountHandler accountHandler;
     private final String currencySymbol;
     private final double startingBal;
 
     public ServerEconomy(cBanking plugin) {
-        instance = this;
         this.plugin = plugin;
         this.accountHandler = plugin.getAccountHandler();
 
         this.currencySymbol = plugin.getConfig().getString("economy-settings.currency-symbol");
         this.startingBal = plugin.getConfig().getDouble("economy-settings.starting-bal");
-    }
-
-    public static ServerEconomy getInstance() {
-        return instance;
     }
 
     public void register() {
