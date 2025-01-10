@@ -2,7 +2,9 @@ package me.github.calaritooo.banks;
 
 import me.github.calaritooo.cBanking;
 import me.github.calaritooo.data.BankDataHandler;
+import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.Collections;
 import java.util.Set;
 
 public class BankHandler implements BankInterface {
@@ -45,7 +47,11 @@ public class BankHandler implements BankInterface {
     }
 
     public Set<String> getBankIDs() {
-        return bankDataHandler.getBanksConfig().getConfigurationSection("banks").getKeys(false);
+        ConfigurationSection banksSection = plugin.getConfig().getConfigurationSection("banks");
+        if (banksSection == null) {
+            return Collections.emptySet();
+        }
+        return banksSection.getKeys(false);
     }
 
     @Override
