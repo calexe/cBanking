@@ -50,9 +50,10 @@ public class BalanceCommand implements CommandExecutor {
                         double targetBalance = accountHandler.getBalance(targetName);
                         player.sendMessage("§7" + targetName + "'s balance: §a" + currencySymbol + targetBalance);
                         return true;
+                    } else {
+                        player.sendMessage("§cPlayer not found!");
+                        return true;
                     }
-                    player.sendMessage("§cPlayer not found!");
-                    return true;
                 }
                 player.sendMessage("§7Usage: /balance <player>");
                 return true;
