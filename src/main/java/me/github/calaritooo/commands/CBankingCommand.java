@@ -773,11 +773,12 @@ public class CBankingCommand implements CommandExecutor {
                 sender.sendMessage("§7/... bank <bankID> withdrawalfee <reset/set> <amount> ");
                 sender.sendMessage("§7/... bank <bankID> depositfee <reset/set> <amount> ");
                 sender.sendMessage("§7/... bank <bankID> close");
+                return true;
             }
             sender.sendMessage(pluginHeader);
             sender.sendMessage("§7/cbanking admin player <player>");
             sender.sendMessage("§7/cbanking admin bank <bankID>");
-
+            return true;
 
         } else {
             plugin.getMessageHandler().sendNoPermissionError(sender);

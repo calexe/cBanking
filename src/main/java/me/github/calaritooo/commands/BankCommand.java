@@ -38,16 +38,20 @@ public class BankCommand implements CommandExecutor {
         boolean loansEnabled = plugin.getConfig().getBoolean("modules.enable-loans");
         final String pluginPrefix = ("§e[§acBanking§e] ");
         final String pluginHeader = "§f------------------- " + pluginPrefix + " §f-------------------";
-        String ownersBankID = bankHandler.getBankIDByName(player.getName());
 
         if (!banksEnabled) {
             player.sendMessage("§cBanks are not enabled on this server!");
             return true;
         }
 
-        if (args.length == 0 && ownersBankID != null) {
+        String ownersBankID = bankHandler.getBankIDByName(player.getName());
+        if (args.length < 1 && ownersBankID == null) {
             sender.sendMessage(pluginHeader);
             sender.sendMessage("§7/bank open <name> <bankID>");
+        }
+
+        if (args.length < 1 && ownersBankID != null) {
+            sender.sendMessage(pluginHeader);
             sender.sendMessage("§7/bank accounts");
             sender.sendMessage("§7/bank loans <approve/reject>");
             sender.sendMessage("§7/bank manage <name/owner> <new name/new owner>");
@@ -60,6 +64,10 @@ public class BankCommand implements CommandExecutor {
         }
 
         String subCommand = args[0].toLowerCase();
+        if (subCommand == null) {
+            return true;
+        }
+
         String currencySymbol = plugin.getConfig().getString("economy-settings.currency-symbol");
 
         switch (subCommand) {
@@ -79,7 +87,7 @@ public class BankCommand implements CommandExecutor {
                 String newBankName = args[1];
                 String newBankID = args[2];
                 bankHandler.createBank(newBankID, newBankName, player.getName());
-                player.sendMessage("§7Bank §a" + newBankName + "§7 with ID §a" + newBankID + "§7 has been opened.");
+                player.sendMessage("§7Bank §a" + newBankName + "§7 with ID: §a" + newBankID + "§7, has been opened.");
                 return true;
             case "close":
                 String closeBankID = bankHandler.getBankIDByName(player.getName());

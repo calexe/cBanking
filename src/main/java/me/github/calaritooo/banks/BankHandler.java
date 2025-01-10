@@ -55,11 +55,17 @@ public class BankHandler implements BankInterface {
     }
 
     @Override
-    public String getBankIDByName(String bankName) {
-        return bankDataHandler.getBanksConfig().getConfigurationSection("banks").getKeys(false).stream()
-                .filter(id -> bankDataHandler.getBanksConfig().getString("banks." + id + ".bankName").equalsIgnoreCase(bankName))
-                .findFirst()
-                .orElse(null);
+    public String getBankIDByName(String name) {
+        ConfigurationSection banksSection = plugin.getConfig().getConfigurationSection("banks");
+        if (banksSection == null) {
+            return null;
+        }
+        for (String bankID : banksSection.getKeys(false)) {
+            if (name.equalsIgnoreCase(banksSection.getString(bankID + ".ownerName"))) {
+                return bankID;
+            }
+        }
+        return null;
     }
 
     @Override
