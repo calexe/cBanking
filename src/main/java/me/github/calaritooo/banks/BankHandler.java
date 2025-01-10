@@ -7,10 +7,13 @@ import java.util.Set;
 
 public class BankHandler implements BankInterface {
     private final cBanking plugin;
-    private final BankDataHandler bankDataHandler;
+    private BankDataHandler bankDataHandler;
 
     public BankHandler(cBanking plugin) {
         this.plugin = plugin;
+    }
+
+    public void initializeHandlers(BankDataHandler bankDataHandler) {
         this.bankDataHandler = new BankDataHandler(plugin);
     }
 

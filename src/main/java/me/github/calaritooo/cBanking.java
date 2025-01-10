@@ -40,18 +40,8 @@ public class cBanking extends JavaPlugin {
 
         saveDefaultConfig();
 
-        messageHandler = new MessageHandler(this);
+        initializeHandlers();
 
-        accountHandler = new AccountHandler(this);
-        bankHandler = new BankHandler(this);
-
-        playerDataHandler = new PlayerDataHandler(this);
-        playerDataHandler.reloadPlayerDataConfig();
-        getLogger().info("Successfully loaded playerdata.yml!");
-
-        bankDataHandler = new BankDataHandler(this);
-        bankDataHandler.reloadBanksConfig();
-        getLogger().info("Successfully loaded banks.yml!");
 
         vaultHook = new VaultHook();
         if (getServer().getPluginManager().getPlugin("Vault") != null) {
@@ -111,6 +101,24 @@ public class cBanking extends JavaPlugin {
         }
 
         getLogger().info("cBanking has been successfully disabled!");
+    }
+
+    private void initializeHandlers() {
+        messageHandler = new MessageHandler(this);
+
+        playerDataHandler = new PlayerDataHandler(this);
+        playerDataHandler.reloadPlayerDataConfig();
+        getLogger().info("Successfully loaded playerdata.yml!");
+
+        bankDataHandler = new BankDataHandler(this);
+        bankDataHandler.reloadBanksConfig();
+        getLogger().info("Successfully loaded banks.yml!");
+
+        accountHandler = new AccountHandler(this);
+        accountHandler.initializeHandlers(playerDataHandler, bankDataHandler);
+
+        bankHandler = new BankHandler(this);
+        bankHandler.initializeHandlers(bankDataHandler);
     }
 
     // GETTERS //

@@ -14,15 +14,18 @@ public class BankDataHandler {
     private final cBanking plugin;
     private FileConfiguration banksConfig = null;
     private File banksConfigFile = null;
-    private final PlayerDataHandler playerDataHandler;
-    private final AccountHandler accountHandler;
+    private PlayerDataHandler playerDataHandler;
+    private AccountHandler accountHandler;
 
 
     public BankDataHandler(cBanking plugin) {
         this.plugin = plugin;
+        saveDefaultBanksConfig();
+    }
+
+    public void initializeHandlers(PlayerDataHandler playerDataHandler, AccountHandler accountHandler) {
         this.playerDataHandler = plugin.getPlayerDataHandler();
         this.accountHandler = plugin.getAccountHandler();
-        saveDefaultBanksConfig();
     }
 
     public void reloadBanksConfig() {
