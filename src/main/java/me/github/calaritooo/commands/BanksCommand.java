@@ -33,10 +33,9 @@ public class BanksCommand implements CommandExecutor {
         }
 
         Set<String> bankIDs = bankHandler.getBankIDs();
-        final String pluginPrefix = "§e[§acBanking§e]";
-        final String pluginHeader = "§f------------------- " + pluginPrefix + " §f-------------------";
-        sender.sendMessage(pluginHeader);
-        sender.sendMessage("§7List of all banks:");
+        String prefix = "§e[§acList of Banks§e]";
+        String header = "§f------------------- " + prefix + " §f-------------------";
+        sender.sendMessage(header);
 
         int bankNumber = 1;
         for (String bankID : bankIDs) {
@@ -46,9 +45,14 @@ public class BanksCommand implements CommandExecutor {
                     accountCount++;
                 }
             }
-            sender.sendMessage("§7" + bankNumber + ". §a" + bankID + "§7: " + accountCount + " accounts");
-            sender.sendMessage("§7   - Owner: §c" + bankHandler.getBankOwnerByID(bankID));
-            bankNumber++;
+            if (accountCount == 1) {
+                sender.sendMessage("§7" + bankNumber + ". §a" + bankID + "§7: " + accountCount + " accounts");
+                bankNumber++;
+            } else {
+                sender.sendMessage("§7" + bankNumber + ". §a" + bankID + "§7: " + accountCount + " accounts");
+                sender.sendMessage("§7  Owner: §7" + bankHandler.getBankOwnerByID(bankID));
+                bankNumber++;
+            }
         }
 
         return true;

@@ -72,15 +72,13 @@ public class AccountsCommand implements CommandExecutor {
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .toList();
 
-        final String pluginPrefix = "§e[§acBanking§e]";
-        final String pluginHeader = "§f------------------- " + pluginPrefix + " §f-------------------";
-        sender.sendMessage(pluginHeader);
-        sender.sendMessage("§7Bank accounts for §a" + playerName + "§7:");
+        String prefix = "§e[§ac" + playerName + "'s Accounts§e]";
+        String header = "§f------------------- " + prefix + " §f-------------------";
+        sender.sendMessage(header);
         for (int i = 0; i < sortedBalances.size(); i++) {
             Map.Entry<String, Double> entry = sortedBalances.get(i);
-            sender.sendMessage("§7" + (i + 1) + ". Bank ID: §a" + entry.getKey() + "§7, Balance: §a" + entry.getValue());
+            sender.sendMessage("§7" + (i + 1) + ". Bank ID: §a" + entry.getKey() + "\n§7  Balance: §a" + entry.getValue());
         }
-
         return true;
     }
 }
