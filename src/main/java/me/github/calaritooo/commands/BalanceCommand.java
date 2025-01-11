@@ -18,8 +18,8 @@ public class BalanceCommand implements CommandExecutor {
     public BalanceCommand(cBanking plugin) {
         this.plugin = plugin;
         this.accountHandler = plugin.getAccountHandler();
-
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
 

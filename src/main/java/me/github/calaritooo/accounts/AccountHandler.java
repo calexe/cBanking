@@ -11,14 +11,11 @@ import java.util.UUID;
 public class AccountHandler implements AccountInterface {
 
     private final cBanking plugin;
-    private PlayerDataHandler playerDataHandler;
-    private BankDataHandler bankDataHandler;
+    private final PlayerDataHandler playerDataHandler;
+    private final BankDataHandler bankDataHandler;
 
     public AccountHandler(cBanking plugin) {
         this.plugin = plugin;
-    }
-
-    public void initializeHandlers(PlayerDataHandler playerDataHandler, BankDataHandler bankDataHandler) {
         this.playerDataHandler = plugin.getPlayerDataHandler();
         this.bankDataHandler = plugin.getBankDataHandler();
     }

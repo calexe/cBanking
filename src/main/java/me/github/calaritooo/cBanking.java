@@ -115,10 +115,7 @@ public class cBanking extends JavaPlugin {
         getLogger().info("Successfully loaded banks.yml!");
 
         accountHandler = new AccountHandler(this);
-        accountHandler.initializeHandlers(playerDataHandler, bankDataHandler);
-
         bankHandler = new BankHandler(this);
-        bankHandler.initializeHandlers(bankDataHandler);
     }
 
     // GETTERS //

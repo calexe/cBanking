@@ -24,7 +24,6 @@ public class CBankingCommand implements CommandExecutor {
         this.plugin = plugin;
         this.accountHandler = plugin.getAccountHandler();
         this.bankHandler = plugin.getBankHandler();
-
     }
 
     @Override

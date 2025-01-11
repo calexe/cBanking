@@ -28,13 +28,13 @@ public class AccountsCommand implements CommandExecutor {
         if (sender instanceof Player player) {
             if (args.length == 0) {
                 if (!player.hasPermission("cbanking.accounts")) {
-                    player.sendMessage("§cYou do not have permission to check your accounts.");
+                    player.sendMessage("§cYou do not have access to this command!");
                     return true;
                 }
                 playerName = player.getName();
             } else {
                 if (!player.hasPermission("cbanking.accounts.other")) {
-                    player.sendMessage("§cYou do not have permission to check other players' accounts.");
+                    player.sendMessage("§cYou do not have access to this command!");
                     return true;
                 }
                 OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(args[0]);

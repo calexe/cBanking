@@ -9,14 +9,11 @@ import java.util.Set;
 
 public class BankHandler implements BankInterface {
     private final cBanking plugin;
-    private BankDataHandler bankDataHandler;
+    private final BankDataHandler bankDataHandler;
 
     public BankHandler(cBanking plugin) {
         this.plugin = plugin;
-    }
-
-    public void initializeHandlers(BankDataHandler bankDataHandler) {
-        this.bankDataHandler = new BankDataHandler(plugin);
+        this.bankDataHandler = plugin.getBankDataHandler();
     }
 
     @Override
