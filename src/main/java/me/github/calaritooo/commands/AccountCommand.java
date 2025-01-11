@@ -55,6 +55,9 @@ public class AccountCommand implements CommandExecutor {
                     player.sendMessage("§cYou already have an account with this bank.");
                     return true;
                 }
+                if (bankHandler.getBankOwnerByID(bankID).equalsIgnoreCase(player.getName())) {
+                    player.sendMessage("§cYou may not open an account with your own bank!");
+                }
                 double accountOpeningFee = bankDataHandler.getBanksConfig().getDouble("banks." + bankID + ".accountopeningfee");
                 if (!accountHandler.hasFunds(player.getName(), accountOpeningFee)) {
                     player.sendMessage("§cYou do not have enough funds to open an account. Required: §a" + currencySymbol + accountOpeningFee);
@@ -70,8 +73,12 @@ public class AccountCommand implements CommandExecutor {
                     player.sendMessage("§cYou do not have an account with this bank.");
                     return true;
                 }
+                double accountBalance = accountHandler.getBalance(player.getName(), bankID);
                 accountHandler.deleteAccount(player.getName(), bankID);
-                player.sendMessage("§7Account with bank §e[§a" + bankID + "§e]§7 has been closed.");
+                if (accountBalance != 0) {
+                    accountHandler.deposit(player.getName(), accountBalance);
+                }
+                player.sendMessage("§7Account with bank §e[§a" + bankID + "§e]§7 has been closed and the balance has been transferred to you.");
                 return true;
 
             case "deposit":

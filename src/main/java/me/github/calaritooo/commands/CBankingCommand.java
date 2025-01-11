@@ -264,6 +264,16 @@ public class CBankingCommand implements CommandExecutor {
                                 sender.sendMessage("§7Usage: /... player <player> account <bankID> take <amount>");
                                 return true;
                             }
+
+                            if (args.length >= 6 && args[5].equalsIgnoreCase("close")) {
+                                double accountBalance = accountHandler.getBalance(player.getName(), bankID);
+                                accountHandler.deleteAccount(player.getName(), bankID);
+                                if (accountBalance != 0) {
+                                    accountHandler.deposit(player.getName(), accountBalance);
+                                }
+                                sender.sendMessage("§7" + player.getName() + "'s account with bank §e[§a" + bankID + "§e]§7 has been closed and the balance transferred to them.");
+                                return true;
+                            }
                             String playerName = player.getName();
                             double accountBal = accountHandler.getBalance(playerName, bankID);
                             sender.sendMessage("§7" + playerName + "'s account balance with §e[§a" + bankID + "§e]§7: §a" + currencySymbol + accountBal);
@@ -274,7 +284,7 @@ public class CBankingCommand implements CommandExecutor {
                 // /cbanking admin player DIRECTORY
                 sender.sendMessage(pluginHeader);
                 sender.sendMessage("§7/... player <player> balance <set/give/take> <amount>");
-                sender.sendMessage("§7/... player <player> account <bankID> <set/give/take> <amount>");
+                sender.sendMessage("§7/... player <player> account <bankID> <set/give/take/close> <amount>");
                 sender.sendMessage("§7/... player <player> loan <loan> <cancel/finish/credit> ");
                 return true;
             }
