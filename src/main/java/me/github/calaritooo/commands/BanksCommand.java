@@ -42,7 +42,8 @@ public class BanksCommand implements CommandExecutor {
                     accountCount++;
                 }
             }
-            sender.sendMessage("§a- " + bankID + "§7: " + accountCount + " accounts");
+            sender.sendMessage("§7- §a" + bankID + "§7: " + accountCount + " accounts");
+            sender.sendMessage("§7   - Owner: §c" + bankHandler.getBankOwnerByID(bankID));
         }
 
         return true;
