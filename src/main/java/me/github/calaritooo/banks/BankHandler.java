@@ -40,7 +40,11 @@ public class BankHandler implements BankInterface {
 
     @Override
     public boolean bankExists(String bankID) {
-        return bankDataHandler.getBanksConfig().getString("banks. " + bankID) != null;
+        if (bankDataHandler.getBanksConfig().getString("banks. " + bankID) != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public Set<String> getBankIDs() {
@@ -85,7 +89,7 @@ public class BankHandler implements BankInterface {
 
     @Override
     public void setBankName(String bankID, String newBankName) {
-        bankDataHandler.getBanksConfig().set("banks." + bankID + ".bankNamne", newBankName);
+        bankDataHandler.getBanksConfig().set("banks." + bankID + ".bankName", newBankName);
         bankDataHandler.saveBanksConfig();
     }
 
