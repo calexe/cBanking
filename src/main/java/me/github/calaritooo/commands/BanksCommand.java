@@ -35,6 +35,7 @@ public class BanksCommand implements CommandExecutor {
         Set<String> bankIDs = bankHandler.getBankIDs();
         sender.sendMessage("§7List of all banks:");
 
+        int bankNumber = 1;
         for (String bankID : bankIDs) {
             int accountCount = 0;
             for (String playerID : playerDataHandler.getPlayerDataConfig().getConfigurationSection("players").getKeys(false)) {
@@ -42,8 +43,9 @@ public class BanksCommand implements CommandExecutor {
                     accountCount++;
                 }
             }
-            sender.sendMessage("§7- §a" + bankID + "§7: " + accountCount + " accounts");
+            sender.sendMessage("§7" + bankNumber + ". §a" + bankID + "§7: " + accountCount + " accounts");
             sender.sendMessage("§7   - Owner: §c" + bankHandler.getBankOwnerByID(bankID));
+            bankNumber++;
         }
 
         return true;
