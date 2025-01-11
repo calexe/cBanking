@@ -109,18 +109,18 @@ public class BankCommand implements CommandExecutor {
                     player.sendMessage("§cYou do not own a bank.");
                     return true;
                 }
+                boolean foundAccounts = false;
                 for (String playerUUID : playerDataHandler.getPlayerDataConfig().getKeys(false)) {
-                    if (playerDataHandler.getPlayerDataConfig().isConfigurationSection(playerUUID + ".accounts")) {
-                        String balancePath = playerUUID + ".accounts." + accountsBankID;
-                        if (playerDataHandler.getPlayerDataConfig().contains(balancePath)) {
-                            double balance = playerDataHandler.getPlayerDataConfig().getDouble(balancePath);
-                            String playerName = Bukkit.getOfflinePlayer(UUID.fromString(playerUUID)).getName();
-                            player.sendMessage("§aPlayer: " + playerName + "§7\n - Balance: §a" + currencySymbol + balance);
-                            return true;
-                        }
-                        player.sendMessage("§cAccount balance not found!");
-                        return true;
+                    String balancePath = playerUUID + ".accounts." + accountsBankID;
+                    if (playerDataHandler.getPlayerDataConfig().contains(balancePath)) {
+                        double balance = playerDataHandler.getPlayerDataConfig().getDouble(balancePath);
+                        String playerName = Bukkit.getOfflinePlayer(UUID.fromString(playerUUID)).getName();
+                        player.sendMessage("§7Player: §a" + playerName + "§7\n - Balance: §a" + currencySymbol + balance);
+                        foundAccounts = true;
                     }
+                }
+                if (!foundAccounts) {
+                    player.sendMessage("§cNo accounts are open in this bank!");
                 }
                 return true;
             case "loans":
