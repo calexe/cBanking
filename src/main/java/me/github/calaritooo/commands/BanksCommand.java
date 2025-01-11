@@ -33,6 +33,9 @@ public class BanksCommand implements CommandExecutor {
         }
 
         Set<String> bankIDs = bankHandler.getBankIDs();
+        final String pluginPrefix = "§e[§acBanking§e]";
+        final String pluginHeader = "§f------------------- " + pluginPrefix + " §f-------------------";
+        sender.sendMessage(pluginHeader);
         sender.sendMessage("§7List of all banks:");
 
         int bankNumber = 1;

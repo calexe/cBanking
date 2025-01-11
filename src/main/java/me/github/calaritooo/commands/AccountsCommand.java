@@ -72,6 +72,9 @@ public class AccountsCommand implements CommandExecutor {
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .toList();
 
+        final String pluginPrefix = "§e[§acBanking§e]";
+        final String pluginHeader = "§f------------------- " + pluginPrefix + " §f-------------------";
+        sender.sendMessage(pluginHeader);
         sender.sendMessage("§7Bank accounts for §a" + playerName + "§7:");
         for (int i = 0; i < sortedBalances.size(); i++) {
             Map.Entry<String, Double> entry = sortedBalances.get(i);
