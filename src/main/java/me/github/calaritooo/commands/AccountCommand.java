@@ -57,8 +57,9 @@ public class AccountCommand implements CommandExecutor {
                 }
                 if (bankHandler.getBankOwnerByID(bankID).equalsIgnoreCase(player.getName())) {
                     player.sendMessage("§cYou may not open an account with your own bank!");
+                    return true;
                 }
-                double accountOpeningFee = bankDataHandler.getBanksConfig().getDouble("banks." + bankID + ".accountopeningfee");
+                double accountOpeningFee = bankHandler.getAccountOpeningFee(bankID);
                 if (!accountHandler.hasFunds(player.getName(), accountOpeningFee)) {
                     player.sendMessage("§cYou do not have enough funds to open an account. Required: §a" + currencySymbol + accountOpeningFee);
                     return true;

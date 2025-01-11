@@ -307,7 +307,7 @@ public class BankCommand implements CommandExecutor {
                         if (value == null) {
                             String bankHeader = "§f------------------- §e[§a" + manageBankID + "§e] §f-------------------";
                             player.sendMessage(bankHeader);
-                            player.sendMessage("§7Current account opening fee: §a" + bankHandler.getAccountOpeningFee(manageBankID));
+                            player.sendMessage("§7Current account opening fee: §a" + currencySymbol + bankHandler.getAccountOpeningFee(manageBankID));
                         } else {
                             bankHandler.setAccountOpeningFee(manageBankID, Double.parseDouble(value));
                             player.sendMessage("§7Account opening fee successfully set to §a" + value + "§7.");
