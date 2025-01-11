@@ -230,43 +230,41 @@ public class BankCommand implements CommandExecutor {
                             player.sendMessage("§cYou do not have access to this command!");
                             return true;
                         }
-                        if (value == null) {
-                            String bankHeader = "§f------------------- §e[§a" + manageBankID + "§e] §f-------------------";
-                            player.sendMessage(bankHeader);
-                            player.sendMessage("§7Current assets: §a" + currencySymbol + bankHandler.getAssets(manageBankID));
+                        if (args.length < 4) {
+                            player.sendMessage("§7Usage: /bank manage assets <deposit/withdraw> <amount>");
                             return true;
-                        } else {
-                            double currentAssets = bankHandler.getAssets(manageBankID);
-                            double amount = Double.parseDouble(value);
-                            if (args.length > 3) {
-                                String action = args[2].toLowerCase();
-                                switch (action) {
-                                    case "deposit":
-                                        if (accountHandler.hasFunds(player.getName(), amount)) {
-                                            accountHandler.withdraw(player.getName(), amount);
-                                            bankHandler.setAssets(manageBankID, currentAssets + amount);
-                                            player.sendMessage("§7Deposited §a" + currencySymbol + amount + "§7 to bank assets. New assets balance: §a" + currencySymbol + (currentAssets + amount) + "§7.");
-                                        } else {
-                                            player.sendMessage("§cInsufficient funds!");
-                                        }
-                                        return true;
-                                    case "withdraw":
-                                        if (currentAssets >= amount) {
-                                            bankHandler.setAssets(manageBankID, currentAssets - amount);
-                                            accountHandler.deposit(player.getName(), amount);
-                                            player.sendMessage("§7Removed §a" + currencySymbol + amount + "§7 from bank assets. New assets balance: §a" + currencySymbol + (currentAssets - amount) + "§7.");
-                                            return true;
-                                        }
-                                        player.sendMessage("§cInsufficient assets!");
-                                        return true;
-                                    default:
-                                        player.sendMessage("§7Usage: /bank manage assets <deposit/withdraw> <amount>");
-                                        return true;
+                        }
+                        String action = args[2].toLowerCase();
+                        double amount;
+                        try {
+                            amount = Double.parseDouble(args[3]);
+                        } catch (NumberFormatException e) {
+                            player.sendMessage("§cInvalid amount.");
+                            return true;
+                        }
+                        double currentAssets = bankHandler.getAssets(manageBankID);
+                        switch (action) {
+                            case "deposit":
+                                if (accountHandler.hasFunds(player.getName(), amount)) {
+                                    accountHandler.withdraw(player.getName(), amount);
+                                    bankHandler.setAssets(manageBankID, currentAssets + amount);
+                                    player.sendMessage("§7Deposited §a" + currencySymbol + amount + "§7 to bank assets. New assets balance: §a" + currencySymbol + (currentAssets + amount) + "§7.");
+                                } else {
+                                    player.sendMessage("§cInsufficient funds!");
                                 }
-                            } else {
+                                return true;
+                            case "withdraw":
+                                if (currentAssets >= amount) {
+                                    bankHandler.setAssets(manageBankID, currentAssets - amount);
+                                    accountHandler.deposit(player.getName(), amount);
+                                    player.sendMessage("§7Removed §a" + currencySymbol + amount + "§7 from bank assets. New assets balance: §a" + currencySymbol + (currentAssets - amount) + "§7.");
+                                } else {
+                                    player.sendMessage("§cInsufficient assets!");
+                                }
+                                return true;
+                            default:
                                 player.sendMessage("§7Usage: /bank manage assets <deposit/withdraw> <amount>");
                                 return true;
-                            }
                         }
 
                     case "maintenance_fee":
