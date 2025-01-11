@@ -40,11 +40,7 @@ public class BankHandler implements BankInterface {
 
     @Override
     public boolean bankExists(String bankID) {
-        if (bankDataHandler.getBanksConfig().getString("banks. " + bankID) != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return bankDataHandler.getBanksConfig().contains("banks." + bankID);
     }
 
     public Set<String> getBankIDs() {

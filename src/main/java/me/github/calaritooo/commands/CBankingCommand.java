@@ -3,6 +3,7 @@ package me.github.calaritooo.commands;
 import me.github.calaritooo.accounts.AccountHandler;
 import me.github.calaritooo.banks.BankHandler;
 import me.github.calaritooo.cBanking;
+import me.github.calaritooo.data.BankDataHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -19,11 +20,13 @@ public class CBankingCommand implements CommandExecutor {
     private final cBanking plugin;
     private final AccountHandler accountHandler;
     private final BankHandler bankHandler;
+    private final BankDataHandler bankDataHandler;
 
     public CBankingCommand(cBanking plugin) {
         this.plugin = plugin;
         this.accountHandler = plugin.getAccountHandler();
         this.bankHandler = plugin.getBankHandler();
+        this.bankDataHandler = plugin.getBankDataHandler();
     }
 
     @Override

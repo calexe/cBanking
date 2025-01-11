@@ -72,8 +72,8 @@ public class AccountsCommand implements CommandExecutor {
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .toList();
 
-        String prefix = "§e[§ac" + playerName + "'s Accounts§e]";
-        String header = "§f------------------- " + prefix + " §f-------------------";
+        String prefix = "§e[§a" + playerName + "'s Accounts§e]";
+        String header = "§f---------------- " + prefix + " §f----------------";
         sender.sendMessage(header);
         for (int i = 0; i < sortedBalances.size(); i++) {
             Map.Entry<String, Double> entry = sortedBalances.get(i);
