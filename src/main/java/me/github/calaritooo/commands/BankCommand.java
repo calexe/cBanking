@@ -102,7 +102,7 @@ public class BankCommand implements CommandExecutor {
                     return true;
                 }
                 bankHandler.deleteBankAndTransferBalances(closeBankID);
-                player.sendMessage("§7 Your bank has been closed and all player account balances have been transferred!");
+                player.sendMessage("§7Your bank has been closed and all player account balances have been transferred!");
                 return true;
 
             case "accounts":
@@ -212,7 +212,7 @@ public class BankCommand implements CommandExecutor {
                         if (value == null) {
                             String bankHeader = "§f------------------- §e[§a" + manageBankID + "§e] §f-------------------";
                             player.sendMessage(bankHeader);
-                            player.sendMessage("§7Current interest rate: §a" + bankHandler.getInterestRate(manageBankID));
+                            player.sendMessage("§7Current interest rate: §a" + bankHandler.getInterestRate(manageBankID) + "%");
                         } else {
                             double amount = Double.parseDouble(value);
                             double minInterestRate = plugin.getConfig().getDouble("loan-settings.min-loan-interest-rate");
@@ -322,7 +322,7 @@ public class BankCommand implements CommandExecutor {
                         if (value == null) {
                             String bankHeader = "§f------------------- §e[§a" + manageBankID + "§e] §f-------------------";
                             player.sendMessage(bankHeader);
-                            player.sendMessage("§7Current account growth rate: §a" + bankHandler.getAccountGrowthRate(manageBankID));
+                            player.sendMessage("§7Current account growth rate: §a" + bankHandler.getAccountGrowthRate(manageBankID) + "%");
                         } else {
                             bankHandler.setAccountGrowthRate(manageBankID, Double.parseDouble(value));
                             player.sendMessage("§7Account growth rate successfully set to §a" + value + "§7%.");
@@ -337,7 +337,11 @@ public class BankCommand implements CommandExecutor {
                         if (value == null) {
                             String bankHeader = "§f------------------- §e[§a" + manageBankID + "§e] §f-------------------";
                             player.sendMessage(bankHeader);
-                            player.sendMessage("§7Current deposit fee: §a" + bankHandler.getDepositFeeRate(manageBankID));
+                            if (plugin.getConfig().getString("bank-settings.transaction-fee-type").equalsIgnoreCase("percentage")) {
+                                player.sendMessage("§7Current deposit fee: §a" + bankHandler.getDepositFeeRate(manageBankID) + "%");
+                            } else {
+                                player.sendMessage("§7Current deposit fee: §a" + bankHandler.getDepositFeeRate(manageBankID));
+                            }
                             return true;
                         } else {
                             if (plugin.getConfig().getString("bank-settings.transaction-fee-type").equalsIgnoreCase("percentage")) {
@@ -365,12 +369,11 @@ public class BankCommand implements CommandExecutor {
                             player.sendMessage(bankHeader);
                             if (plugin.getConfig().getString("bank-settings.transaction-fee-type").equalsIgnoreCase("percentage")) {
                                 player.sendMessage("§7Current withdrawal fee: §a" + bankHandler.getWithdrawalFeeRate(manageBankID) + "%");
-                                return true;
                             }
                             if (plugin.getConfig().getString("bank-settings.transaction-fee-type").equalsIgnoreCase("flat")) {
                                 player.sendMessage("§7Current withdrawal fee: §a" + bankHandler.getWithdrawalFeeRate(manageBankID));
-                                return true;
                             }
+                            return true;
                         } else {
                             if (plugin.getConfig().getString("bank-settings.transaction-fee-type").equalsIgnoreCase("percentage")) {
                                 bankHandler.setWithdrawalFeeRate(manageBankID, Double.parseDouble(value));
