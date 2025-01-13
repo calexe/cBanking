@@ -34,9 +34,15 @@ public class AccountCommand implements CommandExecutor {
             return true;
         }
 
+        if (args.length == 0) {
+            player.sendMessage("§7Usage: /acc <bankID> <open/close/deposit/withdraw> <amount>");
+            player.sendMessage("§7*Manage your bank account*");
+            return true;
+        }
+
         String bankID = args[0];
 
-        if (args.length > 1 && bankHandler.bankExists(bankID)) {
+        if (args.length < 2 && bankHandler.bankExists(bankID)) {
             player.sendMessage("§7Usage: /acc <bankID> <open/close/deposit/withdraw> <amount>");
             player.sendMessage("§7*Manage your bank account*");
             return true;
