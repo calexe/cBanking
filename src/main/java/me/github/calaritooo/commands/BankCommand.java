@@ -37,7 +37,7 @@ public class BankCommand implements CommandExecutor {
         boolean banksEnabled = plugin.getConfig().getBoolean("modules.enable-banks");
         boolean loansEnabled = plugin.getConfig().getBoolean("modules.enable-loans");
         final String pluginPrefix = "§e[§acBanking§e]";
-        final String pluginHeader = "§f------------------- " + pluginPrefix + " §f-------------------";
+        final String pluginHeader = "§f-+----------+-" + pluginPrefix + " §f-+----------+-";
 
         if (!banksEnabled) {
             player.sendMessage("§cBanks are not enabled on this server!");
@@ -50,7 +50,7 @@ public class BankCommand implements CommandExecutor {
                 sender.sendMessage(pluginHeader);
                 sender.sendMessage("§7/bank open <name> <bankID>");
             } else {
-                String bankHeader = "§f------------------- §e[§a" + ownersBankID + "§e] §f-------------------";
+                String bankHeader = "§f-+----------+-§e[§a" + ownersBankID + "§e]§f-+----------+-";
                 sender.sendMessage(bankHeader);
                 sender.sendMessage("§7/bank accounts");
                 sender.sendMessage("§7/bank loans <approve/reject>");
