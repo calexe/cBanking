@@ -61,15 +61,7 @@ public class PlayerDataHandler {
     public void savePlayerData(String playerName, String playerID, double balance) {
         getPlayerDataConfig().set("players." + playerID + ".playerName", playerName);
         getPlayerDataConfig().set("players." + playerID + ".balance", balance);
-        getPlayerDataConfig().set("players." + playerID + ".accounts", new YamlConfiguration());
-        savePlayerDataConfig();
-    }
-
-    public void savePlayerNewBankAccountData(String playerName, String playerID, double balance, String bankID, long creationTime, double accountBalance) {
-        getPlayerDataConfig().set("players." + playerID + ".playerName", playerName);
-        getPlayerDataConfig().set("players." + playerID + ".balance", balance);
-        getPlayerDataConfig().set("players." + playerID + ".accounts." + bankID + ".creationTime", creationTime);
-        getPlayerDataConfig().set("players." + playerID + ".accounts." + bankID + ".balance", accountBalance);
+        getPlayerDataConfig().createSection("players." + playerID + ".accounts");
         savePlayerDataConfig();
     }
 
