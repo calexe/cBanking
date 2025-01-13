@@ -79,6 +79,20 @@ public class BankHandler implements BankInterface {
     }
 
     @Override
+    public boolean bankNameExists(String bankName) {
+        ConfigurationSection banksSection = bankDataHandler.getBanksConfig().getConfigurationSection("banks");
+        if (banksSection == null) {
+            return false;
+        }
+        for (String bankID : banksSection.getKeys(false)) {
+            if (bankName.equalsIgnoreCase(banksSection.getString(bankID + ".bankName"))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public String getBankOwnerByID(String bankID) {
         return bankDataHandler.getBanksConfig().getString("banks." + bankID + ".ownerName");
     }

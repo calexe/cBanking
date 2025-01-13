@@ -73,11 +73,15 @@ public class AccountsCommand implements CommandExecutor {
                 .toList();
 
         String prefix = "§e[§a" + playerName + "'s Accounts§e]";
-        String header = "§f---------------- " + prefix + " §f----------------";
-        sender.sendMessage(header);
-        for (int i = 0; i < sortedBalances.size(); i++) {
-            Map.Entry<String, Double> entry = sortedBalances.get(i);
-            sender.sendMessage("§7" + (i + 1) + ". Bank ID: §a" + entry.getKey() + "\n§7  Balance: §a" + entry.getValue());
+        String header = "§f-+--------+-" + prefix + "§f-+--------+-";
+        if (accountBalances.isEmpty()) {
+            sender.sendMessage("§cThis player has no open accounts!");
+        } else {
+            sender.sendMessage(header);
+            for (int i = 0; i < sortedBalances.size(); i++) {
+                Map.Entry<String, Double> entry = sortedBalances.get(i);
+                sender.sendMessage("§7" + (i + 1) + ". Bank ID: §a" + entry.getKey() + "\n§7  Balance: §a" + entry.getValue());
+            }
         }
         return true;
     }
