@@ -38,6 +38,7 @@ public class AccountCommand implements CommandExecutor {
 
         if (args.length > 1 && bankHandler.bankExists(bankID)) {
             player.sendMessage("§7Usage: /acc <bankID> <open/close/deposit/withdraw> <amount>");
+            player.sendMessage("§7*Manage your bank account*");
             return true;
         }
 
@@ -85,7 +86,8 @@ public class AccountCommand implements CommandExecutor {
 
             case "deposit":
                 if (args.length < 3) {
-                    player.sendMessage("§7Usage: /account <bankID> <deposit> <amount>");
+                    player.sendMessage("§7Usage: /acc <bankID> <deposit> <amount>");
+                    player.sendMessage("§7*Manage your bank account*");
                 }
                 else {
                     if (!accountHandler.hasAccount(player.getName(), bankID)) {
@@ -118,7 +120,8 @@ public class AccountCommand implements CommandExecutor {
 
             case "withdraw":
                 if (args.length < 3) {
-                    player.sendMessage("§7Usage: /account <bankID> <withdraw> <amount>");
+                    player.sendMessage("§7Usage: /acc <bankID> <withdraw> <amount>");
+                    player.sendMessage("§7*Manage your bank account*");
                     return true;
                 }
                 else if (!accountHandler.hasAccount(player.getName(), bankID)) {
@@ -149,7 +152,8 @@ public class AccountCommand implements CommandExecutor {
                 return true;
 
             default:
-                player.sendMessage("§7Usage: /account <bankID> <open/close/deposit/withdraw> <amount>");
+                player.sendMessage("§7Usage: /acc <bankID> <open/close/deposit/withdraw> <amount>");
+                player.sendMessage("§7*Manage your bank account*");
                 return true;
         }
     }

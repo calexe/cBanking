@@ -75,7 +75,7 @@ public class AccountsCommand implements CommandExecutor {
         String prefix = "§e[§a" + playerName + "'s Accounts§e]";
         String header = "§f-+--------+-" + prefix + "§f-+--------+-";
         if (accountBalances.isEmpty()) {
-            sender.sendMessage("§cThis player has no open accounts!");
+            sender.sendMessage("§cYou have no open accounts!");
         } else {
             sender.sendMessage(header);
             for (int i = 0; i < sortedBalances.size(); i++) {

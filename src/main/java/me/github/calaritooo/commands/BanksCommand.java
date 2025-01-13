@@ -34,7 +34,7 @@ public class BanksCommand implements CommandExecutor {
 
         Set<String> bankIDs = bankHandler.getBankIDs();
         String prefix = "§e[§aList of Banks§e]";
-        String header = "§f------------------- " + prefix + " §f-------------------";
+        String header = "§f-+--------+-" + prefix + "§f-+--------+-";
         sender.sendMessage(header);
 
         int bankNumber = 1;

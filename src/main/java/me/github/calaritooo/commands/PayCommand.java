@@ -37,6 +37,7 @@ public class PayCommand implements CommandExecutor {
 
         if (args.length != 2) {
             player.sendMessage("§7Usage: /pay <player> <amount>");
+            player.sendMessage("§7*Send money from your personal balance*");
             return true;
         }
 

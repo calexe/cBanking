@@ -55,6 +55,8 @@ public class BalanceCommand implements CommandExecutor {
                     }
                 }
                 player.sendMessage("§7Usage: /balance <player>");
+                player.sendMessage("§7*Check someone's balance*");
+
                 return true;
             }
             player.sendMessage("§cYou do not have access to this command!");
@@ -73,6 +75,7 @@ public class BalanceCommand implements CommandExecutor {
             }
         }
         sender.sendMessage("§7Usage: /balance <player>");
+        sender.sendMessage("§7*Check someone's balance*");
         return true;
     }
 }

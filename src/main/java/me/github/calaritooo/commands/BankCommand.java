@@ -5,12 +5,15 @@ import me.github.calaritooo.banks.BankHandler;
 import me.github.calaritooo.cBanking;
 import me.github.calaritooo.data.PlayerDataHandler;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public class BankCommand implements CommandExecutor {
@@ -19,6 +22,7 @@ public class BankCommand implements CommandExecutor {
     private final BankHandler bankHandler;
     private final PlayerDataHandler playerDataHandler;
     private final AccountHandler accountHandler;
+    private final Set<UUID> closeRequests = new HashSet<>();
 
     public BankCommand(cBanking plugin) {
         this.plugin = plugin;
@@ -75,6 +79,8 @@ public class BankCommand implements CommandExecutor {
                 }
                 if (args.length != 3) {
                     player.sendMessage("§7Usage: /bank open <name> <ID>");
+                    player.sendMessage("§7*Open a new bank*");
+
                     return true;
                 }
                 if (bankHandler.getBankIDByName(player.getName()) != null) {
@@ -82,7 +88,7 @@ public class BankCommand implements CommandExecutor {
                     return true;
                 }
                 String newBankName = args[1];
-                if (newBankName.length() > 12 || !newBankName.matches("[A-Z0-9]+")) {
+                if (newBankName.length() > 12 || !newBankName.matches("[a-zA-Z0-9_]+")) {
                     player.sendMessage("§cBank name cannot exceed 12 characters and must be alphanumerical!");
                     return true;
                 }
@@ -117,8 +123,15 @@ public class BankCommand implements CommandExecutor {
                     player.sendMessage("§cYou do not own a bank to close.");
                     return true;
                 }
-                bankHandler.deleteBankAndTransferBalances(closeBankID);
-                player.sendMessage("§7Your bank has been closed and all player account balances have been transferred!");
+                if (closeRequests.contains(player.getUniqueId())) {
+                    bankHandler.deleteBankAndTransferBalances(closeBankID);
+                    player.sendMessage("§7Your bank has been closed and all player account balances have been transferred!");
+                    closeRequests.remove(player.getUniqueId());
+                } else {
+                    closeRequests.add(player.getUniqueId());
+                    player.sendMessage("§cAre you sure you want to close your bank? Retype the command within 30 seconds to confirm!");
+                    Bukkit.getScheduler().runTaskLater(plugin, () -> closeRequests.remove(player.getUniqueId()), 600L); // 600 ticks = 30 seconds
+                }
                 return true;
 
             case "accounts":
@@ -132,6 +145,8 @@ public class BankCommand implements CommandExecutor {
                     return true;
                 }
                 boolean foundAccounts = false;
+                String accountsHeader = "§f-+------+------+- §e[§a" + accountsBankID + "§e] §f-+------+------+-";
+                sender.sendMessage(accountsHeader);
                 for (String playerUUID : playerDataHandler.getPlayerDataConfig().getKeys(false)) {
                     String balancePath = playerUUID + ".accounts." + accountsBankID;
                     if (playerDataHandler.getPlayerDataConfig().contains(balancePath)) {
@@ -174,7 +189,7 @@ public class BankCommand implements CommandExecutor {
                     return true;
                 }
                 if (args.length < 2) {
-                    String bankHeader = "§f-+----------+- §e[§a" + manageBankID + "§e] §f-+----------+-";
+                    String bankHeader = "§f-+------+------+- §e[§a" + manageBankID + "§e] §f-+------+------+-";
                     sender.sendMessage(bankHeader);
                     sender.sendMessage("§7/bank manage <name/owner> <new name/new owner>");
                     sender.sendMessage("§7/bank manage assets <deposit/withdraw> <amount>");
@@ -193,12 +208,17 @@ public class BankCommand implements CommandExecutor {
                             return true;
                         }
                         if (value == null) {
-                            String bankHeader = "§f-+----------+- §e[§a" + manageBankID + "§e] §f-+----------+-";
+                            String bankHeader = "§f-+------+------+- §e[§a" + manageBankID + "§e] §f-+------+------+-";
                             player.sendMessage(bankHeader);
                             player.sendMessage("§7Current bank name: §a" + bankHandler.getBankNameByID(manageBankID));
                         } else {
-                            bankHandler.setBankName(manageBankID, value);
-                            player.sendMessage("§7Bank name has been updated to §a" + value + "§7.");
+                            if (value.length() > 12 || !value.matches("[a-zA-Z0-9_]+")) {
+                                player.sendMessage("§cBank name cannot exceed 12 characters and must be alphanumerical!");
+                                return true;
+                            } else {
+                                bankHandler.setBankName(manageBankID, value);
+                                player.sendMessage("§7Bank name has been updated to §a" + value + "§7.");
+                            }
                         }
                         return true;
                     case "owner":
@@ -207,10 +227,15 @@ public class BankCommand implements CommandExecutor {
                             return true;
                         }
                         if (value == null) {
-                            String bankHeader = "§f-+----------+- §e[§a" + manageBankID + "§e] §f-+----------+-";
+                            String bankHeader = "§f-+------+------+- §e[§a" + manageBankID + "§e] §f-+------+------+-";
                             player.sendMessage(bankHeader);
                             player.sendMessage("§7Current bank owner: §a" + bankHandler.getBankOwnerByID(manageBankID));
                         } else {
+                            OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(value);
+                            if (!targetPlayer.hasPlayedBefore()) {
+                                player.sendMessage("§cPlayer not found!");
+                                return true;
+                            }
                             bankHandler.setBankOwner(manageBankID, value);
                             player.sendMessage("§7Bank owner has been updated to §a" + value + "§7.");
                         }
@@ -226,7 +251,7 @@ public class BankCommand implements CommandExecutor {
                             return true;
                         }
                         if (value == null) {
-                            String bankHeader = "§f-+----------+- §e[§a" + manageBankID + "§e] §f-+----------+-";
+                            String bankHeader = "§f-+------+------+- §e[§a" + manageBankID + "§e] §f-+------+------+-";
                             player.sendMessage(bankHeader);
                             player.sendMessage("§7Current interest rate: §a" + bankHandler.getInterestRate(manageBankID) + "%");
                         } else {
@@ -248,6 +273,8 @@ public class BankCommand implements CommandExecutor {
                         }
                         if (args.length < 4) {
                             player.sendMessage("§7Usage: /bank manage assets <deposit/withdraw> <amount>");
+                            player.sendMessage("§7*Manage your bank's assets pool*");
+
                             return true;
                         }
                         String action = args[2].toLowerCase();
@@ -280,6 +307,7 @@ public class BankCommand implements CommandExecutor {
                                 return true;
                             default:
                                 player.sendMessage("§7Usage: /bank manage assets <deposit/withdraw> <amount>");
+                                player.sendMessage("§7*Manage your bank's assets pool*");
                                 return true;
                         }
 
@@ -321,7 +349,7 @@ public class BankCommand implements CommandExecutor {
                             return true;
                         }
                         if (value == null) {
-                            String bankHeader = "§f-+----------+- §e[§a" + manageBankID + "§e] §f-+----------+-";
+                            String bankHeader = "§f-+------+------+- §e[§a" + manageBankID + "§e] §f-+------+------+-";
                             player.sendMessage(bankHeader);
                             player.sendMessage("§7Current account opening fee: §a" + currencySymbol + bankHandler.getAccountOpeningFee(manageBankID));
                         } else {
@@ -336,7 +364,7 @@ public class BankCommand implements CommandExecutor {
                             return true;
                         }
                         if (value == null) {
-                            String bankHeader = "§f-+----------+- §e[§a" + manageBankID + "§e] §f-+----------+-";
+                            String bankHeader = "§f-+------+------+- §e[§a" + manageBankID + "§e] §f-+------+------+-";
                             player.sendMessage(bankHeader);
                             player.sendMessage("§7Current account growth rate: §a" + bankHandler.getAccountGrowthRate(manageBankID) + "%");
                         } else {
@@ -351,7 +379,7 @@ public class BankCommand implements CommandExecutor {
                             return true;
                         }
                         if (value == null) {
-                            String bankHeader = "§f-+----------+- §e[§a" + manageBankID + "§e] §f-+----------+-";
+                            String bankHeader = "§f-+------+------+- §e[§a" + manageBankID + "§e] §f-+------+------+-";
                             player.sendMessage(bankHeader);
                             if (plugin.getConfig().getString("bank-settings.transaction-fee-type").equalsIgnoreCase("percentage")) {
                                 player.sendMessage("§7Current deposit fee: §a" + bankHandler.getDepositFeeRate(manageBankID) + "%");
@@ -381,7 +409,7 @@ public class BankCommand implements CommandExecutor {
                             return true;
                         }
                         if (value == null) {
-                            String bankHeader = "§f-+----------+- §e[§a" + manageBankID + "§e] §f-+----------+-";
+                            String bankHeader = "§f-+------+------+- §e[§a" + manageBankID + "§e] §f-+------+------+-";
                             player.sendMessage(bankHeader);
                             if (plugin.getConfig().getString("bank-settings.transaction-fee-type").equalsIgnoreCase("percentage")) {
                                 player.sendMessage("§7Current withdrawal fee: §a" + bankHandler.getWithdrawalFeeRate(manageBankID) + "%");
