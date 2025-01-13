@@ -1,7 +1,7 @@
-package me.github.calaritooo.listeners;
+package me.calaritooo.cBanking.listeners;
 
-import me.github.calaritooo.accounts.AccountHandler;
-import me.github.calaritooo.cBanking;
+import me.calaritooo.cBanking.accounts.AccountHandler;
+import me.calaritooo.cBanking.cBanking;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

@@ -1,7 +1,7 @@
-package me.github.calaritooo.banks;
+package me.calaritooo.cBanking.banks;
 
-import me.github.calaritooo.cBanking;
-import me.github.calaritooo.data.BankDataHandler;
+import me.calaritooo.cBanking.cBanking;
+import me.calaritooo.cBanking.data.BankDataHandler;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.Collections;

@@ -1,8 +1,8 @@
-package me.github.calaritooo.accounts;
+package me.calaritooo.cBanking.accounts;
 
-import me.github.calaritooo.cBanking;
-import me.github.calaritooo.data.BankDataHandler;
-import me.github.calaritooo.data.PlayerDataHandler;
+import me.calaritooo.cBanking.cBanking;
+import me.calaritooo.cBanking.data.BankDataHandler;
+import me.calaritooo.cBanking.data.PlayerDataHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 

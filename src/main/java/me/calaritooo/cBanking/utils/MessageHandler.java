@@ -1,6 +1,6 @@
-package me.github.calaritooo.utils;
+package me.calaritooo.cBanking.utils;
 
-import me.github.calaritooo.cBanking;
+import me.calaritooo.cBanking.cBanking;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;

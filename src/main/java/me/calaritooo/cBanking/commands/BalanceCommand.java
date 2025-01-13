@@ -1,7 +1,7 @@
-package me.github.calaritooo.commands;
+package me.calaritooo.cBanking.commands;
 
-import me.github.calaritooo.accounts.AccountHandler;
-import me.github.calaritooo.cBanking;
+import me.calaritooo.cBanking.accounts.AccountHandler;
+import me.calaritooo.cBanking.cBanking;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;

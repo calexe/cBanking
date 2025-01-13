@@ -1,4 +1,4 @@
-package me.github.calaritooo;
+package me.calaritooo.cBanking;
 
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;

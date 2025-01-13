@@ -1,4 +1,4 @@
-package me.github.calaritooo.accounts;
+package me.calaritooo.cBanking.accounts;
 
 public interface AccountInterface {
 

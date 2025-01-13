@@ -1,5 +1,5 @@
 name: cBanking
-main: me.github.calaritooo.cBanking
+main: me.calaritooo.cBanking.cBanking
 version: ${project.version}
 api-version: '1.21'
 prefix: ${project.name}

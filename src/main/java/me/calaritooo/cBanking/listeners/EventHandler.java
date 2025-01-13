@@ -1,6 +1,6 @@
-package me.github.calaritooo.listeners;
+package me.calaritooo.cBanking.listeners;
 
-import me.github.calaritooo.cBanking;
+import me.calaritooo.cBanking.cBanking;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;

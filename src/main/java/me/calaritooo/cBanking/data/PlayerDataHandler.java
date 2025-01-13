@@ -1,6 +1,6 @@
-package me.github.calaritooo.data;
+package me.calaritooo.cBanking.data;
 
-import me.github.calaritooo.cBanking;
+import me.calaritooo.cBanking.cBanking;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 

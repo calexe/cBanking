@@ -1,4 +1,4 @@
-package me.github.calaritooo.data;
+package me.calaritooo.cBanking.data;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 

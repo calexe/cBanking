@@ -1,12 +1,12 @@
-package me.github.calaritooo;
+package me.calaritooo.cBanking;
 
-import me.github.calaritooo.accounts.AccountHandler;
-import me.github.calaritooo.banks.BankHandler;
-import me.github.calaritooo.commands.*;
-import me.github.calaritooo.data.BankDataHandler;
-import me.github.calaritooo.data.PlayerDataHandler;
-import me.github.calaritooo.listeners.EventHandler;
-import me.github.calaritooo.utils.MessageHandler;
+import me.calaritooo.cBanking.accounts.AccountHandler;
+import me.calaritooo.cBanking.banks.BankHandler;
+import me.calaritooo.cBanking.commands.*;
+import me.calaritooo.cBanking.data.BankDataHandler;
+import me.calaritooo.cBanking.data.PlayerDataHandler;
+import me.calaritooo.cBanking.listeners.EventHandler;
+import me.calaritooo.cBanking.utils.MessageHandler;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;

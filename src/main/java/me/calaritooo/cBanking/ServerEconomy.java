@@ -1,6 +1,6 @@
-package me.github.calaritooo;
+package me.calaritooo.cBanking;
 
-import me.github.calaritooo.accounts.AccountHandler;
+import me.calaritooo.cBanking.accounts.AccountHandler;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
