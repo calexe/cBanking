@@ -12,13 +12,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 public class cBanking extends JavaPlugin {
 
     private static cBanking plugin;
-    private VaultHook vaultHook;
+    private ServerEconomy economy;
     private MessageHandler messageHandler;
     private AccountHandler accountHandler;
     private BankHandler bankHandler;
@@ -42,16 +43,16 @@ public class cBanking extends JavaPlugin {
 
         initializeHandlers();
 
-
-        vaultHook = new VaultHook();
-        if (getServer().getPluginManager().getPlugin("Vault") != null) {
-            ServerEconomy serverEconomy = new ServerEconomy(this);
-            serverEconomy.register();
-        } else {
-            getLogger().severe("Vault is not installed! Disabling cBanking.");
+        if (!setupEconomy()) {
+            getLogger().severe("Vault not found! Disabling plugin.");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+
+        economy = new ServerEconomy(this);
+        getServer().getServicesManager().register(Economy.class, economy, this, ServicePriority.Highest);
+        getLogger().info("Economy provider registered.");
+
 
         eventHandler = new EventHandler(this);
         eventHandler.registerEvents();
@@ -87,20 +88,17 @@ public class cBanking extends JavaPlugin {
 
         Bukkit.getScheduler().cancelTasks(this);
 
-        RegisteredServiceProvider<Economy> registration = Bukkit.getServicesManager().getRegistration(Economy.class);
-        if (registration != null) {
-            Economy registeredEconomy = registration.getProvider();
-            if (registeredEconomy instanceof ServerEconomy) {
-                Bukkit.getServicesManager().unregister(registeredEconomy);
-                plugin.getLogger().info("Successfully unregistered cBanking from Vault.");
-            } else {
-                plugin.getLogger().warning("Another Economy provider is registered. No action taken.");
-            }
-        } else {
-            plugin.getLogger().warning("No Economy provider found to unregister.");
-        }
+        getServer().getServicesManager().unregister(Economy.class, economy);
 
         getLogger().info("cBanking has been successfully disabled!");
+    }
+
+    private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return false;
+        }
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        return rsp != null;
     }
 
     private void initializeHandlers() {
@@ -139,7 +137,7 @@ public class cBanking extends JavaPlugin {
         return bankDataHandler;
     }
     public Economy getEconomy() {
-        return vaultHook.getEconomy();
+        return economy;
     }
     public static cBanking getInstance() {
         return plugin;
