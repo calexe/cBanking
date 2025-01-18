@@ -52,6 +52,7 @@ public class BankCommand implements CommandExecutor {
         if (args.length < 1) {
             if (ownersBankID == null) {
                 sender.sendMessage(pluginHeader);
+                sender.sendMessage("§7/bank info <bankID>");
                 sender.sendMessage("§7/bank open <name> <bankID>");
             } else {
                 String bankHeader = "§f-+----------+-§e[§a" + ownersBankID + "§e]§f-+----------+-";
@@ -72,6 +73,36 @@ public class BankCommand implements CommandExecutor {
         String currencySymbol = plugin.getConfig().getString("economy-settings.currency-symbol");
 
         switch (subCommand) {
+            case "info":
+                if (args.length != 2) {
+                    player.sendMessage("§7Usage: /bank info <bankID>");
+                    return true;
+                }
+                String bankID = args[1].toUpperCase();
+                if (!bankHandler.bankExists(bankID)) {
+                    player.sendMessage("§cBank not found!");
+                    return true;
+                }
+                String bankName = bankHandler.getBankNameByID(bankID);
+                String bankOwner = bankHandler.getBankOwnerByID(bankID);
+                double interestRate = bankHandler.getInterestRate(bankID);
+                double maintenanceFee = bankHandler.getMaintenanceFeeRate(bankID);
+                double accountOpeningFee = bankHandler.getAccountOpeningFee(bankID);
+                double growthRate = bankHandler.getAccountGrowthRate(bankID);
+                double depositFee = bankHandler.getDepositFeeRate(bankID);
+                double withdrawalFee = bankHandler.getWithdrawalFeeRate(bankID);
+
+                player.sendMessage("§f-+----------+-§e[§a" + bankID + "§e]§f-+----------+-");
+                player.sendMessage("§7Bank Name: §a" + bankName);
+                player.sendMessage("§7Bank Owner: §a" + bankOwner);
+                player.sendMessage("§7Interest Rate: §a" + interestRate + "%");
+                player.sendMessage("§7Maintenance Fee: §a" + (plugin.getConfig().getString("bank-settings.maintenance-fee-type").equalsIgnoreCase("percentage") ? maintenanceFee + "%" : currencySymbol + maintenanceFee));
+                player.sendMessage("§7Account Opening Fee: §a" + currencySymbol + accountOpeningFee);
+                player.sendMessage("§7Account Growth Rate: §a" + growthRate + "%");
+                player.sendMessage("§7Deposit Fee: §a" + depositFee + (plugin.getConfig().getString("bank-settings.transaction-fee-type").equalsIgnoreCase("percentage") ? "%" : currencySymbol));
+                player.sendMessage("§7Withdrawal Fee: §a" + withdrawalFee + (plugin.getConfig().getString("bank-settings.transaction-fee-type").equalsIgnoreCase("percentage") ? "%" : currencySymbol));
+                return true;
+
             case "open":
                 if (!player.hasPermission("cbanking.bank.open")) {
                     player.sendMessage("§cYou do not have access to this command!");
@@ -88,8 +119,8 @@ public class BankCommand implements CommandExecutor {
                     return true;
                 }
                 String newBankName = args[1];
-                if (newBankName.length() > 12 || !newBankName.matches("[a-zA-Z0-9_]+")) {
-                    player.sendMessage("§cBank name cannot exceed 12 characters and must be alphanumerical!");
+                if (newBankName.length() > 24 || !newBankName.matches("[a-zA-Z0-9_]+")) {
+                    player.sendMessage("§cBank name cannot exceed 24 characters and must be alphanumerical!");
                     return true;
                 }
                 if (bankHandler.bankNameExists(newBankName)) {
@@ -107,10 +138,14 @@ public class BankCommand implements CommandExecutor {
                 }
                 double newBankFee = plugin.getConfig().getDouble("bank-settings.new-bank-fee");
                 double newBankAssets = plugin.getConfig().getDouble("bank-settings.new-bank-assets");
-                if (accountHandler.hasFunds(player.getName(), newBankFee)) {
+                double totalBankFee = newBankFee + newBankAssets;
+                if (!accountHandler.hasFunds(player.getName(), totalBankFee)) {
                     player.sendMessage("§cInsufficient funds! §7Fees to open a bank:\n- New bank fee: §c" + newBankFee + "\n- Initial assets deposit: §c" + newBankAssets);
+                    return true;
                 }
+                accountHandler.withdraw(player.getName(), totalBankFee);
                 bankHandler.createBank(newBankID, newBankName, player.getName());
+                bankHandler.setAssets(newBankID, newBankAssets);
                 player.sendMessage(pluginPrefix + "§7 The bank, §a" + newBankName + "§7, has been successfully opened with ID: §a" + newBankID + "§7!");
                 return true;
             case "close":

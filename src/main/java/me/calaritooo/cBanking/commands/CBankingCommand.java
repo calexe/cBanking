@@ -77,7 +77,7 @@ public class CBankingCommand implements CommandExecutor {
 
             if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
                 plugin.reloadConfig();
-                sender.sendMessage("§aThe cBanking plugin has been reloaded!");
+                sender.sendMessage("§acBanking has been reloaded!");
                 return true;
             }
 

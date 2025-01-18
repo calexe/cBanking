@@ -72,11 +72,11 @@ public class AccountsCommand implements CommandExecutor {
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .toList();
 
-        String prefix = "§e[§a" + playerName + "'s Accounts§e]";
-        String header = "§f-+--------+-" + prefix + "§f-+--------+-";
         if (accountBalances.isEmpty()) {
             sender.sendMessage("§cYou have no open accounts!");
         } else {
+            String prefix = "§e[§a" + playerName + "'s Accounts§e]";
+            String header = "§f-+--------+-" + prefix + "§f-+--------+-";
             sender.sendMessage(header);
             for (int i = 0; i < sortedBalances.size(); i++) {
                 Map.Entry<String, Double> entry = sortedBalances.get(i);

@@ -33,6 +33,11 @@ public class BanksCommand implements CommandExecutor {
         }
 
         Set<String> bankIDs = bankHandler.getBankIDs();
+        if (bankIDs.isEmpty()) {
+            sender.sendMessage("§cThere are currently no existing banks!");
+            return true;
+        }
+
         String prefix = "§e[§aList of Banks§e]";
         String header = "§f-+--------+-" + prefix + "§f-+--------+-";
         sender.sendMessage(header);
@@ -46,15 +51,13 @@ public class BanksCommand implements CommandExecutor {
                 }
             }
             if (accountCount == 1) {
-                sender.sendMessage("§7" + bankNumber + ". §a" + bankID + "§7: " + accountCount + " accounts");
-                bankNumber++;
+                sender.sendMessage("§7" + bankNumber + ". §a" + bankID + "§7: " + accountCount + " account");
             } else {
                 sender.sendMessage("§7" + bankNumber + ". §a" + bankID + "§7: " + accountCount + " accounts");
-                sender.sendMessage("§7  Owner: §7" + bankHandler.getBankOwnerByID(bankID));
-                bankNumber++;
             }
+            sender.sendMessage("§7   Owner: §7" + bankHandler.getBankOwnerByID(bankID));
+            bankNumber++;
         }
-
         return true;
     }
 }
