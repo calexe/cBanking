@@ -43,6 +43,12 @@ public class cBanking extends JavaPlugin {
 
         initializeHandlers();
 
+        RegisteredServiceProvider<Economy> existingProvider = getServer().getServicesManager().getRegistration(Economy.class);
+        if (existingProvider != null) {
+            getServer().getServicesManager().unregister(existingProvider.getProvider());
+            getLogger().info("Already existing economy provider unregistered.");
+        }
+
         economy = new ServerEconomy(this);
         getServer().getServicesManager().register(Economy.class, economy, this, ServicePriority.Highest);
         getLogger().info("Economy provider registered.");
@@ -55,6 +61,14 @@ public class cBanking extends JavaPlugin {
 
         eventHandler = new EventHandler(this);
         eventHandler.registerEvents();
+
+        getCommand("cbanking").setExecutor(null);
+        getCommand("balance").setExecutor(null);
+        getCommand("pay").setExecutor(null);
+        getCommand("account").setExecutor(null);
+        getCommand("accounts").setExecutor(null);
+        getCommand("banks").setExecutor(null);
+        getCommand("bank").setExecutor(null);
 
         getCommand("cbanking").setExecutor(new CBankingCommand(this));
         getCommand("balance").setExecutor(new BalanceCommand(this));
