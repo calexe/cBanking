@@ -5,7 +5,6 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.plugin.ServicePriority;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -24,19 +23,6 @@ public class ServerEconomy implements Economy {
 
         this.currencySymbol = plugin.getConfig().getString("economy-settings.currency-symbol");
         this.startingBal = plugin.getConfig().getDouble("economy-settings.starting-bal");
-    }
-
-    public void register() {
-        if (Bukkit.getServicesManager().isProvidedFor(Economy.class)) {
-            plugin.getLogger().warning("An Economy provider is already registered. Overwriting it with ServerEconomy.");
-        }
-        try {
-            Bukkit.getServicesManager().register(Economy.class, this, plugin, ServicePriority.Highest);
-            plugin.getLogger().info("cBanking registered successfully with Vault.");
-        } catch (Exception e) {
-            plugin.getLogger().severe("Failed to register ServerEconomy with Vault.");
-            e.printStackTrace();
-        }
     }
 
     @Override
