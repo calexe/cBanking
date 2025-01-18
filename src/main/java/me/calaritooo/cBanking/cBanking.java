@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 public class cBanking extends JavaPlugin {
 
     private static cBanking plugin;
-    private static Economy economy = null;
+    private static Economy economy;
     private MessageHandler messageHandler;
     private AccountHandler accountHandler;
     private BankHandler bankHandler;
@@ -43,16 +43,15 @@ public class cBanking extends JavaPlugin {
 
         initializeHandlers();
 
+        economy = new ServerEconomy(this);
+        getServer().getServicesManager().register(Economy.class, economy, this, ServicePriority.Highest);
+        getLogger().info("Economy provider registered.");
+
         if (!setupEconomy()) {
             getLogger().severe("Vault not found! Disabling plugin.");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-
-        economy = new ServerEconomy(this);
-        getServer().getServicesManager().register(Economy.class, economy, this, ServicePriority.Highest);
-        getLogger().info("Economy provider registered.");
-
 
         eventHandler = new EventHandler(this);
         eventHandler.registerEvents();
@@ -95,14 +94,18 @@ public class cBanking extends JavaPlugin {
 
     private boolean setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            getLogger().severe("Vault plugin not found!");
             return false;
         }
+        getLogger().info("Vault found! Registering economy...");
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
+            getLogger().severe("RSP error!");
             return false;
         }
         economy = rsp.getProvider();
-        return economy != null;
+        getLogger().info("Economy provider registered successfully.");
+        return true;
     }
 
     private void initializeHandlers() {
