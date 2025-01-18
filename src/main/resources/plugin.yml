@@ -5,6 +5,10 @@ api-version: '1.21'
 prefix: ${project.name}
 author: ${project.organization.name}
 depend: [Vault]
+loadbefore:
+  - CMI
+  - Essentials
+  - EssentialsX
 description: ${project.description}
 
 # PERMISSIONS #

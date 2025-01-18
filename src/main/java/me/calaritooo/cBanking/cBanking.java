@@ -9,12 +9,16 @@ import me.calaritooo.cBanking.listeners.EventHandler;
 import me.calaritooo.cBanking.utils.MessageHandler;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandMap;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+
+import java.lang.reflect.Field;
 
 public class cBanking extends JavaPlugin {
 
@@ -61,14 +65,6 @@ public class cBanking extends JavaPlugin {
 
         eventHandler = new EventHandler(this);
         eventHandler.registerEvents();
-
-        getCommand("cbanking").setExecutor(null);
-        getCommand("balance").setExecutor(null);
-        getCommand("pay").setExecutor(null);
-        getCommand("account").setExecutor(null);
-        getCommand("accounts").setExecutor(null);
-        getCommand("banks").setExecutor(null);
-        getCommand("bank").setExecutor(null);
 
         getCommand("cbanking").setExecutor(new CBankingCommand(this));
         getCommand("balance").setExecutor(new BalanceCommand(this));
