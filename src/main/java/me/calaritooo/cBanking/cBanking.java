@@ -9,16 +9,12 @@ import me.calaritooo.cBanking.listeners.EventHandler;
 import me.calaritooo.cBanking.utils.MessageHandler;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandMap;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-
-import java.lang.reflect.Field;
 
 public class cBanking extends JavaPlugin {
 
@@ -51,6 +47,10 @@ public class cBanking extends JavaPlugin {
         if (existingProvider != null) {
             getServer().getServicesManager().unregister(existingProvider.getProvider());
             getLogger().info("Already existing economy provider unregistered.");
+        }
+
+        if (getServer().getPluginManager().getPlugin("CMI") != null) {
+            getLogger().warning("CMI detected. Ensure you have disabled its economy in config.yml and its 'balance' and 'pay' command aliases in settings/Alias.yml!");
         }
 
         economy = new ServerEconomy(this);

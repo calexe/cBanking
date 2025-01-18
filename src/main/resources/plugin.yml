@@ -109,7 +109,7 @@ commands:
   balance:
     description: "§7Use this to check your total held and account balances."
     usage: "§7/balance <player>"
-    aliases: [ bal ]
+    aliases: [ bal, money ]
     permission: cbanking.balance
     permission-message: "§cYou do not have access to this command!"
   pay:
