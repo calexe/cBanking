@@ -50,7 +50,7 @@ public class CBankingCommand implements CommandExecutor {
                 sender.sendMessage("§7/loan <bankID> <amount> <days>");
                 sender.sendMessage("§7/banks");
                 sender.sendMessage("§7/bank <open/close/accounts/loans/manage>");
-                sender.sendMessage("§7/cbanking <admin/version/debug>");
+                sender.sendMessage("§7/cbanking <admin/reload/version/debug>");
                 return true;
             }
 
@@ -72,6 +72,12 @@ public class CBankingCommand implements CommandExecutor {
             if (args.length == 1 && args[0].equalsIgnoreCase("debug")) {
                 sender.sendMessage(pluginHeader);
                 sender.sendMessage("§7Command check 1 passed!");
+                return true;
+            }
+
+            if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
+                plugin.reloadConfig();
+                sender.sendMessage("§aThe cBanking plugin has been reloaded!");
                 return true;
             }
 
