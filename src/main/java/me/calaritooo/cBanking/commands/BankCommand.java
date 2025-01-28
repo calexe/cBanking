@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -140,7 +141,7 @@ public class BankCommand implements CommandExecutor {
                 double newBankAssets = plugin.getConfig().getDouble("bank-settings.new-bank-assets");
                 double totalBankFee = newBankFee + newBankAssets;
                 if (!accountHandler.hasFunds(player.getName(), totalBankFee)) {
-                    player.sendMessage("§cInsufficient funds! §7Fees to open a bank:\n- New bank fee: §c" + newBankFee + "\n- Initial assets deposit: §c" + newBankAssets);
+                    player.sendMessage("§cInsufficient funds! §7Fees to open a bank:\n- New bank fee: §c" + newBankFee + "\n- §7Initial assets deposit: §c" + newBankAssets);
                     return true;
                 }
                 accountHandler.withdraw(player.getName(), totalBankFee);
@@ -159,8 +160,24 @@ public class BankCommand implements CommandExecutor {
                     return true;
                 }
                 if (closeRequests.contains(player.getUniqueId())) {
-                    bankHandler.deleteBankAndTransferBalances(closeBankID);
+                    // Retrieve closed accounts and notify players
+                    Map<String, Double> closedAccounts = bankHandler.deleteBankAndTransferBalances(closeBankID);
+
+                    // Notify the owner
                     player.sendMessage("§7Your bank has been closed and all player account balances have been transferred!");
+
+                    // Notify affected players
+                    closedAccounts.forEach((playerID, refundedAmount) -> {
+                        OfflinePlayer affectedPlayer = Bukkit.getOfflinePlayer(playerID);
+                        if (affectedPlayer.isOnline()) {
+                            Player onlinePlayer = affectedPlayer.getPlayer();
+                            if (onlinePlayer != null) {
+                                onlinePlayer.sendMessage("§cThe bank §e[§a" + closeBankID + "§e] §chas been closed. §a" +
+                                        refundedAmount + " §chas been returned to your balance.");
+                            }
+                        }
+                    });
+                    // Remove the confirmation request
                     closeRequests.remove(player.getUniqueId());
                 } else {
                     closeRequests.add(player.getUniqueId());

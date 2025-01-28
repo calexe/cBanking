@@ -1,11 +1,13 @@
 package me.calaritooo.cBanking.banks;
 
+import java.util.Map;
+
 public interface BankInterface {
 
     // BANK ID IS MAIN FORM OF BANK RECOGNITION
     void createBank(String bankID, String bankName, String ownerName);
     void deleteBank(String bankID);
-    void deleteBankAndTransferBalances(String bankID);
+    Map<String, Double> deleteBankAndTransferBalances(String bankID);
     boolean bankExists(String bankID);
     String getBankIDByName(String bankName);
     String getBankIDByOwner(String bankOwner);

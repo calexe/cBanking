@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Map;
 
 public class CBankingCommand implements CommandExecutor {
 
@@ -95,7 +96,7 @@ public class CBankingCommand implements CommandExecutor {
                             if (args.length == 6) {
                                 try {
                                     BigDecimal amtBigDecimal = new BigDecimal(args[5]).setScale(2, RoundingMode.HALF_UP);
-                                    if (amtBigDecimal.compareTo(BigDecimal.ZERO) > 0) {
+                                    if (amtBigDecimal.compareTo(BigDecimal.ZERO) >= 0) {
                                         String playerName = player.getName();
                                         double amt = amtBigDecimal.doubleValue();
                                         accountHandler.setBalance(playerName, amt);
@@ -194,7 +195,7 @@ public class CBankingCommand implements CommandExecutor {
                                 if (args.length == 7) {
                                     try {
                                         BigDecimal amtBigDecimal = new BigDecimal(args[6]).setScale(2, RoundingMode.HALF_UP);
-                                        if (amtBigDecimal.compareTo(BigDecimal.ZERO) > 0) {
+                                        if (amtBigDecimal.compareTo(BigDecimal.ZERO) >= 0) {
                                             String playerName = player.getName();
                                             double amt = amtBigDecimal.doubleValue();
                                             accountHandler.setBalance(playerName, bankID, amt);
@@ -312,7 +313,7 @@ public class CBankingCommand implements CommandExecutor {
                             if (args.length == 6) {
                                 try {
                                     BigDecimal amtBigDecimal = new BigDecimal(args[5]).setScale(2, RoundingMode.HALF_UP);
-                                    if (amtBigDecimal.compareTo(BigDecimal.ZERO) > 0) {
+                                    if (amtBigDecimal.compareTo(BigDecimal.ZERO) >= 0) {
                                         double amt = amtBigDecimal.doubleValue();
                                         bankHandler.setAssets(bankID, amt);
                                         String ownerByID = bankHandler.getBankOwnerByID(bankID);
@@ -405,7 +406,7 @@ public class CBankingCommand implements CommandExecutor {
                             if (args.length == 6) {
                                 try {
                                     BigDecimal amtBigDecimal = new BigDecimal(args[5]).setScale(2, RoundingMode.HALF_UP);
-                                    if (amtBigDecimal.compareTo(BigDecimal.ZERO) > 0) {
+                                    if (amtBigDecimal.compareTo(BigDecimal.ZERO) >= 0) {
                                         double amt = amtBigDecimal.doubleValue();
                                         bankHandler.setInterestRate(bankID, amt);
                                         String ownerByID = bankHandler.getBankOwnerByID(bankID);
@@ -452,7 +453,7 @@ public class CBankingCommand implements CommandExecutor {
                             if (args.length == 6) {
                                 try {
                                     BigDecimal amtBigDecimal = new BigDecimal(args[5]).setScale(2, RoundingMode.HALF_UP);
-                                    if (amtBigDecimal.compareTo(BigDecimal.ZERO) > 0) {
+                                    if (amtBigDecimal.compareTo(BigDecimal.ZERO) >= 0) {
                                         double amt = amtBigDecimal.doubleValue();
                                         bankHandler.setAccountGrowthRate(bankID, amt);
                                         String ownerByID = bankHandler.getBankOwnerByID(bankID);
@@ -499,7 +500,7 @@ public class CBankingCommand implements CommandExecutor {
                             if (args.length == 6) {
                                 try {
                                     BigDecimal amtBigDecimal = new BigDecimal(args[5]).setScale(2, RoundingMode.HALF_UP);
-                                    if (amtBigDecimal.compareTo(BigDecimal.ZERO) > 0) {
+                                    if (amtBigDecimal.compareTo(BigDecimal.ZERO) >= 0) {
                                         double amt = amtBigDecimal.doubleValue();
                                         bankHandler.setAccountOpeningFee(bankID, amt);
                                         String ownerByID = bankHandler.getBankOwnerByID(bankID);
@@ -546,7 +547,7 @@ public class CBankingCommand implements CommandExecutor {
                             if (args.length == 6) {
                                 try {
                                     BigDecimal amtBigDecimal = new BigDecimal(args[5]).setScale(2, RoundingMode.HALF_UP);
-                                    if (amtBigDecimal.compareTo(BigDecimal.ZERO) > 0) {
+                                    if (amtBigDecimal.compareTo(BigDecimal.ZERO) >= 0) {
                                         double amt = amtBigDecimal.doubleValue();
                                         bankHandler.setMaintenanceFeeRate(bankID, amt);
                                         String ownerByID = bankHandler.getBankOwnerByID(bankID);
@@ -625,7 +626,7 @@ public class CBankingCommand implements CommandExecutor {
                             if (args.length == 6) {
                                 try {
                                     BigDecimal amtBigDecimal = new BigDecimal(args[5]).setScale(2, RoundingMode.HALF_UP);
-                                    if (amtBigDecimal.compareTo(BigDecimal.ZERO) > 0) {
+                                    if (amtBigDecimal.compareTo(BigDecimal.ZERO) >= 0) {
                                         double amt = amtBigDecimal.doubleValue();
                                         bankHandler.setWithdrawalFeeRate(bankID, amt);
                                         String ownerByID = bankHandler.getBankOwnerByID(bankID);
@@ -703,7 +704,7 @@ public class CBankingCommand implements CommandExecutor {
                             if (args.length == 6) {
                                 try {
                                     BigDecimal amtBigDecimal = new BigDecimal(args[5]).setScale(2, RoundingMode.HALF_UP);
-                                    if (amtBigDecimal.compareTo(BigDecimal.ZERO) > 0) {
+                                    if (amtBigDecimal.compareTo(BigDecimal.ZERO) >= 0) {
                                         double amt = amtBigDecimal.doubleValue();
                                         bankHandler.setDepositFeeRate(bankID, amt);
                                         String ownerByID = bankHandler.getBankOwnerByID(bankID);
@@ -776,8 +777,24 @@ public class CBankingCommand implements CommandExecutor {
                         return true;
                     }
                     if (args.length >= 4 && args[3].equalsIgnoreCase("close")) {
-                        sender.sendMessage("§7[&a" + bankID + "]§7has been §cpermanently closed §7as well as relative player accounts.");
-                        bankHandler.deleteBankAndTransferBalances(bankID);
+                        if (bankHandler.bankExists(bankID)) {
+                            Map<String, Double> closedAccounts = bankHandler.deleteBankAndTransferBalances(bankID);
+
+                            sender.sendMessage("§7[§a" + bankID + "§7] has been §cpermanently closed §7and all accounts have been refunded.");
+                            closedAccounts.forEach((playerID, refundedAmount) -> {
+                                OfflinePlayer player = Bukkit.getOfflinePlayer(playerID);
+                                if (player.isOnline()) {
+                                    Player onlinePlayer = player.getPlayer();
+                                    if (onlinePlayer != null) {
+                                        onlinePlayer.sendMessage("§cThe bank §e[§a" + bankID + "§e] §chas been closed. §a" +
+                                                currencySymbol + refundedAmount + " §chas been returned to your balance.");
+                                    }
+                                }
+                            });
+
+                        } else {
+                            sender.sendMessage("§cBank not found!");
+                        }
                         return true;
                     }
                 }

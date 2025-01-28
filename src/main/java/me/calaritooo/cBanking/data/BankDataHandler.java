@@ -7,6 +7,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 public class BankDataHandler {
@@ -79,18 +82,22 @@ public class BankDataHandler {
         saveBanksConfig();
     }
 
-    public void deleteBankAndTransferBalances(String bankID) {
+    public Map<String, Double> deleteBankAndTransferBalances(String bankID) {
+        Map<String, Double> closedAccounts = new HashMap<>(); // Store playerID and refunded balance
+
         for (String playerID : playerDataHandler.getPlayerDataConfig().getConfigurationSection("players").getKeys(false)) {
             if (playerDataHandler.getPlayerDataConfig().contains("players." + playerID + ".accounts." + bankID)) {
                 double bankBalance = playerDataHandler.getPlayerDataConfig().getDouble("players." + playerID + ".accounts." + bankID + ".balance");
                 if (bankBalance > 0) {
-                    accountHandler.deposit(playerID, bankBalance);
+                    accountHandler.deposit(playerID, bankBalance); // Refund the balance to player
+                    closedAccounts.put(playerID, bankBalance); // Add player and balance to the map
                     accountHandler.withdraw(playerID, bankID, bankBalance);
-                    playerDataHandler.getPlayerDataConfig().set("players." + playerID + ".accounts." + bankID, null);
                 }
+                playerDataHandler.getPlayerDataConfig().set("players." + playerID + ".accounts." + bankID, null);
             }
         }
         playerDataHandler.savePlayerDataConfig();
         deleteBankData(bankID);
+        return closedAccounts;
     }
 }

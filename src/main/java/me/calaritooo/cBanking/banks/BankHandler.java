@@ -5,6 +5,7 @@ import me.calaritooo.cBanking.data.BankDataHandler;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 
 public class BankHandler implements BankInterface {
@@ -34,8 +35,8 @@ public class BankHandler implements BankInterface {
     }
 
     @Override
-    public void deleteBankAndTransferBalances(String bankID) {
-        bankDataHandler.deleteBankAndTransferBalances(bankID);
+    public Map<String, Double> deleteBankAndTransferBalances(String bankID) {
+        return bankDataHandler.deleteBankAndTransferBalances(bankID);
     }
 
     @Override
