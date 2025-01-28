@@ -2,7 +2,7 @@
 # VAULT MUST BE INSTALLED FOR THIS PLUGIN TO FUNCTION.
 # Negative values are not recommended! Values beyond the hundredths place (##.##XX) are not supported.
 # Ensure players have the proper permissions to adjust the default values below for their bank. (If they can not adjust interest, growth, maintenance, etc., they can't differentiate their bank from others!)
-# Current version: 2.2.6
+# Current version: 2.2.7
 #
 # For bug reports, suggestions, requests, and information, visit the link below!
 # https://github.com/calaritooo/cBanking
