@@ -786,8 +786,7 @@ public class CBankingCommand implements CommandExecutor {
                                 if (player.isOnline()) {
                                     Player onlinePlayer = player.getPlayer();
                                     if (onlinePlayer != null) {
-                                        onlinePlayer.sendMessage("§cThe bank §e[§a" + bankID + "§e] §chas been closed. §a" +
-                                                currencySymbol + refundedAmount + " §chas been returned to your balance.");
+                                        onlinePlayer.sendMessage("§cThe bank §e[§a" + bankID + "§e] §chas been closed. §a" + currencySymbol + refundedAmount + " §chas been returned to your balance.");
                                     }
                                 }
                             });

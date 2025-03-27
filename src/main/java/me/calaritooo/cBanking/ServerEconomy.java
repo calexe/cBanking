@@ -1,7 +1,7 @@
 package me.calaritooo.cBanking;
 
 import me.calaritooo.cBanking.accounts.AccountHandler;
-import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.economy.AbstractEconomy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
-public class ServerEconomy implements Economy {
+public class ServerEconomy extends AbstractEconomy {
 
     private final cBanking plugin;
     private final AccountHandler accountHandler;
