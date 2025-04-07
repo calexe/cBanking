@@ -1,9 +1,9 @@
 package me.calaritooo.cBanking.commands;
 
-import me.calaritooo.cBanking.accounts.AccountHandler;
-import me.calaritooo.cBanking.banks.BankHandler;
+import me.calaritooo.cBanking.player.AccountHandler;
+import me.calaritooo.cBanking.bank.BankHandler;
 import me.calaritooo.cBanking.cBanking;
-import me.calaritooo.cBanking.data.BankDataHandler;
+import me.calaritooo.cBanking.bank.BankData;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -21,13 +21,13 @@ public class CBankingCommand implements CommandExecutor {
     private final cBanking plugin;
     private final AccountHandler accountHandler;
     private final BankHandler bankHandler;
-    private final BankDataHandler bankDataHandler;
+    private final BankData bankData;
 
     public CBankingCommand(cBanking plugin) {
         this.plugin = plugin;
         this.accountHandler = plugin.getAccountHandler();
         this.bankHandler = plugin.getBankHandler();
-        this.bankDataHandler = plugin.getBankDataHandler();
+        this.bankData = plugin.getBankDataHandler();
     }
 
     @Override

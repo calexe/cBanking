@@ -1,8 +1,8 @@
 package me.calaritooo.cBanking.commands;
 
-import me.calaritooo.cBanking.banks.BankHandler;
+import me.calaritooo.cBanking.bank.BankHandler;
 import me.calaritooo.cBanking.cBanking;
-import me.calaritooo.cBanking.data.PlayerDataHandler;
+import me.calaritooo.cBanking.player.PlayerData;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,12 +15,12 @@ public class BanksCommand implements CommandExecutor {
 
     private final cBanking plugin;
     private final BankHandler bankHandler;
-    private final PlayerDataHandler playerDataHandler;
+    private final PlayerData playerData;
 
     public BanksCommand(cBanking plugin) {
         this.plugin = plugin;
         this.bankHandler = plugin.getBankHandler();
-        this.playerDataHandler = plugin.getPlayerDataHandler();
+        this.playerData = plugin.getPlayerDataHandler();
     }
 
     @Override
@@ -45,8 +45,8 @@ public class BanksCommand implements CommandExecutor {
         int bankNumber = 1;
         for (String bankID : bankIDs) {
             int accountCount = 0;
-            for (String playerID : playerDataHandler.getPlayerDataConfig().getConfigurationSection("players").getKeys(false)) {
-                if (playerDataHandler.getPlayerDataConfig().contains("players." + playerID + ".accounts." + bankID)) {
+            for (String playerID : playerData.getPlayerDataConfig().getConfigurationSection("players").getKeys(false)) {
+                if (playerData.getPlayerDataConfig().contains("players." + playerID + ".accounts." + bankID)) {
                     accountCount++;
                 }
             }

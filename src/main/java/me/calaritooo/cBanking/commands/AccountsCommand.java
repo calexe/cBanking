@@ -1,7 +1,7 @@
 package me.calaritooo.cBanking.commands;
 
 import me.calaritooo.cBanking.cBanking;
-import me.calaritooo.cBanking.data.PlayerDataHandler;
+import me.calaritooo.cBanking.player.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -14,11 +14,11 @@ import java.util.*;
 
 public class AccountsCommand implements CommandExecutor {
     private final cBanking plugin;
-    private final PlayerDataHandler playerDataHandler;
+    private final PlayerData playerData;
 
     public AccountsCommand(cBanking plugin) {
         this.plugin = plugin;
-        this.playerDataHandler = plugin.getPlayerDataHandler();
+        this.playerData = plugin.getPlayerDataHandler();
     }
 
     @Override
@@ -61,9 +61,9 @@ public class AccountsCommand implements CommandExecutor {
         String playerID = Bukkit.getOfflinePlayer(playerName).getUniqueId().toString();
         Map<String, Double> accountBalances = new HashMap<>();
 
-        if (playerDataHandler.getPlayerDataConfig().contains("players." + playerID + ".accounts")) {
-            for (String bankID : playerDataHandler.getPlayerDataConfig().getConfigurationSection("players." + playerID + ".accounts").getKeys(false)) {
-                double balance = playerDataHandler.getPlayerDataConfig().getDouble("players." + playerID + ".accounts." + bankID + ".balance");
+        if (playerData.getPlayerDataConfig().contains("players." + playerID + ".accounts")) {
+            for (String bankID : playerData.getPlayerDataConfig().getConfigurationSection("players." + playerID + ".accounts").getKeys(false)) {
+                double balance = playerData.getPlayerDataConfig().getDouble("players." + playerID + ".accounts." + bankID + ".balance");
                 accountBalances.put(bankID, balance);
             }
         }

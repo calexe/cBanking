@@ -1,9 +1,9 @@
 package me.calaritooo.cBanking.commands;
 
-import me.calaritooo.cBanking.accounts.AccountHandler;
-import me.calaritooo.cBanking.banks.BankHandler;
+import me.calaritooo.cBanking.player.AccountHandler;
+import me.calaritooo.cBanking.bank.BankHandler;
 import me.calaritooo.cBanking.cBanking;
-import me.calaritooo.cBanking.data.PlayerDataHandler;
+import me.calaritooo.cBanking.player.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -21,14 +21,14 @@ public class BankCommand implements CommandExecutor {
 
     private final cBanking plugin;
     private final BankHandler bankHandler;
-    private final PlayerDataHandler playerDataHandler;
+    private final PlayerData playerData;
     private final AccountHandler accountHandler;
     private final Set<UUID> closeRequests = new HashSet<>();
 
     public BankCommand(cBanking plugin) {
         this.plugin = plugin;
         this.bankHandler = plugin.getBankHandler();
-        this.playerDataHandler = plugin.getPlayerDataHandler();
+        this.playerData = plugin.getPlayerDataHandler();
         this.accountHandler = plugin.getAccountHandler();
     }
 
@@ -199,10 +199,10 @@ public class BankCommand implements CommandExecutor {
                 boolean foundAccounts = false;
                 String accountsHeader = "§f-+------+------+- §e[§a" + accountsBankID + "§e] §f-+------+------+-";
                 sender.sendMessage(accountsHeader);
-                for (String playerUUID : playerDataHandler.getPlayerDataConfig().getKeys(false)) {
+                for (String playerUUID : playerData.getPlayerDataConfig().getKeys(false)) {
                     String balancePath = playerUUID + ".accounts." + accountsBankID;
-                    if (playerDataHandler.getPlayerDataConfig().contains(balancePath)) {
-                        double balance = playerDataHandler.getPlayerDataConfig().getDouble(balancePath);
+                    if (playerData.getPlayerDataConfig().contains(balancePath)) {
+                        double balance = playerData.getPlayerDataConfig().getDouble(balancePath);
                         String playerName = Bukkit.getOfflinePlayer(UUID.fromString(playerUUID)).getName();
                         player.sendMessage("§7Player: §a" + playerName + "§7\n - Balance: §a" + currencySymbol + balance);
                         foundAccounts = true;

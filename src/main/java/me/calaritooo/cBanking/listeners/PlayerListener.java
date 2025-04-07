@@ -1,6 +1,6 @@
 package me.calaritooo.cBanking.listeners;
 
-import me.calaritooo.cBanking.accounts.AccountHandler;
+import me.calaritooo.cBanking.player.AccountHandler;
 import me.calaritooo.cBanking.cBanking;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
