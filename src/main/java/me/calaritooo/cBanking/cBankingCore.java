@@ -24,7 +24,8 @@ public final class cBankingCore {
     private cBankingCore() {
     }
 
-    public static void initialize(cBanking plugin) {
+    public static void initialize(cBanking pluginInstance) {
+        plugin = pluginInstance;
         plugin.saveDefaultConfig();
         config = plugin.getConfig();
 
