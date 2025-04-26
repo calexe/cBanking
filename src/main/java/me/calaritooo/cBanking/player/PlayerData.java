@@ -15,20 +15,17 @@ public class PlayerData {
 
     private final cBanking plugin;
     private final ConfigurationProvider config;
-    private final File playerDataFolder;
+    private final File playersFolder;
 
     public PlayerData() {
         this.plugin = cBankingCore.getPlugin();
         this.config = cBankingCore.getConfigurationProvider();
-        this.playerDataFolder = new File(plugin.getDataFolder(), "players");
-
-        if (!playerDataFolder.exists()) {
-            playerDataFolder.mkdirs();
-        }
+        this.playersFolder = new File(plugin.getDataFolder(), "players");
+        if (!playersFolder.exists()) playersFolder.mkdirs();
     }
 
     public File getPlayerFile(UUID uuid) {
-        return new File(playerDataFolder, uuid.toString() + ".yml");
+        return new File(playersFolder, uuid.toString() + ".yml");
     }
 
     public FileConfiguration getPlayerConfig(UUID uuid) {
