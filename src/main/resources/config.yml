@@ -34,8 +34,8 @@ modules:
 
 # General server economy settings and default values.
 economy-settings:
-  # Starting balance for new players.
-  starting-bal: 0
+  # Starting balance for new players. Use decimal format with a maximum to the hundredth's place. (ex. #.##)
+  starting-bal: 0.00
   # Symbol/code your currency will use. ex. "$" or "USD"
   currency-symbol: "ȼ"
   # Name of your server's currency.

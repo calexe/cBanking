@@ -10,12 +10,23 @@ public class ConfigurationProvider {
         this.config = config;
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T get(ConfigurationOption option, Class<T> type) {
         if (config == null) throw new IllegalStateException("ConfigProvider not initialized!");
 
         Object value = config.get(option.path());
-        return type.cast(value != null ? value : option.defaultValue());
+
+        if (value == null) {
+            return type.cast(option.defaultValue());
+        }
+
+        if (type == Double.class && value instanceof Number) {
+            return (T) Double.valueOf(((Number) value).doubleValue());
+        }
+
+        return type.cast(value);
     }
+
 
     public String getString(ConfigurationOption option) {
         return get(option, String.class);

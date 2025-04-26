@@ -13,7 +13,7 @@ public enum ConfigurationOption {
     MODULE_DEATH_LOSS("modules.enable-death-loss", false),
 
     // ───── Economy Settings ─────
-    ECONOMY_STARTING_BALANCE("economy-settings.starting-bal", 0),
+    ECONOMY_STARTING_BALANCE("economy-settings.starting-bal", 0.00),
     ECONOMY_CURRENCY_SYMBOL("economy-settings.currency-symbol", "ȼ"),
     ECONOMY_CURRENCY_NAME("economy-settings.currency-name", "Coin"),
     ECONOMY_CURRENCY_NAME_PLURAL("economy-settings.currency-name-plural", "Coins"),
