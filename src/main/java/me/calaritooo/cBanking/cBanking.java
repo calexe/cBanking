@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class cBanking extends JavaPlugin {
 
     private EconomyManager economyManager;
+    private CommandManager commandManager;
     private EventHandler eventHandler;
 
     @Override
@@ -27,8 +28,9 @@ public class cBanking extends JavaPlugin {
         eventHandler = new EventHandler();
         eventHandler.registerEvents();
 
-        CommandManager.registerCommands();
-        CommandManager.registerTabCompleters();
+        commandManager = new CommandManager();
+        commandManager.registerCommands();
+        commandManager.registerTabCompleters();
 
         getLogger().info("Successfully enabled!");
     }
@@ -39,17 +41,21 @@ public class cBanking extends JavaPlugin {
 
         saveConfig();
 
-        CommandManager.unregisterCommands();
 
         if (eventHandler != null) {
             eventHandler.unregisterEvents();
         }
 
-        Bukkit.getScheduler().cancelTasks(this);
+        if (commandManager != null) {
+            commandManager.unregisterCommands();
+            commandManager.unregisterTabCompleters();
+        }
 
         if (economyManager != null) {
             economyManager.unregister();
         }
+
+        Bukkit.getScheduler().cancelTasks(this);
 
         getLogger().info("Successfully disabled!");
     }

@@ -21,6 +21,6 @@ public class EventHandler implements Listener {
     }
 
     public void unregisterEvents() {
-        HandlerList.unregisterAll(this);
+        HandlerList.unregisterAll(plugin);
     }
 }
