@@ -32,31 +32,31 @@ public class PlayerData {
         if (!file.exists()) {
             try {
                 file.createNewFile();
-                FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-                config.set("balance", 0.0);
-                config.set("username", plugin.getServer().getOfflinePlayer(uuid).getName());
-                config.save(file);
+                FileConfiguration playerFile = YamlConfiguration.loadConfiguration(file);
+                playerFile.set("balance", 0.0);
+                playerFile.set("username", plugin.getServer().getOfflinePlayer(uuid).getName());
+                playerFile.save(file);
             } catch (IOException e) {
-                plugin.getLogger().severe("Could not create data file for " + uuid);
+                plugin.getLogger().severe("Could not create data file for: " + plugin.getServer().getOfflinePlayer(uuid).getName() + ", UUID: " + uuid);
             }
         }
 
         return YamlConfiguration.loadConfiguration(file);
     }
 
-    public void savePlayerConfig(UUID uuid, FileConfiguration config) {
+    public void savePlayerConfig(UUID uuid, FileConfiguration playerFile) {
         try {
-            config.save(getPlayerFile(uuid));
+            playerFile.save(getPlayerFile(uuid));
         } catch (IOException e) {
-            plugin.getLogger().severe("Could not save data file for " + uuid);
+            plugin.getLogger().severe("Could not save data file for: " + plugin.getServer().getOfflinePlayer(uuid).getName() + ", UUID: " + uuid);
         }
     }
 
     public void savePlayerData(UUID uuid, double initialBalance) {
-        FileConfiguration config = getPlayerConfig(uuid);
-        config.set("balance", initialBalance);
-        config.set("username", plugin.getServer().getOfflinePlayer(uuid).getName());
-        savePlayerConfig(uuid, config);
+        FileConfiguration playerFile = getPlayerConfig(uuid);
+        playerFile.set("balance", initialBalance);
+        playerFile.set("username", plugin.getServer().getOfflinePlayer(uuid).getName());
+        savePlayerConfig(uuid, playerFile);
     }
 
     public void deletePlayerData(String uuidStr) {
@@ -81,7 +81,7 @@ public class PlayerData {
         savePlayerConfig(uuid, config);
     }
 
-    public String getUsername(UUID uuid) {
+    public String getName(UUID uuid) {
         FileConfiguration config = getPlayerConfig(uuid);
         return config.getString("username", "Unknown");
     }

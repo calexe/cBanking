@@ -1,39 +1,51 @@
 package me.calaritooo.cBanking.commands.pay;
 
+import me.calaritooo.cBanking.cBankingCore;
 import me.calaritooo.cBanking.eco.EconomyService;
+import me.calaritooo.cBanking.util.messages.Message;
+import me.calaritooo.cBanking.util.messages.MessageProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class PayCommand implements CommandExecutor {
 
+    private final EconomyService eco = cBankingCore.getEconomyService();
+    private final MessageProvider messages = cBankingCore.getMessageProvider();
+
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
 
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("§cOnly players can use this command.");
+            messages.send(sender, Message.ERROR_NOT_PLAYER);
+            return true;
+        }
+
+        if (!sender.hasPermission("cbanking.pay")) {
+            messages.send(sender, Message.ERROR_NO_PERMISSION);
             return true;
         }
 
         if (args.length != 2) {
-            player.sendMessage("§cUsage: /pay <player> <amount>");
+            messages.send(player, Message.USAGE_PAY_CMD);
             return true;
         }
 
-        String targetName = args[0];
-        OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
-        if (target == null || target.getName() == null) {
-            player.sendMessage("§cPlayer not found.");
+        OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
+        if (!eco.exists(target.getUniqueId())) {
+            messages.send(player, Message.ERROR_INVALID_PLAYER);
             return true;
         }
 
         if (target.getUniqueId().equals(player.getUniqueId())) {
-            player.sendMessage("§cYou can't pay yourself.");
+            messages.send(player, Message.PAY_SAME_PLAYER);
             return true;
         }
 
@@ -41,34 +53,37 @@ public class PayCommand implements CommandExecutor {
         try {
             amount = Double.parseDouble(args[1]);
         } catch (NumberFormatException e) {
-            player.sendMessage("§cInvalid amount.");
+            messages.send(player, Message.ERROR_INVALID_AMOUNT);
             return true;
         }
 
         if (amount <= 0) {
-            player.sendMessage("§cAmount must be greater than zero.");
+            messages.send(player, Message.ERROR_INVALID_AMOUNT);
             return true;
         }
 
-        UUID senderUUID = player.getUniqueId();
+        UUID playerUUID = player.getUniqueId();
         UUID targetUUID = target.getUniqueId();
 
-        if (!EconomyService.hasFunds(senderUUID, amount)) {
-            player.sendMessage("§cYou don't have enough funds.");
+        if (!eco.hasFunds(playerUUID, amount)) {
+            messages.send(player, Message.TRANSACTION_FAIL_INSUFFICIENT_FUNDS);
             return true;
         }
 
-        boolean success = EconomyService.transfer(senderUUID, targetUUID, amount);
+        boolean success = eco.transfer(playerUUID, targetUUID, amount);
         if (!success) {
-            player.sendMessage("§cTransaction failed.");
+            messages.send(player, Message.PAY_FAILED);
             return true;
         }
 
-        player.sendMessage("§aYou paid §e" + target.getName() + " §a$" + String.format("%.2f", amount) + ".");
+        messages.send(player, Message.PAY_SENT,
+                "%amt%", String.valueOf(amount),
+                "%recipient%", target.getName());
         if (target.isOnline()) {
-            target.getPlayer().sendMessage("§aYou received §a$" + String.format("%.2f", amount) + " §afrom §e" + player.getName() + ".");
+            messages.send(Objects.requireNonNull(target.getPlayer()), Message.PAY_RECEIVED,
+                    "%amt%", String.valueOf(amount),
+                    "%player%", player.getName());
         }
-
         return true;
     }
 }

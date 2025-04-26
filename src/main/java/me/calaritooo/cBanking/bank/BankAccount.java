@@ -1,72 +1,113 @@
 package me.calaritooo.cBanking.bank;
 
 import me.calaritooo.cBanking.cBanking;
+import me.calaritooo.cBanking.cBankingCore;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.UUID;
+import java.util.*;
 
 public class BankAccount {
 
     private final cBanking plugin;
+    private final BankData bankData;
 
-    public BankAccount(cBanking plugin) {
-        this.plugin = plugin;
+    public BankAccount(BankData bankData) {
+        this.plugin = cBankingCore.getPlugin();
+        this.bankData = bankData;
     }
 
-    private File getBankFile(String bankID) {
-        return new File(plugin.getDataFolder(), "banks/" + bankID + ".yml");
+    public File getAccountFolder(String bankID) {
+        File folder = new File(bankData.getBankFolder(bankID), "accounts");
+        if (!folder.exists()) folder.mkdirs();
+        return folder;
     }
 
-    private FileConfiguration loadBankConfig(String bankID) {
-        return YamlConfiguration.loadConfiguration(getBankFile(bankID));
+    public File getAccountFile(String bankID, UUID playerUUID) {
+        return new File(getAccountFolder(bankID), playerUUID.toString() + ".yml");
     }
 
-    private void saveBankConfig(String bankID, FileConfiguration config) {
+    public FileConfiguration getAccountConfig(String bankID, UUID playerUUID) {
+        return YamlConfiguration.loadConfiguration(getAccountFile(bankID, playerUUID));
+    }
+
+    public void saveAccountConfig(String bankID, UUID playerUUID, FileConfiguration config) {
         try {
-            config.save(getBankFile(bankID));
+            config.save(getAccountFile(bankID, playerUUID));
         } catch (IOException e) {
-            plugin.getLogger().warning("Failed to save bank file: " + bankID);
+            plugin.getLogger().severe("Failed to save account for " + playerUUID + " in bank " + bankID);
+            e.printStackTrace();
         }
     }
 
-    public boolean hasAccount(String bankID, UUID uuid) {
-        return loadBankConfig(bankID).contains("accounts." + uuid.toString());
+    public boolean hasAccount(String bankID, UUID playerUUID) {
+        return getAccountFile(bankID, playerUUID).exists();
     }
 
-    public double getBalance(String bankID, UUID uuid) {
-        return loadBankConfig(bankID).getDouble("accounts." + uuid.toString() + ".balance", 0.0);
+    public double getBalance(String bankID, UUID playerUUID) {
+        return getAccountConfig(bankID, playerUUID).getDouble("balance", 0.0);
     }
 
-    public void setBalance(String bankID, UUID uuid, double amount) {
-        FileConfiguration config = loadBankConfig(bankID);
-        config.set("accounts." + uuid.toString() + ".balance", amount);
-        saveBankConfig(bankID, config);
+    public void setBalance(String bankID, UUID playerUUID, double amount) {
+        FileConfiguration config = getAccountConfig(bankID, playerUUID);
+        OfflinePlayer player = Bukkit.getOfflinePlayer(playerUUID);
+
+        config.set("balance", amount);
+        config.set("uuid", playerUUID.toString());
+        config.set("username", player.getName());
+
+        saveAccountConfig(bankID, playerUUID, config);
     }
 
-    public void deposit(String bankID, UUID uuid, double amount) {
-        double current = getBalance(bankID, uuid);
-        setBalance(bankID, uuid, current + amount);
+    public void deposit(String bankID, UUID playerUUID, double amount) {
+        double current = getBalance(bankID, playerUUID);
+        setBalance(bankID, playerUUID, current + amount);
     }
 
-    public void withdraw(String bankID, UUID uuid, double amount) {
-        double current = getBalance(bankID, uuid);
-        if (current >= amount) {
-            setBalance(bankID, uuid, current - amount);
+    public void withdraw(String bankID, UUID playerUUID, double amount) {
+        double current = getBalance(bankID, playerUUID);
+        setBalance(bankID, playerUUID, current - amount);
+    }
+
+    public void createAccount(String bankID, UUID playerUUID, double initialBalance) {
+        if (hasAccount(bankID, playerUUID)) return;
+        setBalance(bankID, playerUUID, initialBalance);
+    }
+
+    public void deleteAccount(String bankID, UUID playerUUID) {
+        File file = getAccountFile(bankID, playerUUID);
+        if (file.exists()) file.delete();
+    }
+
+    public Set<UUID> getAllAccountUUIDs(String bankID) {
+        File[] files = getAccountFolder(bankID).listFiles((dir, name) -> name.endsWith(".yml"));
+        Set<UUID> uuids = new HashSet<>();
+        if (files != null) {
+            for (File file : files) {
+                try {
+                    uuids.add(UUID.fromString(file.getName().replace(".yml", "")));
+                } catch (IllegalArgumentException ignored) {}
+            }
         }
+        return uuids;
     }
 
-    public void createAccount(String bankID, UUID uuid, double initialBalance) {
-        if (!hasAccount(bankID, uuid)) {
-            setBalance(bankID, uuid, initialBalance);
+    public Map<UUID, Double> getAllBalances(String bankID) {
+        Map<UUID, Double> balances = new HashMap<>();
+        for (UUID uuid : getAllAccountUUIDs(bankID)) {
+            balances.put(uuid, getBalance(bankID, uuid));
         }
+        return balances;
     }
 
-    public void deleteAccount(String bankID, UUID uuid) {
-        FileConfiguration config = loadBankConfig(bankID);
-        config.set("accounts." + uuid.toString(), null);
-        saveBankConfig(bankID, config);
+    public void deleteAllAccounts(String bankID) {
+        File folder = getAccountFolder(bankID);
+        for (File file : Objects.requireNonNull(folder.listFiles())) {
+            file.delete();
+        }
     }
 }

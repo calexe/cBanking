@@ -1,7 +1,7 @@
 # This is the configuration file for the cBanking economy and bank management plugin.
 # VAULT MUST BE INSTALLED FOR THIS PLUGIN TO FUNCTION.
 # Negative values are not recommended! Values beyond the hundredths place (##.##XX) are not supported.
-# Ensure players have the proper permissions to adjust the default values below for their bank. (If they can not adjust interest, growth, maintenance, etc., they can't differentiate their bank from others!)
+# Ensure players have the proper permissions to adjust the default values below for their bank. (If they can't adjust interest, growth, maintenance, etc., they can't differentiate their bank from others!)
 # Current version: 2.2.7
 #
 # For bug reports, suggestions, requests, and information, visit the link below!
@@ -30,30 +30,30 @@ modules:
   # Enables players to request loans from banks, subject to approval by the bank owner.
   enable-loans: true
   # Enables player money loss upon death.
-  enable-money-loss-death: true
+  enable-money-loss-death: false
 
 # General server economy settings and default values.
 economy-settings:
   # Starting balance for new players.
   starting-bal: 0
   # Symbol/code your currency will use. ex. "$" or "USD"
-  currency-symbol: "$"
-  # Name of your server's currency. Leave as "" if you do not wish to specify.
-  currency-name: "Dollar"
-  # Plural name of your server's currency. Leave as "" if you do not wish to specify.
-  currency-name-plural: "Dollars"
+  currency-symbol: "ȼ"
+  # Name of your server's currency.
+  currency-name: "Coin"
+  # Plural name of your server's currency.
+  currency-name-plural: "Coins"
   # Rate period length, how often (in hours) will loan interest rates and account growth rates be applied? (More than a week is not recommended!)
   rate-period: 48
   # If enabled 'enable-money-loss-death' above in 'modules', what type of loss will players experience on death? ('all' for entire balance, 'percentage' for percentage of balance, 'flat' for fixed amount)
-  money-loss-death-type: percentage
+  death-loss-type: percentage
   # If enabled 'enable-money-loss-death' above in 'modules' and 'money-loss-death-type' above is set to 'percentage' or 'flat', what is the value? (If above is 'percentage' and here is '1', players will lose 1% of their balance upon death.)
-  money-loss-death-value: 1
+  death-loss-value: 1
 
 # Bank management settings. (Module 'enable-player-owned-banks' MUST be enabled for these settings to take effect!)
 bank-settings:
   # Fee to create a bank.
   new-bank-fee: 250
-  # Initial amount required to be deposited into bank assets to create a bank.
+  # Initial amount required to be deposited into bank assets to create a bank. The total cost to open a bank is this plus the 'new-bank-fee'.
   new-bank-assets: 500
   # Minimum amount allowed in bank assets.
   min-bank-assets: 100
@@ -112,7 +112,7 @@ loan-settings:
   min-loan-amt: 250
   # Maximum amount a player may request and a bank may grant per loan. ('max-loan-by-assets' MUST be false!)
   max-loan-amt: 500
-  # Maximum amount of loan requests per player. This is NOT per bank! (Recommended to be left at 1)
+  # Maximum number of loan requests per player. This is NOT per bank! (Recommended to be left at 1)
   max-loan-requests: 1
   # Minimum loan period (in hours) that a bank owner can apply to an approved loan request.
   min-loan-period: 1

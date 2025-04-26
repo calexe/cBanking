@@ -1,54 +1,62 @@
 package me.calaritooo.cBanking.commands.balance;
 
+import me.calaritooo.cBanking.cBankingCore;
 import me.calaritooo.cBanking.eco.EconomyService;
+import me.calaritooo.cBanking.util.messages.Message;
+import me.calaritooo.cBanking.util.messages.MessageProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.UUID;
+import org.jetbrains.annotations.NotNull;
 
 public class BalanceCommand implements CommandExecutor {
 
+    private final EconomyService eco = cBankingCore.getEconomyService();
+    private final MessageProvider messages = cBankingCore.getMessageProvider();
+
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        // /balance — show own balance
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (args.length == 0) {
             if (!(sender instanceof Player player)) {
-                sender.sendMessage("Only players can check their own balance.");
+                messages.send(sender, Message.ERROR_NOT_PLAYER);
                 return true;
             }
 
-            UUID uuid = player.getUniqueId();
-            double balance = EconomyService.getBalance(uuid);
+            if (!sender.hasPermission("cbanking.balance")) {
+                messages.send(sender, Message.ERROR_NO_PERMISSION);
+                return true;
+            }
 
-            sender.sendMessage("§eYour balance: §a$" + String.format("%.2f", balance));
+            double balance = eco.getBalance(player.getUniqueId());
+            messages.send(player, Message.BALANCE_SELF,
+                    "%amt%", String.valueOf(balance),
+                    "%player%", player.getName());
             return true;
         }
 
-        // /balance <player> — check another player's balance
         if (args.length == 1) {
             if (!sender.hasPermission("cbanking.balance.others")) {
-                sender.sendMessage("§cYou don't have permission to check other players' balances.");
+                messages.send(sender, Message.ERROR_NO_PERMISSION);
                 return true;
             }
 
             OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
-            UUID targetUUID = target.getUniqueId();
-
-            if (!EconomyService.hasAccount(targetUUID)) {
-                sender.sendMessage("§cThat player does not have an account.");
+            if (!eco.exists(target.getUniqueId())) {
+                messages.send(sender, Message.ERROR_INVALID_PLAYER);
                 return true;
             }
 
-            double balance = EconomyService.getBalance(targetUUID);
-            sender.sendMessage("§e" + target.getName() + "'s balance: §a$" + String.format("%.2f", balance));
+            double balance = eco.getBalance(target.getUniqueId());
+            messages.send(sender, Message.BALANCE_OTHER,
+                    "%amt%", String.valueOf(balance),
+                    "%player%", target.getName());
             return true;
         }
 
-        sender.sendMessage("§cUsage: /balance [player]");
+        messages.send(sender, Message.USAGE_BALANCE_CMD);
         return true;
     }
 }

@@ -15,8 +15,7 @@ public class BalanceTabCompleter implements TabCompleter {
 
         List<String> completions = new ArrayList<>();
 
-        if (args.length == 1) {
-            // Suggest online player names for the first argument
+        if (args.length == 1 && sender.hasPermission("cbanking.balance.others")) {
             Bukkit.getOnlinePlayers().forEach(player -> completions.add(player.getName()));
         }
 

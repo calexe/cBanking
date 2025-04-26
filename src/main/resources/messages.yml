@@ -1,26 +1,82 @@
 # This is the plugin messages configuration file for the cBanking plugin.
 # Modify plugin messages here. To enable or disable notifications, see config.yml.
-# Use placeholders appropriately, otherwise errors may be returned. (ex. "Balance: {recipient}" <- ERROR, what was the goal?)
+# Use placeholders as instructed.
+#
+#---------------------------------------------------------------------------------------------------------------------------------
+# PLACEHOLDERS ->
+#
+# Always available:
+#   %currency-name%
+#   %currency-name-plural%
+#   %currency-symbol%
+#   %player% (Note: opposite of the recipient when present)
+#
+# Dynamic/available only where found by default:
+#   %amt%
+#   %recipient% (Note: opposite of %player%, who is the sender when applicable)
+#   %value% (Note: messages containing this placeholder may ONLY have this placeholder)
+#   %bank%
 #
 #---------------------------------------------------------------------------------------------------------------------------------
 
-# Placeholders:
-# {currency-name}
-# {currency-name-plural}
-# {currency-symbol}
-# {bal}
-# {player}
-# {recipient}
-# {amt}
-# {time}
+general:
+  death-loss-all: "&7You lost your entire balance of &c%amt% &7upon dying."
+  death-loss-percentage: "&7You lost &c%percentage%&7 of your total balance (&c%amt%&7) upon dying."
+  death-loss-flat: "&7You lost &c%amt% &7upon dying."
 
-messages:
-  check-bal: "&7Balance: &a{currency-symbol}{bal}"
-  check-bal-others: "&7{player}'s balance: &a{currency-symbol}{balance}"
-  payment-sent: "&a{currency-symbol}{amt} &7has been sent to &a{recipient}&7."
-  payment-received: "&7You have received &a{currency-symbol}{bal} &7from &a{player}&7."
-  error-invalid-player: "&cPlayer not found!"
-  error-invalid-amt: "&cAmount not valid!"
-  error-insufficient-funds: "&cThe specified amount exceeds your available balance!"
-  error-no-perm: "&cYou do not have access to this command!"
-  error-not-player: "&cNot a player!"
+balance:
+  self: "&7Balance: &a%currency-symbol%%amt%"
+  other: "&7%player%'s balance: &a%currency-symbol%%amt%"
+
+pay:
+  sent: "&a%currency-symbol%%amt% &7has been sent to &a%recipient%&7."
+  received: "&7You have received &a%currency-symbol%%amt% &7from &a%player%&7."
+  same-player: "&cYou can't pay yourself!"
+  success: "&aPayment successful."
+  failed: "&cPayment failed."
+
+transaction:
+  deposit: "&aDeposited &a%currency-symbol%%amt%&7 into &6%bank%&a."
+  withdraw: "&aWithdrew &a%currency-symbol%%amt%&7 from &6%bank%&a."
+  fail:
+    insufficient-funds: "&cInsufficient funds."
+    no-account: "&cYou don't have an account with &6%bank%&c."
+    unknown: "&cTransaction failed."
+
+bank:
+  created: "&aBank '&6%bank-name%&a' has been opened!"
+  exists: "&cA bank with that name already exists."
+  deleted: "&cBank '&6%bank-name%&c' has been closed."
+  not-found: "&cThat bank doesn't exist."
+  info:
+    header: "&7----- &eBank: &6%bank% &7-----"
+    owner: "&7Owner: &a%value%"
+    assets: "&7Assets: &a%currency-symbol%%value%"
+    interest: "&7Interest: &a%value%"
+    fees:
+      opening: "&7Opening Fee: &a%currency-symbol%%value%"
+      maintenance: "&7Maintenance Fee: &a%currency-symbol%%value%"
+      deposit: "&7Deposit Fee: &a%value%%"
+      withdrawal: "&7Withdrawal Fee: &a%value%%"
+  setting-updated: "&a%setting% updated to &a%value%."
+
+account:
+  created: "&7Account opened with &6%bank%&7 with a balance of &a%currency-symbol%%amt%&7!"
+  exists: "&cYou already have an account with &6%bank%&c."
+  not-found: "&cNo account found with &6%bank%&c."
+  deleted: "&cAccount with &6%bank% &chas been deleted."
+  balance: "&7Account balance with &6%bank%&7: &a%currency-symbol%%amt%"
+  other-balance: "&7%player%'s account with &6%bank%&7: &a%currency-symbol%%amt%"
+
+loan:
+  not-implemented: "&cLoan system is not available yet."
+
+error:
+  invalid-amount: "&cInvalid amount."
+  invalid-player: "&cPlayer not found."
+  not-player: "&cOnly players may do this!"
+  no-permission: "&cYou don't have access to this command!"
+
+usage:
+  balance: "&7Usage: /balance <player>"
+  pay: "&7Usage: /pay <player> <amount>"

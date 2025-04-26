@@ -1,15 +1,13 @@
 package me.calaritooo.cBanking.player;
 
-import me.calaritooo.cBanking.cBanking;
-
 import java.util.UUID;
 
 public class PlayerAccount {
 
     private final PlayerData playerData;
 
-    public PlayerAccount(cBanking plugin) {
-        this.playerData = plugin.getPlayerData();
+    public PlayerAccount(PlayerData playerData) {
+        this.playerData = playerData;
     }
 
     public void createAccount(UUID playerUUID, double initialBalance) {
@@ -20,7 +18,7 @@ public class PlayerAccount {
         playerData.deletePlayerData(playerUUID.toString());
     }
 
-    public boolean hasAccount(UUID playerUUID) {
+    public boolean exists(UUID playerUUID) {
         return playerData.hasPlayerData(playerUUID);
     }
 

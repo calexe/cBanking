@@ -186,5 +186,9 @@ public abstract class BaseEconomy implements Economy {
     protected static EconomyResponse failure(String message) {
         return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, message);
     }
+
+    protected static EconomyResponse emptySuccess() {
+        return new EconomyResponse(0, 0, EconomyResponse.ResponseType.SUCCESS, null);
+    }
 }
 

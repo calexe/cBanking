@@ -1,6 +1,7 @@
-package me.calaritooo.cBanking.eco;
+package me.calaritooo.cBanking.util;
 
 import me.calaritooo.cBanking.cBanking;
+import me.calaritooo.cBanking.eco.VaultEconomy;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
@@ -32,12 +33,12 @@ public class EconomyManager {
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             Economy registered = Bukkit.getServicesManager().getRegistration(Economy.class).getProvider();
             if (registered != economy) {
-                plugin.getLogger().warning("⚠ Another plugin has overridden cBanking as the economy provider!");
-                plugin.getLogger().warning("✔ If this is intended, ignore this message.");
+                plugin.getLogger().warning("Another plugin has overridden cBanking as the economy provider!");
+                plugin.getLogger().warning("If this is intended, ignore this message.");
             } else {
                 plugin.getLogger().info("cBanking remains the active Vault economy provider.");
             }
-        }, 40L); // Wait 2 seconds
+        }, 40L);
     }
 
     public void unregister() {

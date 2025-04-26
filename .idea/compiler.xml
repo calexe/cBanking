@@ -9,5 +9,8 @@
         <module name="cBanking" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="cBanking-API" target="21" />
+    </bytecodeTargetLevel>
   </component>
 </project>
