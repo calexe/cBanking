@@ -15,14 +15,14 @@ description: ${project.description}
 permissions:
   cbanking.balance:
     description: "Allows players to check their total held balance."
-    default: true
+    default: op
     children:
       cbanking.balance.others:
         description: "Allows players to check the total held balance of others."
         default: op
   cbanking.pay:
     description: "Allows players to pay others from their held balance."
-    default: true
+    default: op
   cbanking.account:
     description: "Allows players to check and manage their accounts."
     default: op
@@ -87,7 +87,8 @@ permissions:
 commands:
   cbanking:
     description: "§7Main cBanking administrator command. Use this as a reference point for economy management."
-    usage: "§7/cbanking <version/admin/debug>"
+    usage: "§7/cbanking <version/admin/reload>"
+    aliases: [ cba, cb, cbadmin, eco]
     permission: cbanking.admin
     permission-message: "§cYou do not have access to this command!"
   balance:

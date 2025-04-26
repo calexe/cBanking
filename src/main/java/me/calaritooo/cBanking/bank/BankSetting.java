@@ -6,16 +6,16 @@ package me.calaritooo.cBanking.bank;
  */
 public enum BankSetting {
 
-    NAME("bankName", ""),
-    OWNER_UUID("ownerUUID", ""),
-    OWNER_NAME("ownerName", ""),
+    NAME("bank-name", ""),
+    OWNER_UUID("owner-uuid", ""),
+    OWNER_NAME("owner-name", ""),
     ASSETS("assets", 0.0),
-    INTEREST_RATE("interestRate", 0.01),
-    ACCOUNT_GROWTH_RATE("accountGrowthRate", 0.0),
-    ACCOUNT_OPENING_FEE("accountOpeningFee", 100.0),
-    MAINTENANCE_FEE_RATE("maintenanceFeeRate", 0.005),
-    DEPOSIT_FEE_RATE("depositFeeRate", 0.01),
-    WITHDRAWAL_FEE_RATE("withdrawalFeeRate", 0.01);
+    INTEREST_RATE("interest-rate", 0.01),
+    ACCOUNT_GROWTH_RATE("account-growth-rate", 0.0),
+    ACCOUNT_OPENING_FEE("account-opening-fee", 100.0),
+    MAINTENANCE_FEE_RATE("maintenance-fee-rate", 0.005),
+    DEPOSIT_FEE_RATE("deposit-fee-rate", 0.01),
+    WITHDRAWAL_FEE_RATE("withdrawal-fee-rate", 0.01);
 
     private final String path;
     private final Object defaultValue;
@@ -31,6 +31,18 @@ public enum BankSetting {
 
     public Object defaultValue() {
         return defaultValue;
+    }
+
+    public static BankSetting fromString(String input) {
+        String normalized = input.replace("_", "").toLowerCase();
+
+        for (BankSetting setting : values()) {
+            String settingKey = setting.name().replace("_", "").toLowerCase();
+            if (settingKey.equals(normalized)) {
+                return setting;
+            }
+        }
+        return null;
     }
 
     @SuppressWarnings("unchecked")

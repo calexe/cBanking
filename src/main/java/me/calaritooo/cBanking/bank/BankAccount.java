@@ -96,6 +96,17 @@ public class BankAccount {
         return uuids;
     }
 
+    public Set<String> getBankIDsByPlayer(UUID playerUUID) {
+        Set<String> bankIDs = new HashSet<>();
+        for (String bankID : bankData.getBankIDs()) {
+            if (hasAccount(bankID, playerUUID)) {
+                bankIDs.add(bankID);
+            }
+        }
+        return bankIDs;
+    }
+
+
     public Map<UUID, Double> getAllBalances(String bankID) {
         Map<UUID, Double> balances = new HashMap<>();
         for (UUID uuid : getAllAccountUUIDs(bankID)) {

@@ -78,6 +78,10 @@ public class EconomyService {
         return bankData.bankExists(bankID);
     }
 
+    public Set<String> getPlayerBankAccounts(UUID playerUUID) {
+        return bankAccount.getBankIDsByPlayer(playerUUID);
+    }
+
     public boolean hasBankAccount(String bankID, UUID uuid) {
         return bankAccount.hasAccount(bankID, uuid);
     }

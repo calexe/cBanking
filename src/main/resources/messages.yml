@@ -46,18 +46,17 @@ transaction:
 bank:
   created: "&aBank '&6%bank-name%&a' has been opened!"
   exists: "&cA bank with that name already exists."
-  deleted: "&cBank '&6%bank-name%&c' has been closed."
+  deleted: "&cBank '&6%bank-name%&c' has been closed. All account balances have been transferred to their holders."
   not-found: "&cThat bank doesn't exist."
   info:
     header: "&7----- &eBank: &6%bank% &7-----"
     owner: "&7Owner: &a%value%"
     assets: "&7Assets: &a%currency-symbol%%value%"
     interest: "&7Interest: &a%value%"
-    fees:
-      opening: "&7Opening Fee: &a%currency-symbol%%value%"
-      maintenance: "&7Maintenance Fee: &a%currency-symbol%%value%"
-      deposit: "&7Deposit Fee: &a%value%%"
-      withdrawal: "&7Withdrawal Fee: &a%value%%"
+    opening: "&7Opening Fee: &a%currency-symbol%%value%"
+    maintenance: "&7Maintenance Fee: &a%currency-symbol%%value%"
+    deposit: "&7Deposit Fee: &a%value%%"
+    withdrawal: "&7Withdrawal Fee: &a%value%%"
   setting-updated: "&a%setting% updated to &a%value%."
 
 account:
@@ -80,3 +79,10 @@ error:
 usage:
   balance: "&7Usage: /balance <player>"
   pay: "&7Usage: /pay <player> <amount>"
+  cbanking: "&7Usage: /cbanking <version/player/bank/reload>"
+  cbanking-player: "&7Usage: /cbanking player <player> <balance/account/loan>"
+  cbanking-player-balance: "&7Usage /cbanking player <player> balance <give/set/take>"
+  cbanking-player-account: "&7Usage /cbanking player <player> account <bank> <open/close/give/set/take>"
+  cbanking-player-loan: "&7Usage /cbanking player <player> loan <bank> <approve/deny/extend/cancel>"
+  cbanking-bank: "&7Usage: /cbanking bank <bank> <info/set/close>"
+  cbanking-bank-set: "&7Usage: /cbanking bank <bank> set <setting> <value>"

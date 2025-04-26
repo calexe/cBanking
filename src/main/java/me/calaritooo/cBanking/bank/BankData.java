@@ -42,7 +42,7 @@ public class BankData {
             File file = getSettingsFile(bankID);
             if (!file.exists()) {
                 plugin.getLogger().warning("Tried to load missing bank: " + bankID);
-                return null; // or optionally create it
+                return null;
             }
             FileConfiguration config = YamlConfiguration.loadConfiguration(file);
             bankCache.put(bankID, config);
@@ -106,16 +106,16 @@ public class BankData {
         OfflinePlayer owner = Bukkit.getOfflinePlayer(ownerUUID);
         FileConfiguration config = new YamlConfiguration();
 
-        config.set("bankName", bankName);
-        config.set("ownerUUID", ownerUUID.toString());
-        config.set("ownerName", owner.getName());
+        config.set("bank-name", bankName);
+        config.set("owner-uuid", ownerUUID.toString());
+        config.set("owner-name", owner.getName());
         config.set("assets", configProvider.getDouble(ConfigurationOption.BANK_CREATION_ASSETS));
-        config.set("interestRate", configProvider.getDouble(ConfigurationOption.LOAN_DEFAULT_INTEREST_RATE));
-        config.set("accountGrowthRate", configProvider.getDouble(ConfigurationOption.BANK_DEFAULT_ACCOUNT_GROWTH));
-        config.set("accountOpeningFee", configProvider.getDouble(ConfigurationOption.BANK_DEFAULT_ACCOUNT_OPENING_FEE));
-        config.set("maintenanceFeeRate", configProvider.getDouble(ConfigurationOption.BANK_DEFAULT_MAINTENANCE_FEE));
-        config.set("depositFeeRate", configProvider.getDouble(ConfigurationOption.BANK_DEFAULT_DEPOSIT_FEE));
-        config.set("withdrawalFeeRate", configProvider.getDouble(ConfigurationOption.BANK_DEFAULT_WITHDRAWAL_FEE));
+        config.set("interest-rate", configProvider.getDouble(ConfigurationOption.LOAN_DEFAULT_INTEREST_RATE));
+        config.set("account-growth-rate", configProvider.getDouble(ConfigurationOption.BANK_DEFAULT_ACCOUNT_GROWTH));
+        config.set("account-opening-fee", configProvider.getDouble(ConfigurationOption.BANK_DEFAULT_ACCOUNT_OPENING_FEE));
+        config.set("maintenance-fee-rate", configProvider.getDouble(ConfigurationOption.BANK_DEFAULT_MAINTENANCE_FEE));
+        config.set("deposit-fee-rate", configProvider.getDouble(ConfigurationOption.BANK_DEFAULT_DEPOSIT_FEE));
+        config.set("withdrawal-fee-rate", configProvider.getDouble(ConfigurationOption.BANK_DEFAULT_WITHDRAWAL_FEE));
 
         bankCache.put(bankID, config); // Cache immediately
         saveBankConfig(bankID);

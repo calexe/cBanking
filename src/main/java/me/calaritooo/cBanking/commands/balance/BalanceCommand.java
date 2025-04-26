@@ -9,10 +9,14 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class BalanceCommand implements CommandExecutor {
+import java.util.ArrayList;
+import java.util.List;
+
+public class BalanceCommand implements CommandExecutor, TabCompleter {
 
     private final EconomyService eco = cBankingCore.getEconomyService();
     private final MessageProvider messages = cBankingCore.getMessageProvider();
@@ -56,7 +60,19 @@ public class BalanceCommand implements CommandExecutor {
             return true;
         }
 
-        messages.send(sender, Message.USAGE_BALANCE_CMD);
+        messages.send(sender, Message.USAGE_BALANCE);
         return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
+
+        List<String> completions = new ArrayList<>();
+
+        if (args.length == 1 && sender.hasPermission("cbanking.balance.others")) {
+            Bukkit.getOnlinePlayers().forEach(player -> completions.add(player.getName()));
+        }
+
+        return completions;
     }
 }
