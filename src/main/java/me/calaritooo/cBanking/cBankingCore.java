@@ -38,7 +38,7 @@ public final class cBankingCore {
 
         messageProvider = new MessageProvider(messages, configurationProvider);
 
-        PlayerData playerData = new PlayerData(plugin);
+        PlayerData playerData = new PlayerData();
         plugin.getLogger().info("Loaded player data!");
 
         BankData bankData = new BankData();

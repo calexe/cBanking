@@ -1,6 +1,9 @@
 package me.calaritooo.cBanking.player;
 
 import me.calaritooo.cBanking.cBanking;
+import me.calaritooo.cBanking.cBankingCore;
+import me.calaritooo.cBanking.util.configuration.ConfigurationOption;
+import me.calaritooo.cBanking.util.configuration.ConfigurationProvider;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -11,10 +14,12 @@ import java.util.UUID;
 public class PlayerData {
 
     private final cBanking plugin;
+    private final ConfigurationProvider config;
     private final File playerDataFolder;
 
-    public PlayerData(cBanking plugin) {
-        this.plugin = plugin;
+    public PlayerData() {
+        this.plugin = cBankingCore.getPlugin();
+        this.config = cBankingCore.getConfigurationProvider();
         this.playerDataFolder = new File(plugin.getDataFolder(), "players");
 
         if (!playerDataFolder.exists()) {
@@ -33,8 +38,8 @@ public class PlayerData {
             try {
                 file.createNewFile();
                 FileConfiguration playerFile = YamlConfiguration.loadConfiguration(file);
-                playerFile.set("balance", 0.0);
                 playerFile.set("username", plugin.getServer().getOfflinePlayer(uuid).getName());
+                playerFile.set("balance", config.getDouble(ConfigurationOption.ECONOMY_STARTING_BALANCE));
                 playerFile.save(file);
             } catch (IOException e) {
                 plugin.getLogger().severe("Could not create data file for: " + plugin.getServer().getOfflinePlayer(uuid).getName() + ", UUID: " + uuid);
