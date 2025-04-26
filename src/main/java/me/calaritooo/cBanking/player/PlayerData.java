@@ -9,6 +9,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class PlayerData {
@@ -17,6 +19,8 @@ public class PlayerData {
     private final ConfigurationProvider config;
     private final File playersFolder;
 
+    private final Map<UUID, FileConfiguration> playerCache = new HashMap<>();
+
     public PlayerData() {
         this.plugin = cBankingCore.getPlugin();
         this.config = cBankingCore.getConfigurationProvider();
@@ -24,48 +28,60 @@ public class PlayerData {
         if (!playersFolder.exists()) playersFolder.mkdirs();
     }
 
-    public File getPlayerFile(UUID uuid) {
+    private File getPlayerFile(UUID uuid) {
         return new File(playersFolder, uuid.toString() + ".yml");
     }
 
-    public FileConfiguration getPlayerConfig(UUID uuid) {
+    private void createPlayerFile(UUID uuid) {
         File file = getPlayerFile(uuid);
-
         if (!file.exists()) {
             try {
                 file.createNewFile();
-                FileConfiguration playerFile = YamlConfiguration.loadConfiguration(file);
-                playerFile.set("username", plugin.getServer().getOfflinePlayer(uuid).getName());
-                playerFile.set("balance", config.getDouble(ConfigurationOption.ECONOMY_STARTING_BALANCE));
-                playerFile.save(file);
+                FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+                config.set("username", plugin.getServer().getOfflinePlayer(uuid).getName());
+                config.set("balance", this.config.getDouble(ConfigurationOption.ECONOMY_STARTING_BALANCE));
+                config.save(file);
+                plugin.getLogger().info("Created data file for player: " + uuid);
             } catch (IOException e) {
-                plugin.getLogger().severe("Could not create data file for: " + plugin.getServer().getOfflinePlayer(uuid).getName() + ", UUID: " + uuid);
+                plugin.getLogger().severe("Failed to create player file for: " + uuid);
             }
         }
-
-        return YamlConfiguration.loadConfiguration(file);
     }
 
-    public void savePlayerConfig(UUID uuid, FileConfiguration playerFile) {
-        try {
-            playerFile.save(getPlayerFile(uuid));
-        } catch (IOException e) {
-            plugin.getLogger().severe("Could not save data file for: " + plugin.getServer().getOfflinePlayer(uuid).getName() + ", UUID: " + uuid);
+    public FileConfiguration getPlayerConfig(UUID uuid) {
+        if (!playerCache.containsKey(uuid)) {
+            createPlayerFile(uuid);
+            FileConfiguration config = YamlConfiguration.loadConfiguration(getPlayerFile(uuid));
+            playerCache.put(uuid, config);
+        }
+        return playerCache.get(uuid);
+    }
+
+    public void savePlayerConfig(UUID uuid) {
+        File file = getPlayerFile(uuid);
+        FileConfiguration config = playerCache.get(uuid);
+        if (config != null) {
+            try {
+                config.save(file);
+            } catch (IOException e) {
+                plugin.getLogger().severe("Could not save player data for: " + uuid);
+            }
         }
     }
 
-    public void savePlayerData(UUID uuid, double initialBalance) {
-        FileConfiguration playerFile = getPlayerConfig(uuid);
-        playerFile.set("balance", initialBalance);
-        playerFile.set("username", plugin.getServer().getOfflinePlayer(uuid).getName());
-        savePlayerConfig(uuid, playerFile);
+    public void saveAll() {
+        for (UUID uuid : playerCache.keySet()) {
+            savePlayerConfig(uuid);
+        }
     }
 
-    public void deletePlayerData(String uuidStr) {
-        File file = getPlayerFile(UUID.fromString(uuidStr));
-        if (file.exists()) {
-            file.delete();
-        }
+    // Player data operations
+
+    public void savePlayerData(UUID uuid, double balance) {
+        FileConfiguration config = getPlayerConfig(uuid);
+        config.set("balance", balance);
+        config.set("username", plugin.getServer().getOfflinePlayer(uuid).getName());
+        savePlayerConfig(uuid);
     }
 
     public boolean hasPlayerData(UUID uuid) {
@@ -73,18 +89,24 @@ public class PlayerData {
     }
 
     public double getBalance(UUID uuid) {
-        FileConfiguration config = getPlayerConfig(uuid);
-        return config.getDouble("balance", 0.0);
+        return getPlayerConfig(uuid).getDouble("balance", 0.0);
     }
 
     public void setBalance(UUID uuid, double amount) {
-        FileConfiguration config = getPlayerConfig(uuid);
-        config.set("balance", amount);
-        savePlayerConfig(uuid, config);
+        getPlayerConfig(uuid).set("balance", amount);
+        savePlayerConfig(uuid);
     }
 
     public String getName(UUID uuid) {
-        FileConfiguration config = getPlayerConfig(uuid);
-        return config.getString("username", "Unknown");
+        return getPlayerConfig(uuid).getString("username", "Unknown");
+    }
+
+    public void deletePlayerData(String uuidStr) {
+        UUID uuid = UUID.fromString(uuidStr);
+        playerCache.remove(uuid); // Remove from memory too
+        File file = getPlayerFile(uuid);
+        if (file.exists()) {
+            file.delete();
+        }
     }
 }

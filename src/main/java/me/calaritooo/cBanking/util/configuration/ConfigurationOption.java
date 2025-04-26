@@ -3,6 +3,7 @@ package me.calaritooo.cBanking.util.configuration;
 public enum ConfigurationOption {
 
     // ───── General Plugin Settings ─────
+    AUTOSAVE_INTERVAL("plugin-settings.autosave-interval", 10),
     LOG_TRANSACTIONS("plugin-settings.logging.enable-log-transactions", false),
     LOG_LOAN_REQUESTS("plugin-settings.logging.enable-log-loan-requests", false),
     ENABLE_ADMIN_MESSAGES("plugin-settings.notifications.enable-admin-messages", true),

@@ -11,16 +11,16 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class BankData {
 
     private final cBanking plugin;
     private final ConfigurationProvider configProvider;
     private final File banksFolder;
+
+    // NEW: cache
+    private final Map<String, FileConfiguration> bankCache = new HashMap<>();
 
     public BankData() {
         this.plugin = cBankingCore.getPlugin();
@@ -29,26 +29,42 @@ public class BankData {
         if (!banksFolder.exists()) banksFolder.mkdirs();
     }
 
-    public File getBankFolder(String bankID) {
-        File folder = new File(banksFolder, bankID);
-        if (!folder.exists()) folder.mkdirs();
-        return folder;
+    protected File getBankFolder(String bankID) {
+        return new File(banksFolder, bankID);
     }
 
-    public File getSettingsFile(String bankID) {
+    private File getSettingsFile(String bankID) {
         return new File(getBankFolder(bankID), bankID + ".yml");
     }
 
     public FileConfiguration getBankConfig(String bankID) {
-        return YamlConfiguration.loadConfiguration(getSettingsFile(bankID));
+        if (!bankCache.containsKey(bankID)) {
+            File file = getSettingsFile(bankID);
+            if (!file.exists()) {
+                plugin.getLogger().warning("Tried to load missing bank: " + bankID);
+                return null; // or optionally create it
+            }
+            FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+            bankCache.put(bankID, config);
+        }
+        return bankCache.get(bankID);
     }
 
-    public void saveBankConfig(String bankID, FileConfiguration config) {
-        try {
-            config.save(getSettingsFile(bankID));
-        } catch (IOException e) {
-            plugin.getLogger().severe("Failed to save configuration file for bank '" + bankID + "'");
-            e.printStackTrace();
+    public void saveBankConfig(String bankID) {
+        FileConfiguration config = bankCache.get(bankID);
+        if (config != null) {
+            try {
+                config.save(getSettingsFile(bankID));
+            } catch (IOException e) {
+                plugin.getLogger().severe("Failed to save configuration file for bank '" + bankID + "'");
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void saveAll() {
+        for (String bankID : bankCache.keySet()) {
+            saveBankConfig(bankID);
         }
     }
 
@@ -74,14 +90,21 @@ public class BankData {
     public String getBankIDByName(String name) {
         for (String id : getBankIDs()) {
             FileConfiguration config = getBankConfig(id);
-            if (name.equalsIgnoreCase(config.getString("bankName"))) return id;
+            if (config != null && name.equalsIgnoreCase(config.getString("bankName"))) {
+                return id;
+            }
         }
         return null;
     }
 
     public void createBank(String bankID, String bankName, UUID ownerUUID) {
-        FileConfiguration config = new YamlConfiguration();
+        if (bankExists(bankID)) {
+            plugin.getLogger().warning("Bank already exists: " + bankID);
+            return;
+        }
+
         OfflinePlayer owner = Bukkit.getOfflinePlayer(ownerUUID);
+        FileConfiguration config = new YamlConfiguration();
 
         config.set("bankName", bankName);
         config.set("ownerUUID", ownerUUID.toString());
@@ -94,15 +117,23 @@ public class BankData {
         config.set("depositFeeRate", configProvider.getDouble(ConfigurationOption.BANK_DEFAULT_DEPOSIT_FEE));
         config.set("withdrawalFeeRate", configProvider.getDouble(ConfigurationOption.BANK_DEFAULT_WITHDRAWAL_FEE));
 
-        saveBankConfig(bankID, config);
+        bankCache.put(bankID, config); // Cache immediately
+        saveBankConfig(bankID);
+
+        plugin.getLogger().info("Created new bank: " + bankID);
     }
 
     public void deleteBank(String bankID) {
+        bankCache.remove(bankID); // Remove from cache first
+
         File bankFolder = getBankFolder(bankID);
         if (!bankFolder.exists()) return;
 
-        for (File file : Objects.requireNonNull(bankFolder.listFiles())) {
-            file.delete();
+        File[] files = bankFolder.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                file.delete();
+            }
         }
         bankFolder.delete();
     }

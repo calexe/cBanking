@@ -19,6 +19,8 @@ public final class cBankingCore {
     private static FileConfiguration messages;
     private static ConfigurationProvider configurationProvider;
     private static MessageProvider messageProvider;
+    private static PlayerData playerData;
+    private static BankData bankData;
     private static EconomyService economyService;
 
     private cBankingCore() {
@@ -39,10 +41,10 @@ public final class cBankingCore {
 
         messageProvider = new MessageProvider(messages, configurationProvider);
 
-        PlayerData playerData = new PlayerData();
+        playerData = new PlayerData();
         plugin.getLogger().info("Loaded player data!");
 
-        BankData bankData = new BankData();
+        bankData = new BankData();
         plugin.getLogger().info("Loaded banks.yml!");
 
         PlayerAccount playerAccount = new PlayerAccount(playerData);
@@ -51,6 +53,11 @@ public final class cBankingCore {
         economyService = new EconomyService(playerAccount, playerData, bankAccount, bankData);
 
         plugin.getLogger().info("Loaded economy service!");
+    }
+
+    public static void saveData() {
+        playerData.saveAll();
+        bankData.saveAll();
     }
 
     public static cBanking getPlugin() {

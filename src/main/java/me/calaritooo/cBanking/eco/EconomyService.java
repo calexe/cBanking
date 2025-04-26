@@ -26,7 +26,7 @@ public class EconomyService {
         this.bankData = bankData;
     }
 
-    // ────────────── PLAYER ACCOUNTS ──────────────
+    // ───────── PLAYER ACCOUNTS ─────────
 
     public boolean exists(UUID uuid) {
         return playerAccount.exists(uuid);
@@ -39,12 +39,14 @@ public class EconomyService {
     public boolean deposit(UUID uuid, double amount) {
         if (!validAmount(amount) || !exists(uuid)) return false;
         playerAccount.deposit(uuid, amount);
+        playerData.savePlayerConfig(uuid);
         return true;
     }
 
     public boolean withdraw(UUID uuid, double amount) {
         if (!validAmount(amount) || !exists(uuid) || !hasFunds(uuid, amount)) return false;
         playerAccount.withdraw(uuid, amount);
+        playerData.savePlayerConfig(uuid);
         return true;
     }
 
@@ -59,16 +61,18 @@ public class EconomyService {
     public boolean setBalance(UUID uuid, double amount) {
         if (!exists(uuid)) return false;
         playerAccount.setBalance(uuid, amount);
+        playerData.savePlayerConfig(uuid);
         return true;
     }
 
     public boolean createAccount(UUID uuid, double initialBalance) {
         if (exists(uuid)) return false;
         playerAccount.createAccount(uuid, initialBalance);
+        playerData.savePlayerConfig(uuid);
         return true;
     }
 
-    // ────────────── BANK ACCOUNTS ──────────────
+    // ───────── BANK ACCOUNTS ─────────
 
     public boolean bankExists(String bankID) {
         return bankData.bankExists(bankID);
@@ -85,12 +89,14 @@ public class EconomyService {
     public boolean depositBank(String bankID, UUID uuid, double amount) {
         if (!validAmount(amount) || !hasBankAccount(bankID, uuid)) return false;
         bankAccount.deposit(bankID, uuid, amount);
+        bankData.saveBankConfig(bankID);
         return true;
     }
 
     public boolean withdrawBank(String bankID, UUID uuid, double amount) {
         if (!validAmount(amount) || !hasBankAccount(bankID, uuid) || !hasBankFunds(bankID, uuid, amount)) return false;
         bankAccount.withdraw(bankID, uuid, amount);
+        bankData.saveBankConfig(bankID);
         return true;
     }
 
@@ -105,22 +111,25 @@ public class EconomyService {
     public boolean setBankBalance(String bankID, UUID uuid, double amount) {
         if (!hasBankAccount(bankID, uuid)) return false;
         bankAccount.setBalance(bankID, uuid, amount);
+        bankData.saveBankConfig(bankID);
         return true;
     }
 
     public boolean createBankAccount(String bankID, UUID uuid, double initialBalance) {
         if (!bankExists(bankID)) return false;
         bankAccount.createAccount(bankID, uuid, initialBalance);
+        bankData.saveBankConfig(bankID);
         return true;
     }
 
     public boolean deleteBankAccount(String bankID, UUID uuid) {
         if (!hasBankAccount(bankID, uuid)) return false;
         bankAccount.deleteAccount(bankID, uuid);
+        bankData.saveBankConfig(bankID);
         return true;
     }
 
-    // ────────────── BANK MANAGEMENT ──────────────
+    // ───────── BANK MANAGEMENT ─────────
 
     public boolean createBank(String name, UUID ownerUUID) {
         String id = generateBankId(name);
@@ -138,6 +147,7 @@ public class EconomyService {
         if (balances.isEmpty()) return;
         for (UUID uuid : balances.keySet()) {
             playerAccount.deposit(uuid, balances.get(uuid));
+            playerData.savePlayerConfig(uuid);
         }
         deleteBank(bankID);
     }
@@ -155,7 +165,8 @@ public class EconomyService {
     }
 
     public UUID getBankOwnerUUID(String bankID) {
-        return UUID.fromString(getBankSetting(bankID, BankSetting.OWNER_UUID, String.class));
+        String uuidString = getBankSetting(bankID, BankSetting.OWNER_UUID, String.class);
+        return uuidString != null ? UUID.fromString(uuidString) : null;
     }
 
     public String getBankOwnerName(String bankID) {
@@ -168,16 +179,18 @@ public class EconomyService {
 
     public void setBankSetting(String bankID, BankSetting setting, Object value) {
         FileConfiguration config = bankData.getBankConfig(bankID);
+        if (config == null) return;
         config.set(setting.path(), value);
-        bankData.saveBankConfig(bankID, config);
+        bankData.saveBankConfig(bankID);
     }
 
     public <T> T getBankSetting(String bankID, BankSetting setting, Class<T> type) {
         FileConfiguration config = bankData.getBankConfig(bankID);
+        if (config == null) return null;
 
         if (!config.contains(setting.path())) {
             config.set(setting.path(), setting.defaultValue());
-            bankData.saveBankConfig(bankID, config);
+            bankData.saveBankConfig(bankID);
         }
 
         return config.getObject(setting.path(), type);

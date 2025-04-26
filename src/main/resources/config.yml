@@ -12,6 +12,8 @@
 
 # General plugin management settings.
 plugin-settings:
+  # Interval (in minutes) at which data files will autosave.
+  autosave-interval: 10
   # Enable or disable logging for various data. Logs are created and kept in YAML files accessible in the cBanking 'logs' folder.
   logging:
     # Log all deposits and withdrawals made by players between their balance and accounts.
@@ -35,7 +37,7 @@ modules:
 # General server economy settings and default values.
 economy-settings:
   # Starting balance for new players. Use decimal format with a maximum to the hundredth's place. (ex. #.##)
-  starting-bal: 0.00
+  starting-bal: 0.0
   # Symbol/code your currency will use. ex. "$" or "USD"
   currency-symbol: "ȼ"
   # Name of your server's currency.
