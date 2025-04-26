@@ -8,6 +8,15 @@ public class ConfigurationProvider {
 
     public ConfigurationProvider(FileConfiguration config) {
         this.config = config;
+        populateDefaults();
+    }
+
+    public void populateDefaults() {
+        for (ConfigurationOption option : ConfigurationOption.values()) {
+            if (!config.contains(option.path())) {
+                config.set(option.path(), option.defaultValue());
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")

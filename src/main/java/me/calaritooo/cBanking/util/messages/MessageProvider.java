@@ -18,7 +18,16 @@ public class MessageProvider {
     public MessageProvider(FileConfiguration messages, ConfigurationProvider config) {
         this.messages = messages;
         this.config = config;
+        populateDefaults();
         loadGlobalPlaceholders();
+    }
+
+    public void populateDefaults() {
+        for (Message message : Message.values()) {
+            if (!messages.contains(message.path())) {
+                messages.set(message.path(), message.defaultMessage());
+            }
+        }
     }
 
     public String get(Message message, String... placeholders) {
