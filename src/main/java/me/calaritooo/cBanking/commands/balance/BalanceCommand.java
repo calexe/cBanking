@@ -4,6 +4,7 @@ import me.calaritooo.cBanking.cBankingCore;
 import me.calaritooo.cBanking.eco.EconomyService;
 import me.calaritooo.cBanking.util.messages.Message;
 import me.calaritooo.cBanking.util.messages.MessageProvider;
+import me.calaritooo.cBanking.util.money.Money;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -34,9 +35,9 @@ public class BalanceCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            double balance = eco.getBalance(player.getUniqueId());
+            Money balance = eco.getBalance(player.getUniqueId());
             messages.send(player, Message.BALANCE_SELF,
-                    "%amt%", String.valueOf(balance),
+                    "%amt%", balance.toString(),
                     "%player%", player.getName());
             return true;
         }
@@ -53,9 +54,9 @@ public class BalanceCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            double balance = eco.getBalance(target.getUniqueId());
+            Money balance = eco.getBalance(target.getUniqueId());
             messages.send(sender, Message.BALANCE_OTHER,
-                    "%amt%", String.valueOf(balance),
+                    "%amt%", balance.toString(),
                     "%player%", target.getName());
             return true;
         }
