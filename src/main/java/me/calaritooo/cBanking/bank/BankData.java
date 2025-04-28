@@ -109,13 +109,13 @@ public class BankData {
         config.set("bank-name", bankName);
         config.set("owner-uuid", ownerUUID.toString());
         config.set("owner-name", owner.getName());
-        config.set("assets", configProvider.getDouble(ConfigurationOption.BANK_CREATION_ASSETS));
-        config.set("interest-rate", configProvider.getDouble(ConfigurationOption.LOAN_DEFAULT_INTEREST_RATE));
-        config.set("account-growth-rate", configProvider.getDouble(ConfigurationOption.BANK_DEFAULT_ACCOUNT_GROWTH));
-        config.set("account-opening-fee", configProvider.getDouble(ConfigurationOption.BANK_DEFAULT_ACCOUNT_OPENING_FEE));
-        config.set("maintenance-fee-rate", configProvider.getDouble(ConfigurationOption.BANK_DEFAULT_MAINTENANCE_FEE));
-        config.set("deposit-fee-rate", configProvider.getDouble(ConfigurationOption.BANK_DEFAULT_DEPOSIT_FEE));
-        config.set("withdrawal-fee-rate", configProvider.getDouble(ConfigurationOption.BANK_DEFAULT_WITHDRAWAL_FEE));
+        config.set("assets", configProvider.get(ConfigurationOption.BANK_CREATION_ASSETS));
+        config.set("interest-rate", configProvider.get(ConfigurationOption.LOAN_DEFAULT_INTEREST_RATE));
+        config.set("account-growth-rate", configProvider.get(ConfigurationOption.BANK_DEFAULT_ACCOUNT_GROWTH));
+        config.set("account-opening-fee", configProvider.get(ConfigurationOption.BANK_DEFAULT_ACCOUNT_OPENING_FEE));
+        config.set("maintenance-fee-rate", configProvider.get(ConfigurationOption.BANK_DEFAULT_MAINTENANCE_FEE));
+        config.set("deposit-fee-rate", configProvider.get(ConfigurationOption.BANK_DEFAULT_DEPOSIT_FEE));
+        config.set("withdrawal-fee-rate", configProvider.get(ConfigurationOption.BANK_DEFAULT_WITHDRAWAL_FEE));
 
         bankCache.put(bankID, config); // Cache immediately
         saveBankConfig(bankID);
