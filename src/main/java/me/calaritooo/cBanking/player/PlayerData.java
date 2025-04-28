@@ -39,7 +39,7 @@ public class PlayerData {
                 file.createNewFile();
                 FileConfiguration config = YamlConfiguration.loadConfiguration(file);
                 config.set("username", plugin.getServer().getOfflinePlayer(uuid).getName());
-                config.set("balance", this.config.getDouble(ConfigurationOption.ECONOMY_STARTING_BALANCE));
+                config.set("balance", this.config.get(ConfigurationOption.ECONOMY_STARTING_BALANCE));
                 config.save(file);
                 plugin.getLogger().info("Created data file for player: " + uuid);
             } catch (IOException e) {
