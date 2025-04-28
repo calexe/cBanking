@@ -34,6 +34,7 @@ public final class cBankingCore {
         config = plugin.getConfig();
 
         configurationProvider = new ConfigurationProvider(config);
+        configurationProvider.updateConfigWithDefaults();
 
         File messagesFile = new File(plugin.getDataFolder(), "messages.yml");
         if (!messagesFile.exists()) {

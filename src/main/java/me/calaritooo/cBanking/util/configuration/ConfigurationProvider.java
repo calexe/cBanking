@@ -3,9 +3,11 @@ package me.calaritooo.cBanking.util.configuration;
 import me.calaritooo.cBanking.cBanking;
 import me.calaritooo.cBanking.cBankingCore;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class ConfigurationProvider {
 
@@ -78,8 +80,44 @@ public class ConfigurationProvider {
         }
     }
 
+    public void updateConfigWithDefaults() {
+        FileConfiguration config = this.config; // Your current config.yml
+
+        try {
+            InputStreamReader reader = new InputStreamReader(
+                    cBankingCore.getPlugin().getResource("config.yml"), "UTF-8"
+            );
+            YamlConfiguration defaultConfig = YamlConfiguration.loadConfiguration(reader);
+
+            boolean updated = false;
+
+            for (String key : defaultConfig.getKeys(true)) {
+                if (!config.contains(key)) {
+                    config.set(key, defaultConfig.get(key));
+                    updated = true;
+                } else {
+                    Object currentValue = config.get(key);
+                    Object defaultValue = defaultConfig.get(key);
+                    if (currentValue != null && currentValue.equals(defaultValue)) {
+                        config.set(key, defaultValue);
+                        updated = true;
+                    }
+                }
+            }
+
+            if (updated) {
+                cBankingCore.getPlugin().saveConfig();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            cBankingCore.getPlugin().getLogger().warning("Failed to update config with defaults.");
+        }
+    }
+
     public void reload() {
         this.config = cBankingCore.getPlugin().getConfig();
         populateDefaults();
+        updateConfigWithDefaults();
     }
 }
