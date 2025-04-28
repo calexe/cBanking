@@ -45,7 +45,7 @@ public class cBankingCommand implements CommandExecutor, TabCompleter {
             case "version" -> sender.sendMessage("§acBanking §7is currently running version: §6" + plugin.getPluginMeta().getVersion());
             case "reload" -> {
                 sender.sendMessage("§6Reloading cBanking config.yml...");
-                plugin.reloadConfig();
+                cBankingCore.reload();
                 sender.sendMessage("§aReloaded cBanking config.yml!");
             }
             case "player" -> playerSubCommand.handle(sender, Arrays.copyOfRange(args, 1, args.length));

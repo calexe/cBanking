@@ -65,6 +65,13 @@ public final class cBankingCore {
         configurationProvider.saveIfModified();
     }
 
+    public static void reload() {
+        plugin.reloadConfig();
+        configurationProvider.reload();
+        messageProvider.reload();
+        plugin.getLogger().info("Successfully reloaded config.yml and messages.yml!");
+    }
+
     public static cBanking getPlugin() {
         return plugin;
     }

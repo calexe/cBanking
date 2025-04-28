@@ -9,8 +9,8 @@ import java.io.IOException;
 
 public class ConfigurationProvider {
 
-    private final cBanking plugin;
-    private final FileConfiguration config;
+    private cBanking plugin;
+    private FileConfiguration config;
     private boolean modified = false;
 
     public ConfigurationProvider(FileConfiguration config) {
@@ -76,5 +76,10 @@ public class ConfigurationProvider {
             plugin.getLogger().severe("[cBanking] Failed to save config.yml: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    public void reload() {
+        this.config = cBankingCore.getPlugin().getConfig();
+        populateDefaults();
     }
 }

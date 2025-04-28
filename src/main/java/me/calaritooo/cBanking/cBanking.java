@@ -42,7 +42,7 @@ public class cBanking extends JavaPlugin {
             startAutosave(autosaveTicks);
         }
         if (autosaveTask != 1) {
-            getLogger().warning("Autosave is not enabled! Player and bank data files will only save upon restart. Reloading is NOT recommended!");
+            getLogger().warning("Autosave is not enabled! Player and bank data files will only save upon restart.");
         }
 
         getLogger().info("Successfully enabled!");
