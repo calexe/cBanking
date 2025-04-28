@@ -3,6 +3,7 @@ package me.calaritooo.cBanking;
 import me.calaritooo.cBanking.bank.BankAccount;
 import me.calaritooo.cBanking.bank.BankData;
 import me.calaritooo.cBanking.eco.EconomyService;
+import me.calaritooo.cBanking.util.ResourceUpdater;
 import me.calaritooo.cBanking.util.money.MoneyProvider;
 import me.calaritooo.cBanking.player.PlayerAccount;
 import me.calaritooo.cBanking.player.PlayerData;
@@ -31,10 +32,13 @@ public final class cBankingCore {
     public static void initialize(cBanking pluginInstance) {
         plugin = pluginInstance;
         plugin.saveDefaultConfig();
+
+        ResourceUpdater.update(plugin, "config.yml");
+        ResourceUpdater.update(plugin, "messages.yml");
+
         config = plugin.getConfig();
 
         configurationProvider = new ConfigurationProvider(config);
-        configurationProvider.updateConfigWithDefaults();
 
         File messagesFile = new File(plugin.getDataFolder(), "messages.yml");
         if (!messagesFile.exists()) {
@@ -68,10 +72,23 @@ public final class cBankingCore {
 
     public static void reload() {
         plugin.reloadConfig();
-        configurationProvider.reload();
-        messageProvider.reload();
-        plugin.getLogger().info("Successfully reloaded config.yml and messages.yml!");
+
+        ResourceUpdater.update(plugin, "config.yml");
+        ResourceUpdater.update(plugin, "messages.yml");
+
+        config = plugin.getConfig();
+        configurationProvider = new ConfigurationProvider(config);
+
+        File messagesFile = new File(plugin.getDataFolder(), "messages.yml");
+        messages = YamlConfiguration.loadConfiguration(messagesFile);
+        messageProvider = new MessageProvider(messages, configurationProvider);
+
+        playerData.saveAll();
+        bankData.saveAll();
+
+        plugin.getLogger().info("cBanking config.yml and messages.yml reloaded successfully.");
     }
+
 
     public static cBanking getPlugin() {
         return plugin;
