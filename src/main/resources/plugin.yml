@@ -5,9 +5,6 @@ api-version: '1.21'
 prefix: ${project.name}
 author: ${project.organization.name}
 depend: [Vault]
-loadbefore:
-  - Essentials
-  - EssentialsX
 description: ${project.description}
 
 # PERMISSIONS #
@@ -45,38 +42,32 @@ permissions:
       cbanking.bank.close:
         description: "Allows players to close their bank."
         default: op
-      cbanking.bank.accounts:
-        description: "Allows players to view all account balances and the players associated with them."
-        default: op
-      cbanking.bank.loans:
-        description: "Allows players to view and manage loan requests."
-        default: op
-      cbanking.bank.manage:
+      cbanking.bank.set:
         description: "Allows players to manage their bank."
         default: op
         children:
-          cbanking.bank.manage.interest:
+          cbanking.bank.set.interest:
             description: "Allows players to adjust their bank's loan interest rate."
             default: op
-          cbanking.bank.manage.growth:
+          cbanking.bank.set.growth:
             description: "Allows players to adjust their bank's account growth rate."
             default: op
-          cbanking.bank.manage.assets:
+          cbanking.bank.set.assets:
             description: "Allows players to adjust their bank's assets."
             default: op
-          cbanking.bank.manage.accountgrowth:
+          cbanking.bank.set.account_growth:
             description: "Allows players to adjust their bank's account growth rates."
             default: op
-          cbanking.bank.manage.accountopeningfee:
+          cbanking.bank.set.account_opening_fee:
             description: "Allows players to adjust their bank's account opening fees."
             default: op
-          cbanking.bank.manage.withdrawalfee:
+          cbanking.bank.set.withdrawal_fee:
             description: "Allows players to adjust their bank's withdrawal fees."
             default: op
-          cbanking.bank.manage.depositfee:
+          cbanking.bank.set.deposit_fee:
             description: "Allows players to adjust their bank's deposit fees."
             default: op
-          cbanking.bank.manage.maintenance:
+          cbanking.bank.set.maintenance:
             description: "Allows players to adjust their bank's maintenance fees."
   cbanking.admin:
     description: "Allows players to manage other player accounts, banks, and the server's economy."
@@ -86,34 +77,34 @@ permissions:
 commands:
   cbanking:
     description: "§7Main cBanking administrator command. Use this as a reference point for economy management."
-    usage: "§7/cbanking <version/admin/reload>"
+    usage: "§7/cbanking <version/player/bank/reload>"
     aliases: [ cba, cb, cbadmin, eco]
     permission: cbanking.admin
     permission-message: "§cYou do not have access to this command!"
   balance:
-    description: "§7Use this to check your total held and account balances."
+    description: "§7Use this to check your balance."
     usage: "§7/balance <player>"
     aliases: [ bal, money ]
     permission: cbanking.balance
     permission-message: "§cYou do not have access to this command!"
   pay:
-    description: "§7Use this to pay another player from your held balance."
+    description: "§7Use this to pay another player."
     usage: "§7/pay <player> <amount>"
     permission: cbanking.pay
     permission-message: "§cYou do not have access to this command!"
   account:
     description: "§7Use this to check and manage your accounts."
-    usage: "§7/account <bankID> <deposit/withdraw> <amount>"
+    usage: "§7/account <bank> <deposit/withdraw> <amount>"
     aliases: [ acc ]
     permission: cbanking.account
     permission-message: "§cYou do not have access to this command!"
   loan:
     description: "§7Use this to request a loan from a bank with which you actively have an account."
-    usage: "§7/loan <bankID> <amount> <days>"
+    usage: "§7/loan <bank> <view/request>"
     permission: cbanking.loan
     permission-message: "§cYou do not have access to this command!"
   bank:
-    description: "§7Use this to check, manage, or open a bank."
-    usage: "§7/bank <open/close/accounts/loans/manage>"
+    description: "§7Use this to check or manage a bank."
+    usage: "§7/bank <open/close/set>"
     permission: cbanking.bank
     permission-message: "§cYou do not have access to this command!"

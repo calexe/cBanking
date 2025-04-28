@@ -4,7 +4,7 @@
 
     <groupId>me.github.calaritooo</groupId>
     <artifactId>cBanking</artifactId>
-    <version>3.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>cBanking</name>
     <description>A server-wide economy manager complete with player-owned and operated banks, loan management, and more!</description>
     <organization>
