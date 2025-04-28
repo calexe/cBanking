@@ -2,6 +2,8 @@ package me.calaritooo.cBanking.commands.pay;
 
 import me.calaritooo.cBanking.cBankingCore;
 import me.calaritooo.cBanking.eco.EconomyService;
+import me.calaritooo.cBanking.util.money.Money;
+import me.calaritooo.cBanking.util.money.MoneyProvider;
 import me.calaritooo.cBanking.util.messages.Message;
 import me.calaritooo.cBanking.util.messages.MessageProvider;
 import org.bukkit.Bukkit;
@@ -22,6 +24,7 @@ public class PayCommand implements CommandExecutor, TabCompleter {
 
     private final EconomyService eco = cBankingCore.getEconomyService();
     private final MessageProvider messages = cBankingCore.getMessageProvider();
+    private final MoneyProvider moneyProvider = cBankingCore.getMoneyProvider();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
@@ -52,16 +55,9 @@ public class PayCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        double amount;
-        try {
-            amount = Double.parseDouble(args[1]);
-        } catch (NumberFormatException e) {
-            messages.send(player, Message.ERROR_INVALID_AMOUNT);
-            return true;
-        }
-
-        if (amount <= 0) {
-            messages.send(player, Message.ERROR_INVALID_AMOUNT);
+        Money amount = Money.parse((args[1]));
+        if (amount == null || amount.value() == 0) {
+            messages.send(sender, Message.ERROR_INVALID_AMOUNT);
             return true;
         }
 
@@ -80,11 +76,12 @@ public class PayCommand implements CommandExecutor, TabCompleter {
         }
 
         messages.send(player, Message.PAY_SENT,
-                "%amt%", String.valueOf(amount),
+                "%amt%", amount.toString(),
                 "%recipient%", target.getName());
+
         if (target.isOnline()) {
             messages.send(Objects.requireNonNull(target.getPlayer()), Message.PAY_RECEIVED,
-                    "%amt%", String.valueOf(amount),
+                    "%amt%", amount.toString(),
                     "%player%", player.getName());
         }
         return true;
@@ -92,13 +89,11 @@ public class PayCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
-
         List<String> completions = new ArrayList<>();
-
         if (args.length == 1 && sender.hasPermission("cbanking.pay")) {
             Bukkit.getOnlinePlayers().forEach(player -> completions.add(player.getName()));
         }
-
         return completions;
     }
 }
+

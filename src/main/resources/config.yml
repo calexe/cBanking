@@ -108,14 +108,10 @@ loan-settings:
   min-loan-interest-rate: 0
   # Maximum loan interest rate (percentage) that a bank owner may set.
   max-loan-interest-rate: 15
-  # Will the maximum amount per loan be equal to a bank's total assets? (if false, set the server's max loan amount below with 'max-loan-amount')
-  max-loan-by-assets: true
-  # Minimum amount a player may request and a bank may grant per loan. ('max-loan-by-assets' MUST be false!)
+  # Minimum amount a player may request and a bank may grant per loan.
   min-loan-amt: 250
-  # Maximum amount a player may request and a bank may grant per loan. ('max-loan-by-assets' MUST be false!)
+  # Maximum amount a player may request and a bank may grant per loan.
   max-loan-amt: 500
-  # Maximum number of loan requests per player. This is NOT per bank! (Recommended to be left at 1)
-  max-loan-requests: 1
   # Minimum loan period (in hours) that a bank owner can apply to an approved loan request.
   min-loan-period: 1
   # Maximum loan period (in hours) that a bank owner can apply to an approved loan request.

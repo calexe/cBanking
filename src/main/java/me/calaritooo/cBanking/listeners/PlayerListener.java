@@ -7,6 +7,7 @@ import me.calaritooo.cBanking.util.configuration.ConfigurationOption;
 import me.calaritooo.cBanking.util.configuration.ConfigurationProvider;
 import me.calaritooo.cBanking.util.messages.Message;
 import me.calaritooo.cBanking.util.messages.MessageProvider;
+import me.calaritooo.cBanking.util.money.Money;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,8 +34,8 @@ public class PlayerListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         UUID player = event.getPlayer().getUniqueId();
         if (!eco.exists(player)) {
-            double initialBalance = config.getDouble(ConfigurationOption.ECONOMY_STARTING_BALANCE);
-            eco.createAccount(player, initialBalance);
+            double initialBalance = config.get(ConfigurationOption.ECONOMY_STARTING_BALANCE);
+            eco.createAccount(player, Money.of(initialBalance));
         }
     }
 
@@ -42,36 +43,39 @@ public class PlayerListener implements Listener {
     public void onPlayerDie(PlayerDeathEvent event) {
         Player player = event.getEntity();
         UUID playerUUID = event.getEntity().getUniqueId();
-        double totalBal = eco.getBalance(playerUUID);
+        Money totalBal = eco.getBalance(playerUUID);
 
-        if (config.getBoolean(ConfigurationOption.MODULE_DEATH_LOSS)) {
-            switch (config.getString(ConfigurationOption.ECONOMY_DEATH_LOSS_TYPE)) {
+        if (config.get(ConfigurationOption.MODULE_DEATH_LOSS)) {
+            String deathLossType = config.get(ConfigurationOption.ECONOMY_DEATH_LOSS_TYPE);
+            switch (deathLossType.toLowerCase()) {
                 case "all" -> {
                     if (eco.withdraw(playerUUID, totalBal)) {
                         messages.send(player, Message.GENERAL_DEATH_LOSS_ALL,
-                                "%amt%", String.valueOf(totalBal));
+                                "%amt%", totalBal.toString());
                     }
                 }
                 case "percentage" -> {
-                    double percentageValue = config.getDouble(ConfigurationOption.ECONOMY_DEATH_LOSS_VALUE);
+                    double percentageValue = config.get(ConfigurationOption.ECONOMY_DEATH_LOSS_VALUE);
                     double percentageLost = percentageValue / 100;
-                    if (eco.withdraw(playerUUID, totalBal * percentageLost)) {
+                    double amount = totalBal.value() * percentageLost;
+                    if (eco.withdraw(playerUUID, Money.of(amount))) {
                         messages.send(player, Message.GENERAL_DEATH_LOSS_PERCENTAGE,
-                                "%amt%", String.valueOf(totalBal * percentageLost),
+                                "%amt%", String.valueOf(amount),
                                 "%percentage%", String.valueOf(percentageValue));
                     }
                 }
                 case "flat" -> {
-                    double flatValue = config.getDouble(ConfigurationOption.ECONOMY_DEATH_LOSS_VALUE);
-                    if (totalBal < flatValue) {
+                    double flatValue = config.get(ConfigurationOption.ECONOMY_DEATH_LOSS_VALUE);
+                    if (totalBal.value() < flatValue) {
                         if (eco.withdraw(playerUUID, totalBal)) {
                             messages.send(player, Message.GENERAL_DEATH_LOSS_FLAT,
-                                    "%amt%", String.valueOf(totalBal));
+                                    "%amt%", totalBal.toString());
                         }
                     } else {
-                        if (eco.withdraw(playerUUID, totalBal - flatValue)) {
+                        double amount = totalBal.value() - flatValue;
+                        if (eco.withdraw(playerUUID, Money.of(amount))) {
                             messages.send(player, Message.GENERAL_DEATH_LOSS_FLAT,
-                                    "%amt%", String.valueOf(totalBal - flatValue));
+                                    "%amt%", String.valueOf(amount));
                         }
                     }
                 }

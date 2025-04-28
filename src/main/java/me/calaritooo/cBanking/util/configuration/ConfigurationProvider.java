@@ -1,55 +1,80 @@
 package me.calaritooo.cBanking.util.configuration;
 
+import me.calaritooo.cBanking.cBanking;
+import me.calaritooo.cBanking.cBankingCore;
 import org.bukkit.configuration.file.FileConfiguration;
+
+import java.io.File;
+import java.io.IOException;
 
 public class ConfigurationProvider {
 
+    private final cBanking plugin;
     private final FileConfiguration config;
+    private boolean modified = false;
 
     public ConfigurationProvider(FileConfiguration config) {
+        this.plugin = cBankingCore.getPlugin();
         this.config = config;
         populateDefaults();
     }
 
-    public void populateDefaults() {
+    private void populateDefaults() {
         for (ConfigurationOption option : ConfigurationOption.values()) {
             if (!config.contains(option.path())) {
                 config.set(option.path(), option.defaultValue());
+                modified = true;
             }
         }
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T get(ConfigurationOption option, Class<T> type) {
-        if (config == null) throw new IllegalStateException("ConfigProvider not initialized!");
+    public <T> T get(ConfigurationOption option) {
+        if (config == null) {
+            throw new IllegalStateException("ConfigurationProvider not initialized!");
+        }
 
         Object value = config.get(option.path());
+        Class<?> expectedType = option.type();
 
         if (value == null) {
-            return type.cast(option.defaultValue());
+            config.set(option.path(), option.defaultValue());
+            modified = true;
+            return (T) option.defaultValue();
         }
 
-        if (type == Double.class && value instanceof Number) {
-            return (T) Double.valueOf(((Number) value).doubleValue());
+        if (expectedType == String.class && value instanceof String) {
+            return (T) value;
         }
 
-        return type.cast(value);
+        if (expectedType == Double.class && value instanceof Integer) {
+            return (T) Double.valueOf(((Integer) value).doubleValue());
+        }
+
+        if (!expectedType.isInstance(value)) {
+            // Wrong type, fix it
+            plugin.getLogger().warning(
+                    "[cBanking] Config key '" + option.path() + "' had wrong type (" +
+                            value.getClass().getSimpleName() +
+                            "), resetting to default value."
+            );
+            config.set(option.path(), option.defaultValue());
+            modified = true;
+            return (T) option.defaultValue();
+        }
+
+        return (T) value;
     }
 
 
-    public String getString(ConfigurationOption option) {
-        return get(option, String.class);
-    }
-
-    public int getInt(ConfigurationOption option) {
-        return get(option, Integer.class);
-    }
-
-    public boolean getBoolean(ConfigurationOption option) {
-        return get(option, Boolean.class);
-    }
-
-    public double getDouble(ConfigurationOption option) {
-        return get(option, Double.class);
+    public void saveIfModified() {
+        if (!modified) return;
+        try {
+            config.save(new File(plugin.getDataFolder(), "config.yml"));
+            plugin.getLogger().info("[cBanking] Configuration updated and saved.");
+        } catch (IOException e) {
+            plugin.getLogger().severe("[cBanking] Failed to save config.yml: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

@@ -2,6 +2,7 @@ package me.calaritooo.cBanking.bank;
 
 import me.calaritooo.cBanking.cBanking;
 import me.calaritooo.cBanking.cBankingCore;
+import me.calaritooo.cBanking.util.money.Money;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -48,32 +49,33 @@ public class BankAccount {
         return getAccountFile(bankID, playerUUID).exists();
     }
 
-    public double getBalance(String bankID, UUID playerUUID) {
-        return getAccountConfig(bankID, playerUUID).getDouble("balance", 0.0);
+    public Money getBalance(String bankID, UUID playerUUID) {
+        double balance = getAccountConfig(bankID, playerUUID).getDouble("balance", 0.0);
+        return Money.of(balance);
     }
 
-    public void setBalance(String bankID, UUID playerUUID, double amount) {
+    public void setBalance(String bankID, UUID playerUUID, Money amount) {
         FileConfiguration config = getAccountConfig(bankID, playerUUID);
         OfflinePlayer player = Bukkit.getOfflinePlayer(playerUUID);
 
-        config.set("balance", amount);
+        config.set("balance", amount.value());
         config.set("uuid", playerUUID.toString());
         config.set("username", player.getName());
 
         saveAccountConfig(bankID, playerUUID, config);
     }
 
-    public void deposit(String bankID, UUID playerUUID, double amount) {
-        double current = getBalance(bankID, playerUUID);
-        setBalance(bankID, playerUUID, current + amount);
+    public void deposit(String bankID, UUID playerUUID, Money amount) {
+        Money current = getBalance(bankID, playerUUID);
+        setBalance(bankID, playerUUID, current.add(amount));
     }
 
-    public void withdraw(String bankID, UUID playerUUID, double amount) {
-        double current = getBalance(bankID, playerUUID);
-        setBalance(bankID, playerUUID, current - amount);
+    public void withdraw(String bankID, UUID playerUUID, Money amount) {
+        Money current = getBalance(bankID, playerUUID);
+        setBalance(bankID, playerUUID, current.subtract(amount));
     }
 
-    public void createAccount(String bankID, UUID playerUUID, double initialBalance) {
+    public void createAccount(String bankID, UUID playerUUID, Money initialBalance) {
         if (hasAccount(bankID, playerUUID)) return;
         setBalance(bankID, playerUUID, initialBalance);
     }
@@ -106,9 +108,8 @@ public class BankAccount {
         return bankIDs;
     }
 
-
-    public Map<UUID, Double> getAllBalances(String bankID) {
-        Map<UUID, Double> balances = new HashMap<>();
+    public Map<UUID, Money> getAllBalances(String bankID) {
+        Map<UUID, Money> balances = new HashMap<>();
         for (UUID uuid : getAllAccountUUIDs(bankID)) {
             balances.put(uuid, getBalance(bankID, uuid));
         }

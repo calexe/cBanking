@@ -3,6 +3,7 @@ package me.calaritooo.cBanking;
 import me.calaritooo.cBanking.bank.BankAccount;
 import me.calaritooo.cBanking.bank.BankData;
 import me.calaritooo.cBanking.eco.EconomyService;
+import me.calaritooo.cBanking.util.money.MoneyProvider;
 import me.calaritooo.cBanking.player.PlayerAccount;
 import me.calaritooo.cBanking.player.PlayerData;
 import me.calaritooo.cBanking.util.configuration.ConfigurationProvider;
@@ -19,6 +20,7 @@ public final class cBankingCore {
     private static FileConfiguration messages;
     private static ConfigurationProvider configurationProvider;
     private static MessageProvider messageProvider;
+    private static MoneyProvider moneyProvider;
     private static PlayerData playerData;
     private static BankData bankData;
     private static EconomyService economyService;
@@ -41,6 +43,8 @@ public final class cBankingCore {
 
         messageProvider = new MessageProvider(messages, configurationProvider);
 
+        moneyProvider = new MoneyProvider(configurationProvider);
+
         playerData = new PlayerData();
         plugin.getLogger().info("Loaded player data!");
 
@@ -58,6 +62,7 @@ public final class cBankingCore {
     public static void saveData() {
         playerData.saveAll();
         bankData.saveAll();
+        configurationProvider.saveIfModified();
     }
 
     public static cBanking getPlugin() {
@@ -74,6 +79,10 @@ public final class cBankingCore {
 
     public static EconomyService getEconomyService() {
         return economyService;
+    }
+
+    public static MoneyProvider getMoneyProvider() {
+        return moneyProvider;
     }
 
     public static ConfigurationProvider getConfigurationProvider() {

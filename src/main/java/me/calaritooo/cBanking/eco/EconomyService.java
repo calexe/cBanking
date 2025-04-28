@@ -5,6 +5,7 @@ import me.calaritooo.cBanking.bank.BankData;
 import me.calaritooo.cBanking.bank.BankSetting;
 import me.calaritooo.cBanking.player.PlayerAccount;
 import me.calaritooo.cBanking.player.PlayerData;
+import me.calaritooo.cBanking.util.money.Money;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Map;
@@ -32,40 +33,40 @@ public class EconomyService {
         return playerAccount.exists(uuid);
     }
 
-    public double getBalance(UUID uuid) {
+    public Money getBalance(UUID uuid) {
         return playerAccount.getBalance(uuid);
     }
 
-    public boolean deposit(UUID uuid, double amount) {
+    public boolean deposit(UUID uuid, Money amount) {
         if (!validAmount(amount) || !exists(uuid)) return false;
         playerAccount.deposit(uuid, amount);
         playerData.savePlayerConfig(uuid);
         return true;
     }
 
-    public boolean withdraw(UUID uuid, double amount) {
+    public boolean withdraw(UUID uuid, Money amount) {
         if (!validAmount(amount) || !exists(uuid) || !hasFunds(uuid, amount)) return false;
         playerAccount.withdraw(uuid, amount);
         playerData.savePlayerConfig(uuid);
         return true;
     }
 
-    public boolean transfer(UUID from, UUID to, double amount) {
+    public boolean transfer(UUID from, UUID to, Money amount) {
         return !from.equals(to) && withdraw(from, amount) && deposit(to, amount);
     }
 
-    public boolean hasFunds(UUID uuid, double amount) {
-        return getBalance(uuid) >= amount;
+    public boolean hasFunds(UUID uuid, Money amount) {
+        return getBalance(uuid).greaterOrEqual(amount);
     }
 
-    public boolean setBalance(UUID uuid, double amount) {
+    public boolean setBalance(UUID uuid, Money amount) {
         if (!exists(uuid)) return false;
         playerAccount.setBalance(uuid, amount);
         playerData.savePlayerConfig(uuid);
         return true;
     }
 
-    public boolean createAccount(UUID uuid, double initialBalance) {
+    public boolean createAccount(UUID uuid, Money initialBalance) {
         if (exists(uuid)) return false;
         playerAccount.createAccount(uuid, initialBalance);
         playerData.savePlayerConfig(uuid);
@@ -86,40 +87,40 @@ public class EconomyService {
         return bankAccount.hasAccount(bankID, uuid);
     }
 
-    public double getBankBalance(String bankID, UUID uuid) {
+    public Money getBankBalance(String bankID, UUID uuid) {
         return bankAccount.getBalance(bankID, uuid);
     }
 
-    public boolean depositBank(String bankID, UUID uuid, double amount) {
+    public boolean depositBank(String bankID, UUID uuid, Money amount) {
         if (!validAmount(amount) || !hasBankAccount(bankID, uuid)) return false;
         bankAccount.deposit(bankID, uuid, amount);
         bankData.saveBankConfig(bankID);
         return true;
     }
 
-    public boolean withdrawBank(String bankID, UUID uuid, double amount) {
+    public boolean withdrawBank(String bankID, UUID uuid, Money amount) {
         if (!validAmount(amount) || !hasBankAccount(bankID, uuid) || !hasBankFunds(bankID, uuid, amount)) return false;
         bankAccount.withdraw(bankID, uuid, amount);
         bankData.saveBankConfig(bankID);
         return true;
     }
 
-    public boolean transferBankToBank(String fromBankID, UUID fromUUID, String toBankID, UUID toUUID, double amount) {
+    public boolean transferBankToBank(String fromBankID, UUID fromUUID, String toBankID, UUID toUUID, Money amount) {
         return withdrawBank(fromBankID, fromUUID, amount) && depositBank(toBankID, toUUID, amount);
     }
 
-    public boolean hasBankFunds(String bankID, UUID uuid, double amount) {
-        return getBankBalance(bankID, uuid) >= amount;
+    public boolean hasBankFunds(String bankID, UUID uuid, Money amount) {
+        return getBankBalance(bankID, uuid).greaterOrEqual(amount);
     }
 
-    public boolean setBankBalance(String bankID, UUID uuid, double amount) {
+    public boolean setBankBalance(String bankID, UUID uuid, Money amount) {
         if (!hasBankAccount(bankID, uuid)) return false;
         bankAccount.setBalance(bankID, uuid, amount);
         bankData.saveBankConfig(bankID);
         return true;
     }
 
-    public boolean createBankAccount(String bankID, UUID uuid, double initialBalance) {
+    public boolean createBankAccount(String bankID, UUID uuid, Money initialBalance) {
         if (!bankExists(bankID)) return false;
         bankAccount.createAccount(bankID, uuid, initialBalance);
         bankData.saveBankConfig(bankID);
@@ -147,11 +148,11 @@ public class EconomyService {
     }
 
     public void deleteBankAndTransferBalances(String bankID) {
-        Map<UUID, Double> balances = bankAccount.getAllBalances(bankID);
+        Map<UUID, Money> balances = bankAccount.getAllBalances(bankID);
         if (balances.isEmpty()) return;
-        for (UUID uuid : balances.keySet()) {
-            playerAccount.deposit(uuid, balances.get(uuid));
-            playerData.savePlayerConfig(uuid);
+        for (Map.Entry<UUID, Money> entry : balances.entrySet()) {
+            playerAccount.deposit(entry.getKey(), entry.getValue());
+            playerData.savePlayerConfig(entry.getKey());
         }
         deleteBank(bankID);
     }
@@ -209,7 +210,7 @@ public class EconomyService {
         return name.trim().toLowerCase().replaceAll("[^a-z0-9]+", "_");
     }
 
-    public boolean validAmount(double amount) {
-        return amount >= 0;
+    public boolean validAmount(Money amount) {
+        return amount != null && !amount.greaterOrEqual(Money.zero());
     }
 }

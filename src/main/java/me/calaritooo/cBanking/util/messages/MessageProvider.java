@@ -2,6 +2,7 @@ package me.calaritooo.cBanking.util.messages;
 
 import me.calaritooo.cBanking.util.configuration.ConfigurationOption;
 import me.calaritooo.cBanking.util.configuration.ConfigurationProvider;
+import me.calaritooo.cBanking.util.money.Money;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -58,11 +59,9 @@ public class MessageProvider {
             String value = placeholders[i + 1];
 
             if (placeholder.equals("%amt%") || placeholder.equals("%bal%")) {
-                try {
-                    double number = Double.parseDouble(value);
-                    value = formatCurrency(number);
-                } catch (NumberFormatException ignored) {
-                    // If parsing fails, just use original value
+                Money amount = Money.parse(value);
+                if (amount != null) {
+                    value = amount.toString();
                 }
             }
 
@@ -74,17 +73,9 @@ public class MessageProvider {
 
     private void loadGlobalPlaceholders() {
         GLOBAL_PLACEHOLDERS.clear();
-        GLOBAL_PLACEHOLDERS.put("%currency-symbol%", config.getString(ConfigurationOption.ECONOMY_CURRENCY_SYMBOL));
-        GLOBAL_PLACEHOLDERS.put("%currency-name%", config.getString(ConfigurationOption.ECONOMY_CURRENCY_NAME));
-        GLOBAL_PLACEHOLDERS.put("%currency-name-plural%", config.getString(ConfigurationOption.ECONOMY_CURRENCY_NAME_PLURAL));
-    }
-
-    public String formatCurrency(double amount) {
-        if (amount % 1 == 0) {
-            return String.format("%.0f", amount);
-        } else {
-            return String.format("%.2f", amount);
-        }
+        GLOBAL_PLACEHOLDERS.put("%currency-symbol%", config.get(ConfigurationOption.ECONOMY_CURRENCY_SYMBOL));
+        GLOBAL_PLACEHOLDERS.put("%currency-name%", config.get(ConfigurationOption.ECONOMY_CURRENCY_NAME));
+        GLOBAL_PLACEHOLDERS.put("%currency-name-plural%", config.get(ConfigurationOption.ECONOMY_CURRENCY_NAME_PLURAL));
     }
 }
 
