@@ -35,9 +35,9 @@ public class cBanking extends JavaPlugin {
         commandManager.registerCommands();
         commandManager.registerTabCompleters();
 
-        int autosaveInternal = cBankingCore.getConfigurationProvider().getInt(ConfigurationOption.AUTOSAVE_INTERVAL);
+        int autosaveInternal = cBankingCore.getConfigurationProvider().get(ConfigurationOption.AUTOSAVE_INTERVAL);
         if (autosaveInternal > 0) {
-            long autosaveTicks = cBankingCore.getConfigurationProvider().getInt(ConfigurationOption.AUTOSAVE_INTERVAL) * 1200L;
+            long autosaveTicks = autosaveInternal * 1200L;
             autosaveTask = 1;
             startAutosave(autosaveTicks);
         }
