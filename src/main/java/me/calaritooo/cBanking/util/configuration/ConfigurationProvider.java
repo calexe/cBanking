@@ -3,11 +3,9 @@ package me.calaritooo.cBanking.util.configuration;
 import me.calaritooo.cBanking.cBanking;
 import me.calaritooo.cBanking.cBankingCore;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 public class ConfigurationProvider {
 
@@ -77,11 +75,5 @@ public class ConfigurationProvider {
             plugin.getLogger().severe("[cBanking] Failed to save config.yml: " + e.getMessage());
             e.printStackTrace();
         }
-    }
-
-    public void reload() {
-        this.config = cBankingCore.getPlugin().getConfig();
-        populateDefaults();
-
     }
 }

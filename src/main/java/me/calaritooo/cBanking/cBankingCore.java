@@ -4,6 +4,8 @@ import me.calaritooo.cBanking.bank.BankAccount;
 import me.calaritooo.cBanking.bank.BankData;
 import me.calaritooo.cBanking.eco.EconomyService;
 import me.calaritooo.cBanking.util.ResourceUpdater;
+import me.calaritooo.cBanking.util.configuration.ConfigurationOption;
+import me.calaritooo.cBanking.util.messages.Message;
 import me.calaritooo.cBanking.util.money.MoneyProvider;
 import me.calaritooo.cBanking.player.PlayerAccount;
 import me.calaritooo.cBanking.player.PlayerData;
@@ -31,21 +33,27 @@ public final class cBankingCore {
 
     public static void initialize(cBanking pluginInstance) {
         plugin = pluginInstance;
+
         plugin.saveDefaultConfig();
-
-        ResourceUpdater.update(plugin, "config.yml");
-        ResourceUpdater.update(plugin, "messages.yml");
-
-        config = plugin.getConfig();
-
-        configurationProvider = new ConfigurationProvider(config);
 
         File messagesFile = new File(plugin.getDataFolder(), "messages.yml");
         if (!messagesFile.exists()) {
             plugin.saveResource("messages.yml", false);
         }
-        messages = YamlConfiguration.loadConfiguration(messagesFile);
 
+        File configFile = new File(plugin.getDataFolder(), "config.yml");
+
+        if (configFile.exists()) {
+            ResourceUpdater.update(plugin, "config.yml", ConfigurationOption.class);
+        }
+        if (messagesFile.exists()) {
+            ResourceUpdater.update(plugin, "messages.yml", Message.class);
+        }
+
+        config = plugin.getConfig();
+        configurationProvider = new ConfigurationProvider(config);
+
+        messages = YamlConfiguration.loadConfiguration(messagesFile);
         messageProvider = new MessageProvider(messages, configurationProvider);
 
         moneyProvider = new MoneyProvider(configurationProvider);
@@ -54,13 +62,12 @@ public final class cBankingCore {
         plugin.getLogger().info("Loaded player data!");
 
         bankData = new BankData();
-        plugin.getLogger().info("Loaded banks.yml!");
+        plugin.getLogger().info("Loaded bank data");
 
         PlayerAccount playerAccount = new PlayerAccount(playerData);
         BankAccount bankAccount = new BankAccount(bankData);
 
         economyService = new EconomyService(playerAccount, playerData, bankAccount, bankData);
-
         plugin.getLogger().info("Loaded economy service!");
     }
 
@@ -71,10 +78,11 @@ public final class cBankingCore {
     }
 
     public static void reload() {
+        plugin.getLogger().info("Reloading...");
         plugin.reloadConfig();
 
-        ResourceUpdater.update(plugin, "config.yml");
-        ResourceUpdater.update(plugin, "messages.yml");
+        ResourceUpdater.update(plugin, "config.yml", ConfigurationOption.class);
+        ResourceUpdater.update(plugin, "messages.yml", Message.class);
 
         config = plugin.getConfig();
         configurationProvider = new ConfigurationProvider(config);
@@ -86,7 +94,7 @@ public final class cBankingCore {
         playerData.saveAll();
         bankData.saveAll();
 
-        plugin.getLogger().info("cBanking config.yml and messages.yml reloaded successfully.");
+        plugin.getLogger().info("Reloaded successfully!");
     }
 
 

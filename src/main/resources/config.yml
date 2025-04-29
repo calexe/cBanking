@@ -2,7 +2,7 @@
 # VAULT MUST BE INSTALLED FOR THIS PLUGIN TO FUNCTION.
 # Negative values are not recommended! Values beyond the hundredths place (##.##XX) are not supported.
 # Ensure players have the proper permissions to adjust the default values below for their bank. (If they can't adjust interest, growth, maintenance, etc., they can't differentiate their bank from others!)
-# Current version: 2.2.7
+# Current version: 1.0.0-SNAPSHOT
 #
 # For bug reports, suggestions, requests, and information, visit the link below!
 # https://github.com/calaritooo/cBanking
@@ -30,9 +30,9 @@ modules:
   # Enables players to create and manage their own banks.
   enable-banks: true
   # Enables players to request loans from banks, subject to approval by the bank owner.
-  enable-loans: true
+  enable-loans: false
   # Enables player money loss upon death.
-  enable-money-loss-death: false
+  enable-death-loss: false
 
 # General server economy settings and default values.
 economy-settings:
