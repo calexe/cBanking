@@ -19,7 +19,6 @@ public class cBanking extends JavaPlugin {
     public void onEnable() {
         getLogger().info("Enabling...");
 
-        // Initialize vault hook and set provider
         economyManager = new EconomyManager(this);
         if (!economyManager.setup()) return;
 
@@ -27,7 +26,6 @@ public class cBanking extends JavaPlugin {
 
         economyManager.checkEconomyOverride();
 
-        // Register events and commands
         eventHandler = new EventHandler();
         eventHandler.registerEvents();
 

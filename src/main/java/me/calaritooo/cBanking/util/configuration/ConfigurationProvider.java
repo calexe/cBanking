@@ -54,7 +54,6 @@ public class ConfigurationProvider {
         }
 
         if (!expectedType.isInstance(value)) {
-            // Wrong type, fix it
             plugin.getLogger().warning(
                     "[cBanking] Config key '" + option.path() + "' had wrong type (" +
                             value.getClass().getSimpleName() +

@@ -103,7 +103,7 @@ public class PlayerData {
 
     public void deletePlayerData(String uuidStr) {
         UUID uuid = UUID.fromString(uuidStr);
-        playerCache.remove(uuid); // Remove from memory too
+        playerCache.remove(uuid);
         File file = getPlayerFile(uuid);
         if (file.exists()) {
             file.delete();

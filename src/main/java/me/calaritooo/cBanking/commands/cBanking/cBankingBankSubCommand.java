@@ -123,7 +123,7 @@ public class cBankingBankSubCommand {
                     .toList();
         } else if (args.length == 3 && args[1].equalsIgnoreCase("set")) {
             return Arrays.stream(BankSetting.values())
-                    .filter(setting -> setting != BankSetting.NAME) // cannot edit name
+                    .filter(setting -> setting != BankSetting.NAME)
                     .map(setting -> setting.name().toLowerCase())
                     .filter(option -> option.startsWith(args[2].toLowerCase()))
                     .sorted(String.CASE_INSENSITIVE_ORDER)

@@ -19,7 +19,6 @@ public class BankData {
     private final ConfigurationProvider configProvider;
     private final File banksFolder;
 
-    // NEW: cache
     private final Map<String, FileConfiguration> bankCache = new HashMap<>();
 
     public BankData() {
@@ -117,14 +116,14 @@ public class BankData {
         config.set("deposit-fee-rate", configProvider.get(ConfigurationOption.BANK_DEFAULT_DEPOSIT_FEE));
         config.set("withdrawal-fee-rate", configProvider.get(ConfigurationOption.BANK_DEFAULT_WITHDRAWAL_FEE));
 
-        bankCache.put(bankID, config); // Cache immediately
+        bankCache.put(bankID, config);
         saveBankConfig(bankID);
 
         plugin.getLogger().info("Created new bank: " + bankID);
     }
 
     public void deleteBank(String bankID) {
-        bankCache.remove(bankID); // Remove from cache first
+        bankCache.remove(bankID);
 
         File bankFolder = getBankFolder(bankID);
         if (!bankFolder.exists()) return;

@@ -15,23 +15,20 @@ public class ResourceUpdater {
         try {
             if (!file.exists()) {
                 plugin.saveResource(fileName, false);
-                plugin.getLogger().info("Created default " + fileName + " because it did not exist.");
+                plugin.getLogger().info("Created " + fileName + "!");
                 return;
             }
 
-            // Backup old file
             if (backupFile.exists()) backupFile.delete();
             if (!file.renameTo(backupFile)) {
-                plugin.getLogger().warning("Could not create backup for " + fileName);
+                plugin.getLogger().warning("Backup creation failed for " + fileName + "!");
                 return;
             }
 
-            // Load old and new defaults
             FileConfiguration oldConfig = YamlConfiguration.loadConfiguration(backupFile);
             InputStreamReader reader = new InputStreamReader(plugin.getResource(fileName), "UTF-8");
             YamlConfiguration newConfig = YamlConfiguration.loadConfiguration(reader);
 
-            // Copy server owner changes
             for (String key : newConfig.getKeys(true)) {
                 if (oldConfig.contains(key)) {
                     Object oldValue = oldConfig.get(key);
@@ -43,7 +40,6 @@ public class ResourceUpdater {
                 }
             }
 
-            // Save the final merged file
             newConfig.save(file);
 
             plugin.getLogger().info(fileName + " updated successfully. Backup saved as " + fileName + ".old.");
