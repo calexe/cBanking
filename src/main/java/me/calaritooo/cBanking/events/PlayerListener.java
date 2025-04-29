@@ -58,15 +58,14 @@ public class PlayerListener implements Listener {
                     double percentageValue = config.get(ConfigurationOption.ECONOMY_DEATH_LOSS_VALUE);
                     double percentageLost = percentageValue / 100;
                     double amount = totalBal.value() * percentageLost;
-
-                    if (totalBal.lessThan(Money.of(amount))) {
+                    if (totalBal.value() <= 0.01) {
                         eco.setBalance(player, Money.zero());
-                    } else {
-                        if (eco.withdraw(player, Money.of(amount))) {
-                            messages.send(p, Message.GENERAL_DEATH_LOSS_PERCENTAGE,
-                                    "%amt%", String.valueOf(amount),
-                                    "%percentage%", String.valueOf(percentageValue));
-                        }
+                        messages.send(p, Message.GENERAL_DEATH_LOSS_ALL,
+                                "%amt%", eco.getBalance(player).toString());
+                    }
+                    if (eco.withdraw(player, Money.of(amount))) {
+                        messages.send(p, Message.GENERAL_DEATH_LOSS_PERCENTAGE,
+                                "%percentage%", String.valueOf(percentageValue));
                     }
                 }
                 case "flat" -> {

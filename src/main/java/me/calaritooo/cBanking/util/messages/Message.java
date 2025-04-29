@@ -3,9 +3,9 @@ package me.calaritooo.cBanking.util.messages;
 public enum Message {
 
     // General
-    GENERAL_DEATH_LOSS_ALL("general.death-loss-all", "&7You lost your entire balance of &c%amt% &7upon dying."),
-    GENERAL_DEATH_LOSS_PERCENTAGE("general.death-loss-percentage", "&7You lost &c%percentage%&7 of your total balance (&c%amt%&7) upon dying."),
-    GENERAL_DEATH_LOSS_FLAT("general.death-loss-flat", "&7You lost &c%amt% &7upon dying."),
+    GENERAL_DEATH_LOSS_ALL("general.death-loss-all", "&6You lost your entire balance of &c%amt% &7upon dying."),
+    GENERAL_DEATH_LOSS_PERCENTAGE("general.death-loss-percentage", "&6You lost &c%percentage%%&7 of your total balance upon dying."),
+    GENERAL_DEATH_LOSS_FLAT("general.death-loss-flat", "&6You lost &c%amt% &7upon dying."),
 
     // Balance
     BALANCE_SELF("balance.self", "&7Balance: &a%currency-symbol%%amt%"),
