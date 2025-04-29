@@ -1,15 +1,12 @@
 package me.calaritooo.cBanking.util.messages;
 
-import me.calaritooo.cBanking.cBankingCore;
 import me.calaritooo.cBanking.util.configuration.ConfigurationOption;
 import me.calaritooo.cBanking.util.configuration.ConfigurationProvider;
 import me.calaritooo.cBanking.util.money.Money;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,7 +67,6 @@ public class MessageProvider {
 
             raw = raw.replace(placeholder, value);
         }
-
         return raw;
     }
 
@@ -80,16 +76,5 @@ public class MessageProvider {
         GLOBAL_PLACEHOLDERS.put("%currency-name%", config.get(ConfigurationOption.ECONOMY_CURRENCY_NAME));
         GLOBAL_PLACEHOLDERS.put("%currency-name-plural%", config.get(ConfigurationOption.ECONOMY_CURRENCY_NAME_PLURAL));
     }
-
-    public void reload() {
-        File file = new File(cBankingCore.getPlugin().getDataFolder(), "messages.yml");
-        if (!file.exists()) {
-            cBankingCore.getPlugin().saveResource("messages.yml", false);
-        }
-        this.messages = YamlConfiguration.loadConfiguration(file);
-        this.config = cBankingCore.getConfigurationProvider();
-        loadGlobalPlaceholders();
-    }
-
 }
 

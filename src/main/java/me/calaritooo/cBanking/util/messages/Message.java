@@ -21,9 +21,9 @@ public enum Message {
     // Transaction
     TRANSACTION_DEPOSIT("transaction.deposit", "&aDeposited &a%currency-symbol%%amt%&7 into &6%bank%&a."),
     TRANSACTION_WITHDRAW("transaction.withdraw", "&aWithdrew &a%currency-symbol%%amt%&7 from &6%bank%&a."),
-    TRANSACTION_FAIL_INSUFFICIENT_FUNDS("transaction.fail.insufficient-funds", "&cInsufficient funds."),
-    TRANSACTION_FAIL_NO_ACCOUNT("transaction.fail.no-account", "&cYou don't have an account with &6%bank%&c."),
-    TRANSACTION_FAIL_UNKNOWN("transaction.fail.unknown", "&cTransaction failed."),
+    TRANSACTION_FAIL_INSUFFICIENT_FUNDS("transaction.insufficient-funds", "&cInsufficient funds."),
+    TRANSACTION_FAIL_NO_ACCOUNT("transaction.no-account", "&cYou don't have an account with &6%bank%&c."),
+    TRANSACTION_FAIL_UNKNOWN("transaction.unknown", "&cTransaction failed."),
 
     // Bank
     BANK_CREATED("bank.created", "&aBank '&6%bank-name%&a' has been opened!"),

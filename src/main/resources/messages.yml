@@ -38,10 +38,9 @@ pay:
 transaction:
   deposit: "&aDeposited &a%currency-symbol%%amt%&7 into &6%bank%&a."
   withdraw: "&aWithdrew &a%currency-symbol%%amt%&7 from &6%bank%&a."
-  fail:
-    insufficient-funds: "&cInsufficient funds."
-    no-account: "&cYou don't have an account with &6%bank%&c."
-    unknown: "&cTransaction failed."
+  insufficient-funds: "&cInsufficient funds."
+  no-account: "&cYou don't have an account with &6%bank%&c."
+  unknown: "&cTransaction failed."
 
 bank:
   created: "&aBank '&6%bank-name%&a' has been opened!"
@@ -58,6 +57,7 @@ bank:
     deposit: "&7Deposit Fee: &a%value%%"
     withdrawal: "&7Withdrawal Fee: &a%value%%"
   setting-updated: "&a%setting% updated to &a%value%."
+  setting-invalid: "&cInvalid bank setting!"
 
 account:
   created: "&7Account opened with &6%bank%&7 with a balance of &a%currency-symbol%%amt%&7!"
