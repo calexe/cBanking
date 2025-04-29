@@ -2,22 +2,21 @@ package me.calaritooo.cBanking;
 
 import me.calaritooo.cBanking.commands.*;
 import me.calaritooo.cBanking.util.EconomyManager;
-import me.calaritooo.cBanking.listeners.EventHandler;
+import me.calaritooo.cBanking.events.EventManager;
 import me.calaritooo.cBanking.util.configuration.ConfigurationOption;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class cBanking extends JavaPlugin {
 
-    private int autosaveTask = 0;
+    private int autosaveTask = -1;
 
     private EconomyManager economyManager;
     private CommandManager commandManager;
-    private EventHandler eventHandler;
+    private EventManager eventManager;
 
     @Override
     public void onEnable() {
-        getLogger().info("Enabling...");
 
         economyManager = new EconomyManager(this);
         if (!economyManager.setup()) return;
@@ -26,8 +25,8 @@ public class cBanking extends JavaPlugin {
 
         economyManager.checkEconomyOverride();
 
-        eventHandler = new EventHandler();
-        eventHandler.registerEvents();
+        eventManager = new EventManager();
+        eventManager.registerEvents();
 
         commandManager = new CommandManager();
         commandManager.registerCommands();
@@ -35,12 +34,11 @@ public class cBanking extends JavaPlugin {
 
         int autosaveInternal = cBankingCore.getConfigurationProvider().get(ConfigurationOption.AUTOSAVE_INTERVAL);
         if (autosaveInternal > 0) {
-            long autosaveTicks = autosaveInternal * 1200L;
             autosaveTask = 1;
+            long autosaveTicks = autosaveInternal * 1200L;
             startAutosave(autosaveTicks);
-        }
-        if (autosaveTask != 1) {
-            getLogger().warning("Autosave is not enabled! Player and bank data files will only save upon restart.");
+        } else {
+            getLogger().warning("Autosave is disabled! Saving will only occur on server start.");
         }
 
         getLogger().info("Successfully enabled!");
@@ -56,8 +54,8 @@ public class cBanking extends JavaPlugin {
         saveConfig();
 
 
-        if (eventHandler != null) {
-            eventHandler.unregisterEvents();
+        if (eventManager != null) {
+            eventManager.unregisterEvents();
         }
 
         if (commandManager != null) {

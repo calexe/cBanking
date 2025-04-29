@@ -1,4 +1,4 @@
-package me.calaritooo.cBanking.listeners;
+package me.calaritooo.cBanking.events;
 
 import me.calaritooo.cBanking.cBanking;
 import me.calaritooo.cBanking.cBankingCore;
@@ -41,16 +41,16 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerDie(PlayerDeathEvent event) {
-        Player player = event.getEntity();
-        UUID playerUUID = event.getEntity().getUniqueId();
-        Money totalBal = eco.getBalance(playerUUID);
+        Player p = event.getEntity();
+        UUID player = p.getUniqueId();
+        Money totalBal = eco.getBalance(player);
 
         if (config.get(ConfigurationOption.MODULE_DEATH_LOSS)) {
             String deathLossType = config.get(ConfigurationOption.ECONOMY_DEATH_LOSS_TYPE);
             switch (deathLossType.toLowerCase()) {
                 case "all" -> {
-                    if (eco.withdraw(playerUUID, totalBal)) {
-                        messages.send(player, Message.GENERAL_DEATH_LOSS_ALL,
+                    if (eco.withdraw(player, totalBal)) {
+                        messages.send(p, Message.GENERAL_DEATH_LOSS_ALL,
                                 "%amt%", totalBal.toString());
                     }
                 }
@@ -58,23 +58,28 @@ public class PlayerListener implements Listener {
                     double percentageValue = config.get(ConfigurationOption.ECONOMY_DEATH_LOSS_VALUE);
                     double percentageLost = percentageValue / 100;
                     double amount = totalBal.value() * percentageLost;
-                    if (eco.withdraw(playerUUID, Money.of(amount))) {
-                        messages.send(player, Message.GENERAL_DEATH_LOSS_PERCENTAGE,
-                                "%amt%", String.valueOf(amount),
-                                "%percentage%", String.valueOf(percentageValue));
+
+                    if (totalBal.lessThan(Money.of(amount))) {
+                        eco.setBalance(player, Money.zero());
+                    } else {
+                        if (eco.withdraw(player, Money.of(amount))) {
+                            messages.send(p, Message.GENERAL_DEATH_LOSS_PERCENTAGE,
+                                    "%amt%", String.valueOf(amount),
+                                    "%percentage%", String.valueOf(percentageValue));
+                        }
                     }
                 }
                 case "flat" -> {
                     double flatValue = config.get(ConfigurationOption.ECONOMY_DEATH_LOSS_VALUE);
                     if (totalBal.value() < flatValue) {
-                        if (eco.withdraw(playerUUID, totalBal)) {
-                            messages.send(player, Message.GENERAL_DEATH_LOSS_FLAT,
+                        if (eco.withdraw(player, totalBal)) {
+                            messages.send(p, Message.GENERAL_DEATH_LOSS_FLAT,
                                     "%amt%", totalBal.toString());
                         }
                     } else {
                         double amount = totalBal.value() - flatValue;
-                        if (eco.withdraw(playerUUID, Money.of(amount))) {
-                            messages.send(player, Message.GENERAL_DEATH_LOSS_FLAT,
+                        if (eco.withdraw(player, Money.of(amount))) {
+                            messages.send(p, Message.GENERAL_DEATH_LOSS_FLAT,
                                     "%amt%", String.valueOf(amount));
                         }
                     }

@@ -211,6 +211,6 @@ public class EconomyService {
     }
 
     public boolean validAmount(Money amount) {
-        return amount != null && !amount.greaterOrEqual(Money.zero());
+        return amount != null && amount.greaterOrEqual(Money.zero());
     }
 }

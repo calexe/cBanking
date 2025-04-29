@@ -1,4 +1,4 @@
-package me.calaritooo.cBanking.listeners;
+package me.calaritooo.cBanking.events;
 
 import me.calaritooo.cBanking.cBanking;
 import me.calaritooo.cBanking.cBankingCore;
@@ -6,11 +6,11 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 
-public class EventHandler implements Listener {
+public class EventManager implements Listener {
 
     private final cBanking plugin;
 
-    public EventHandler() {
+    public EventManager() {
         this.plugin = cBankingCore.getPlugin();
     }
 
